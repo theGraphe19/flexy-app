@@ -23,9 +23,9 @@ class FormValidator {
       return null;
   }
 
-  String validateDescription(dynamic value) {
+  String validateDropDownSelector(dynamic value) {
     if (value == null)
-      return 'Please select a description';
+      return 'Please select a value';
     else
       return null;
   }
