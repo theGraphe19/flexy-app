@@ -158,20 +158,17 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             validator: (value) => _validator.validateDropDownSelector(value),
             value: _photoIdType,
             onSaved: (value) {
+              Future.delayed(Duration.zero, () {
+                _showModalSheet(context);
+              });
               setState(() {
                 _photoIdType = value;
                 widget.currentUser.photoIdType = value as String;
-                Future.delayed(Duration.zero, () {
-                  _showModalSheet(context);
-                });
               });
             },
             onChanged: (value) {
               setState(() {
                 _photoIdType = value;
-                Future.delayed(Duration.zero, () {
-                  _showModalSheet(context);
-                });
               });
               _validateInput();
             },
@@ -256,6 +253,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
     return FutureBuilder<File>(
       future: imageFile,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        widget.currentUser.photoLocation = snapshot.data.path;
         return Container(
           width: double.infinity,
           height: 400.0,
