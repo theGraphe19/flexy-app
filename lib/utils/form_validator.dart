@@ -7,8 +7,10 @@ class FormValidator {
   }
 
   String validateMobile(String value) {
-    if (value.length != 10)
-      return 'Mobile Number must be of 10 digit';
+    Pattern pattern = r'((\+*)((0[ -]+)*|(91 )*)(\d{12}+|\d{10}+))|\d{5}([- ]*)\d{6}';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Enter a Valid Number';
     else
       return null;
   }
@@ -33,6 +35,26 @@ class FormValidator {
   String validateNumber(String value) {
     if (value == null)
       return 'Please select a number';
+    else
+      return null;
+  }
+
+  String validateGST(String value) {
+    Pattern pattern =
+        r'/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Enter Valid GST Number';
+    else
+      return null;
+  }
+
+  String validatePIN(String value) {
+    Pattern pattern =
+        r'^[1-9][0-9]{5}$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Enter Valid PINCODE';
     else
       return null;
   }

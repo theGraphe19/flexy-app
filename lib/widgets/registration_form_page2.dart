@@ -39,7 +39,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
     super.initState();
 
     if (widget.currentUser.firmNomenclature != null)
-      _firmNomenclature = widget.currentUser.tradeCategory;
+      _firmNomenclature = widget.currentUser.firmNomenclature;
 
     if (widget.currentUser.tradeCategory != null)
       _tradeCategory = widget.currentUser.tradeCategory;
