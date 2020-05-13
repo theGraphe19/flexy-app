@@ -7,17 +7,17 @@ import 'package:image_picker/image_picker.dart';
 
 import '../utils/form_validator.dart';
 import '../models/user.dart';
+import './registration_form_page2.dart';
 
 class RegistrationFormPag1 extends StatefulWidget {
-  final User currentUser;
-
-  RegistrationFormPag1(this.currentUser);
+  static const routeName = '/registration-form-page1';
 
   @override
   _RegistrationFormPag1State createState() => _RegistrationFormPag1State();
 }
 
 class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
+  User currentUser;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var _autoValidate = false;
   var _validator = FormValidator();
@@ -34,26 +34,37 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.currentUser.designation != null)
-      _designation = widget.currentUser.designation;
-
-    if (widget.currentUser.photoIdType != null)
-      _photoIdType = widget.currentUser.photoIdType;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.all(15.0),
-        padding: const EdgeInsets.all(10.0),
-        child: Form(
-          key: _formKey,
-          autovalidate: _autoValidate,
-          child: formUI(),
+    currentUser = ModalRoute.of(context).settings.arguments as User;
+    if (currentUser != null) {
+      if (currentUser.designation != null)
+        _designation = currentUser.designation;
+
+      if (currentUser.photoIdType != null)
+        _photoIdType = currentUser.photoIdType;
+    } else {
+      currentUser = new User();
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Flexy - Register'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(10.0),
+          child: Form(
+            key: _formKey,
+            autovalidate: _autoValidate,
+            child: formUI(),
+          ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _validateInput,
+        label: Text('Next'),
+        icon: Icon(Icons.chevron_right),
       ),
     );
   }
@@ -61,8 +72,8 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   Widget formUI() => Column(
         children: <Widget>[
           TextFormField(
-            initialValue: (widget.currentUser.name != null)
-                ? widget.currentUser.name
+            initialValue: (currentUser != null && currentUser.name != null)
+                ? currentUser.name
                 : '',
             decoration: const InputDecoration(
               labelText: 'Name',
@@ -70,12 +81,12 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.text,
             validator: (value) => _validator.validateName(value),
-            onSaved: (String val) => widget.currentUser.name = val,
+            onSaved: (String val) => currentUser.name = val,
           ),
           SizedBox(height: 10.0),
           TextFormField(
-            initialValue: (widget.currentUser.mobileNo != null)
-                ? widget.currentUser.mobileNo
+            initialValue: (currentUser != null && currentUser.mobileNo != null)
+                ? currentUser.mobileNo
                 : null,
             decoration: const InputDecoration(
               labelText: 'Phone Number',
@@ -83,12 +94,12 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.number,
             validator: (value) => _validator.validateMobile(value),
-            onSaved: (String val) => widget.currentUser.mobileNo = val,
+            onSaved: (String val) => currentUser.mobileNo = val,
           ),
           SizedBox(height: 10.0),
           TextFormField(
-            initialValue: (widget.currentUser.email != null)
-                ? widget.currentUser.email
+            initialValue: (currentUser != null && currentUser.email != null)
+                ? currentUser.email
                 : '',
             decoration: const InputDecoration(
               labelText: 'Email ID',
@@ -96,7 +107,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.emailAddress,
             validator: (value) => _validator.validateEmail(value),
-            onSaved: (String val) => widget.currentUser.email = val,
+            onSaved: (String val) => currentUser.email = val,
           ),
           SizedBox(height: 10.0),
           DropDownFormField(
@@ -108,14 +119,13 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             onSaved: (value) {
               setState(() {
                 _designation = value;
-                widget.currentUser.designation = value as String;
+                currentUser.designation = value as String;
               });
             },
             onChanged: (value) {
               setState(() {
                 _designation = value;
               });
-              _validateInput();
             },
             dataSource: [
               {
@@ -158,19 +168,18 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             validator: (value) => _validator.validateDropDownSelector(value),
             value: _photoIdType,
             onSaved: (value) {
+              setState(() {
+                _photoIdType = value;
+                currentUser.photoIdType = value as String;
+              });
+            },
+            onChanged: (value) {
               Future.delayed(Duration.zero, () {
                 _showModalSheet(context);
               });
               setState(() {
                 _photoIdType = value;
-                widget.currentUser.photoIdType = value as String;
               });
-            },
-            onChanged: (value) {
-              setState(() {
-                _photoIdType = value;
-              });
-              _validateInput();
             },
             dataSource: [
               {
@@ -201,6 +210,11 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   void _validateInput() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      if (currentUser.photoLocation != null)
+        Navigator.of(context).popAndPushNamed(
+          RegistrationFormPart2.routeName,
+          arguments: currentUser,
+        );
     } else {
       setState(() {
         _autoValidate = true;
@@ -250,25 +264,38 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
       });
 
   Widget imagePreview() {
-    return FutureBuilder<File>(
-      future: imageFile,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        widget.currentUser.photoLocation = snapshot.data.path;
-        return Container(
-          width: double.infinity,
-          height: 400.0,
-          decoration: (imageFile != null)
-              ? BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5.0),
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: FileImage(snapshot.data),
-                  ),
-                )
-              : BoxDecoration(),
-        );
-      },
-    );
+    return (currentUser.photoLocation != null)
+        ? Container(
+            width: double.infinity,
+            height: 400.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(5.0),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: FileImage(File(currentUser.photoLocation)),
+              ),
+            ),
+          )
+        : FutureBuilder<File>(
+            future: imageFile,
+            builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+              currentUser.photoLocation = snapshot.data.path;
+              return Container(
+                width: double.infinity,
+                height: 400.0,
+                decoration: (imageFile != null)
+                    ? BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5.0),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: FileImage(snapshot.data),
+                        ),
+                      )
+                    : BoxDecoration(),
+              );
+            },
+          );
   }
 }

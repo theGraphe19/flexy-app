@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import './screens/registration_screen.dart';
+import './screens/registration_form_page1.dart';
+import './screens/registration_form_page2.dart';
+import './screens/registration_form_page3.dart';
+import './screens/otp_verification_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,7 +12,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RegistrationScreen(),
+      home: RegistrationFormPag1(),
+      routes: {
+        RegistrationFormPag1.routeName: (ctx) => RegistrationFormPag1(),
+        RegistrationFormPart2.routeName: (ctx) => RegistrationFormPart2(),
+        RegistrationFormPage3.routeName: (ctx) => RegistrationFormPage3(),
+        OTPVerificationScreen.routeName: (ctx) => OTPVerificationScreen(),
+      },
     );
   }
 }

@@ -7,9 +7,7 @@ class FormValidator {
   }
 
   String validateMobile(String value) {
-    Pattern pattern = r'((\+*)((0[ -]+)*|(91 )*)(\d{12}+|\d{10}+))|\d{5}([- ]*)\d{6}';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
+    if (value.length != 10)
       return 'Enter a Valid Number';
     else
       return null;

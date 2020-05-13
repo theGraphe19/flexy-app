@@ -6,17 +6,18 @@ import 'package:dropdown_formfield/dropdown_formfield.dart';
 
 import '../models/user.dart';
 import '../utils/form_validator.dart';
+import './registration_form_page1.dart';
+import './registration_form_page3.dart';
 
 class RegistrationFormPart2 extends StatefulWidget {
-  final User currentUser;
-
-  RegistrationFormPart2(this.currentUser);
+  static const routeName = '/registration-form-part2';
 
   @override
   _RegistrationFormPart2State createState() => _RegistrationFormPart2State();
 }
 
 class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
+  User currentUser;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var _autoValidate = false;
   var _validator = FormValidator();
@@ -35,27 +36,53 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    if (widget.currentUser.firmNomenclature != null)
-      _firmNomenclature = widget.currentUser.firmNomenclature;
-
-    if (widget.currentUser.tradeCategory != null)
-      _tradeCategory = widget.currentUser.tradeCategory;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.all(15.0),
-        padding: const EdgeInsets.all(10.0),
-        child: Form(
-          key: _formKey,
-          autovalidate: _autoValidate,
-          child: formUI(),
+    currentUser = ModalRoute.of(context).settings.arguments as User;
+    print(currentUser.mobileNo);
+
+    if (currentUser.firmNomenclature != null)
+      _firmNomenclature = currentUser.firmNomenclature;
+
+    if (currentUser.tradeCategory != null)
+      _tradeCategory = currentUser.tradeCategory;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Flexy - Register'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(10.0),
+          child: Form(
+            key: _formKey,
+            autovalidate: _autoValidate,
+            child: formUI(),
+          ),
         ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(left: 25.0),
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.of(context).popAndPushNamed(
+                  RegistrationFormPag1.routeName,
+                  arguments: currentUser,
+                );
+              },
+              label: Text('Prev'),
+              icon: Icon(Icons.chevron_left),
+            ),
+          ),
+          FloatingActionButton.extended(
+            onPressed: _validateInput,
+            label: Text('Next'),
+            icon: Icon(Icons.chevron_right),
+          ),
+        ],
       ),
     );
   }
@@ -80,16 +107,15 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
           (visitingPressed) ? imagePreview() : Container(),
           SizedBox(height: 10.0),
           TextFormField(
-            initialValue: (widget.currentUser.firmName != null)
-                ? widget.currentUser.firmName
-                : '',
+            initialValue:
+                (currentUser.firmName != null) ? currentUser.firmName : '',
             decoration: const InputDecoration(
               labelText: 'Firm Name',
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.text,
             validator: (value) => _validator.validateName(value),
-            onSaved: (String val) => widget.currentUser.firmName = val,
+            onSaved: (String val) => currentUser.firmName = val,
           ),
           SizedBox(height: 10.0),
           DropDownFormField(
@@ -101,14 +127,13 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
             onSaved: (value) {
               setState(() {
                 _firmNomenclature = value;
-                widget.currentUser.firmNomenclature = value as String;
+                currentUser.firmNomenclature = value as String;
               });
             },
             onChanged: (value) {
               setState(() {
                 _firmNomenclature = value;
               });
-              _validateInput();
             },
             dataSource: [
               {
@@ -145,14 +170,13 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
             onSaved: (value) {
               setState(() {
                 _tradeCategory = value;
-                widget.currentUser.tradeCategory = value as String;
+                currentUser.tradeCategory = value as String;
               });
             },
             onChanged: (value) {
               setState(() {
                 _tradeCategory = value;
               });
-              _validateInput();
             },
             dataSource: [
               {
@@ -178,8 +202,8 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
           (_tradeCategory.endsWith("Boutique") ||
                   _tradeCategory.endsWith("Retailer"))
               ? TextFormField(
-                  initialValue: (widget.currentUser.noOfStores != null)
-                      ? widget.currentUser.noOfStores
+                  initialValue: (currentUser.noOfStores != null)
+                      ? currentUser.noOfStores
                       : '',
                   decoration: const InputDecoration(
                     labelText: 'Number of Stores',
@@ -187,7 +211,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
                   onEditingComplete: _validateInput,
                   keyboardType: TextInputType.number,
                   validator: (value) => _validator.validateNumber(value),
-                  onSaved: (String val) => widget.currentUser.noOfStores = val,
+                  onSaved: (String val) => currentUser.noOfStores = val,
                 )
               : Container(),
         ],
@@ -196,6 +220,11 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
   void _validateInput() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      if (currentUser.visitingCardLocation != null)
+        Navigator.of(context).popAndPushNamed(
+          RegistrationFormPage3.routeName,
+          arguments: currentUser,
+        );
     } else {
       setState(() {
         _autoValidate = true;
@@ -248,7 +277,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
     return FutureBuilder<File>(
       future: imageFile,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        widget.currentUser.visitingCardLocation = snapshot.data.path;
+        currentUser.visitingCardLocation = snapshot.data.path;
         return Container(
           width: double.infinity,
           height: 400.0,

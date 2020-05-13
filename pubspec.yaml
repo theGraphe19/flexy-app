@@ -33,6 +33,8 @@ dependencies:
   multi_page_form: ^1.0.4
   dropdown_formfield: ^0.1.2
   image_picker: ^0.4.10
+  http: ^0.12.1
+  fluttertoast: ^4.0.0
 
 flutter_icons:
   image_path: "assets/icon/icon.png"
