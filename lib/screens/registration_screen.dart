@@ -3,16 +3,12 @@ import 'package:multi_page_form/multi_page_form.dart';
 
 import '../models/user.dart';
 import '../widgets/registration_form_page1.dart';
+import '../widgets/registration_form_page2.dart';
 
-class RegistrationScreen extends StatefulWidget {
+class RegistrationScreen extends StatelessWidget {
   static const routeName = '/registration-screen';
 
-  @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
-}
-
-class _RegistrationScreenState extends State<RegistrationScreen> {
-  User currentUser = User();
+  final User currentUser = User();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +21,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         nextButtonStyle: Icon(Icons.keyboard_arrow_right),
         pageList: <Widget>[
           RegistrationFormPag1(currentUser),
-          page2(),
+          RegistrationFormPart2(currentUser),
           page3(),
         ],
         onFormSubmitted: () {

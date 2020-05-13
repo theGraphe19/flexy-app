@@ -29,4 +29,11 @@ class FormValidator {
     else
       return null;
   }
+
+  String validateNumber(String value) {
+    if (value == null)
+      return 'Please select a number';
+    else
+      return null;
+  }
 }
