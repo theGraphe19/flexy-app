@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './registration_form_page1.dart';
+import './login_screen.dart';
 
 class StartScreen extends StatelessWidget {
   @override
@@ -37,22 +38,26 @@ class StartScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20.0),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 30.0,
-                horizontal: 95.0,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(35.0),
-              ),
-              child: Text(
-                'Login',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () =>
+                  Navigator.of(context).pushNamed(LoginScreen.routeName),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 30.0,
+                  horizontal: 95.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(35.0),
+                ),
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

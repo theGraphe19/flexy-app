@@ -8,6 +8,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import '../models/user.dart';
 import './registration_form_page1.dart';
 import '../credentials.dart';
+import './products_screen.dart';
 
 enum VerificationStatus {
   notVerified,
@@ -38,7 +39,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     await progressDialog.show();
 
     http.Response response = await http.get(
-        '$baseUrl?authkey=${MSG91_API_KEY}&mobile=91${currentUser.mobileNo}&otp_length=6');
+        '$baseUrl?authkey=$MSG91_API_KEY&mobile=91${currentUser.mobileNo}&otp_length=6');
 
     Map<String, dynamic> result = json.decode(response.body);
     print(result.toString());
@@ -57,7 +58,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     if (_otpController.text.isNotEmpty && _otpController.text.length == 6) {
       await progressDialog.show();
       http.Response response = await http.post(
-          '$baseUrl/verify?authkey=${MSG91_API_KEY}&mobile=91${currentUser.mobileNo}&otp=${_otpController.text}');
+          '$baseUrl/verify?authkey=$MSG91_API_KEY&mobile=91${currentUser.mobileNo}&otp=${_otpController.text}');
 
       Map<String, dynamic> result = json.decode(response.body);
       print(result.toString());
@@ -84,7 +85,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           _confirmPasswordController.text.contains(_passwordController.text)) {
         currentUser.password = _confirmPasswordController.text;
 
-        //TODO - Redirect to todo screen
+        Navigator.of(context).popAndPushNamed(ProductsScreen.routeName);
       } else {
         print('Please enter same password in both the fields.');
       }

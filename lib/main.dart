@@ -5,6 +5,8 @@ import './screens/registration_form_page1.dart';
 import './screens/registration_form_page2.dart';
 import './screens/registration_form_page3.dart';
 import './screens/otp_verification_screen.dart';
+import './screens/login_screen.dart';
+import './screens/products_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
         RegistrationFormPart2.routeName: (ctx) => RegistrationFormPart2(),
         RegistrationFormPage3.routeName: (ctx) => RegistrationFormPage3(),
         OTPVerificationScreen.routeName: (ctx) => OTPVerificationScreen(),
+        LoginScreen.routeName: (ctx) => LoginScreen(),
+        ProductsScreen.routeName: (ctx) => ProductsScreen(),
       },
     );
   }
