@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './screens/start_screen.dart';
 import './screens/registration_form_page1.dart';
 import './screens/registration_form_page2.dart';
 import './screens/registration_form_page3.dart';
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RegistrationFormPag1(),
+      home: StartScreen(),
       routes: {
         RegistrationFormPag1.routeName: (ctx) => RegistrationFormPag1(),
         RegistrationFormPart2.routeName: (ctx) => RegistrationFormPart2(),

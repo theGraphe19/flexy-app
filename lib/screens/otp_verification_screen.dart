@@ -3,11 +3,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import '../models/user.dart';
 import './registration_form_page1.dart';
 import '../credentials.dart';
+
+enum VerificationStatus {
+  notVerified,
+  waiting,
+  verified,
+}
 
 class OTPVerificationScreen extends StatefulWidget {
   static const routeName = '/otp-verification-screen';
@@ -18,90 +24,196 @@ class OTPVerificationScreen extends StatefulWidget {
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   User currentUser;
+  var _otpController = TextEditingController();
+  String baseUrl = 'https://api.msg91.com/api/v5/otp';
+
+  VerificationStatus status = VerificationStatus.notVerified;
+
+  ProgressDialog progressDialog;
 
   Future<void> _sendOTP() async {
-    String baseUrl = 'https://api.msg91.com/api/v5/otp';
+    await progressDialog.show();
+
     http.Response response = await http.get(
-        '$baseUrl?authkey=${Credentials().MSG91_API_KEY}&mobile=91${currentUser.mobileNo}&otp_length=6');
+        '$baseUrl?authkey=${MSG91_API_KEY}&mobile=91${currentUser.mobileNo}&otp_length=6');
 
     Map<String, dynamic> result = json.decode(response.body);
     print(result.toString());
     if (result['type'].contains('success')) {
       print('OTP received');
-      Fluttertoast.showToast(
-        msg: "OTP Sent",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.blue,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      status = VerificationStatus.waiting;
+      await progressDialog.hide();
+      setState(() {});
+    } else {
+      await progressDialog.hide();
+      print('error');
     }
+  }
+
+  Future<void> _verifyOTP() async {
+    if (_otpController.text.isNotEmpty && _otpController.text.length == 6) {
+      await progressDialog.show();
+      http.Response response = await http.post(
+          '$baseUrl/verify?authkey=${MSG91_API_KEY}&mobile=91${currentUser.mobileNo}&otp=${_otpController.text}');
+
+      Map<String, dynamic> result = json.decode(response.body);
+      print(result.toString());
+      if (result['type'].contains('success')) {
+        print('OTP verified');
+        status = VerificationStatus.verified;
+        await progressDialog.hide();
+        setState(() {});
+      } else {
+        await progressDialog.hide();
+        print('error');
+      }
+    } else {
+      print('Enter a valid OTP');
+    }
+  }
+
+  @override
+  void dispose() {
+    _otpController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     currentUser = ModalRoute.of(context).settings.arguments as User;
+    progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+      showLogs: true,
+    );
+    progressDialog.style(
+      message: 'Please wait!',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Verify your Number'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RichText(
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                    text: 'Send OTP to ',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 20.0,
+      body: (status == VerificationStatus.notVerified)
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Send OTP to ',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        TextSpan(
+                          text: currentUser.mobileNo,
+                          style: TextStyle(
+                            color: Colors.blueGrey,
+                            fontSize: 25.0,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  TextSpan(
-                    text: currentUser.mobileNo,
-                    style: TextStyle(
-                      color: Colors.blueGrey,
-                      fontSize: 25.0,
-                    ),
-                  ),
+                  SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text(
+                          'Change',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () => Navigator.of(context).popAndPushNamed(
+                          RegistrationFormPag1.routeName,
+                          arguments: currentUser,
+                        ),
+                      ),
+                      FlatButton(
+                        child: Text(
+                          'OK',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: _sendOTP,
+                      ),
+                    ],
+                  )
                 ],
               ),
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                FlatButton(
-                  child: Text(
-                    'Change',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onPressed: () => Navigator.of(context).popAndPushNamed(
-                    RegistrationFormPag1.routeName,
-                    arguments: currentUser,
-                  ),
-                ),
-                FlatButton(
-                  child: Text(
-                    'OK',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onPressed: _sendOTP,
-                ),
-              ],
             )
-          ],
-        ),
-      ),
+          : (status == VerificationStatus.waiting)
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 20.0),
+                      RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'OTP sent to ',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            TextSpan(
+                              text: currentUser.mobileNo,
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontSize: 25.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: TextField(
+                          controller: _otpController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: 'Enter 6-digit OTP',
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 15.0),
+                          child: RaisedButton(
+                            onPressed: _verifyOTP,
+                            child: Text(
+                              'VERIFY',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            color: Colors.blue,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              : Container(
+                  child: Text('Verified'),
+                ),
     );
   }
 }
