@@ -18,6 +18,7 @@ class User {
   String pincode;
   String agentName;
   String purchasePerson;
+  String password;
 
   User({
     this.name,
@@ -39,5 +40,6 @@ class User {
     this.pincode,
     this.agentName,
     this.purchasePerson,
+    this.password,
   });
 }

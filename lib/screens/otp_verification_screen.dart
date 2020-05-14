@@ -25,6 +25,9 @@ class OTPVerificationScreen extends StatefulWidget {
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   User currentUser;
   var _otpController = TextEditingController();
+  var _passwordController = TextEditingController();
+  var _confirmPasswordController = TextEditingController();
+
   String baseUrl = 'https://api.msg91.com/api/v5/otp';
 
   VerificationStatus status = VerificationStatus.notVerified;
@@ -72,9 +75,27 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     }
   }
 
+  void _confirmUser() {
+    if (_passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      print('Please fill all the fields.');
+    } else {
+      if (_passwordController.text.contains(_confirmPasswordController.text) &&
+          _confirmPasswordController.text.contains(_passwordController.text)) {
+        currentUser.password = _confirmPasswordController.text;
+
+        //TODO - Redirect to todo screen
+      } else {
+        print('Please enter same password in both the fields.');
+      }
+    }
+  }
+
   @override
   void dispose() {
     _otpController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -100,120 +121,164 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         title: Text('Verify your Number'),
       ),
       body: (status == VerificationStatus.notVerified)
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Send OTP to ',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        TextSpan(
-                          text: currentUser.mobileNo,
-                          style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontSize: 25.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      FlatButton(
-                        child: Text(
-                          'Change',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: () => Navigator.of(context).popAndPushNamed(
-                          RegistrationFormPag1.routeName,
-                          arguments: currentUser,
-                        ),
-                      ),
-                      FlatButton(
-                        child: Text(
-                          'OK',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: _sendOTP,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            )
+          ? sendOTP()
           : (status == VerificationStatus.waiting)
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 20.0),
-                      RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'OTP sent to ',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 20.0,
-                              ),
-                            ),
-                            TextSpan(
-                              text: currentUser.mobileNo,
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontSize: 25.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: TextField(
-                          controller: _otpController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            hintText: 'Enter 6-digit OTP',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 15.0),
-                          child: RaisedButton(
-                            onPressed: _verifyOTP,
-                            child: Text(
-                              'VERIFY',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            color: Colors.blue,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              : Container(
-                  child: Text('Verified'),
-                ),
+              ? verifyOTP()
+              : setPassword(),
     );
   }
+
+  Widget sendOTP() => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                children: <TextSpan>[
+                  TextSpan(
+                    text: 'Send OTP to ',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  TextSpan(
+                    text: currentUser.mobileNo,
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontSize: 25.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                FlatButton(
+                  child: Text(
+                    'Change',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(context).popAndPushNamed(
+                    RegistrationFormPag1.routeName,
+                    arguments: currentUser,
+                  ),
+                ),
+                FlatButton(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: _sendOTP,
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+
+  Widget verifyOTP() => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 20.0),
+            RichText(
+              text: TextSpan(
+                children: <TextSpan>[
+                  TextSpan(
+                    text: 'OTP sent to ',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  TextSpan(
+                    text: currentUser.mobileNo,
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontSize: 25.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: TextField(
+                controller: _otpController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter 6-digit OTP',
+                ),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                margin: const EdgeInsets.only(right: 15.0),
+                child: RaisedButton(
+                  onPressed: _verifyOTP,
+                  child: Text(
+                    'VERIFY',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget setPassword() => Column(
+        children: <Widget>[
+          SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: TextField(
+              controller: _passwordController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'Enter Password',
+              ),
+            ),
+          ),
+          SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: TextField(
+              controller: _confirmPasswordController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'Confirm Password',
+              ),
+            ),
+          ),
+          SizedBox(height: 10.0),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsets.only(right: 15.0),
+              child: RaisedButton(
+                onPressed: _confirmUser,
+                child: Text(
+                  'Proceed',
+                  style: TextStyle(color: Colors.white),
+                ),
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ],
+      );
 }
