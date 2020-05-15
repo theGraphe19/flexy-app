@@ -32,13 +32,24 @@ class HTTPHandler {
 
   Future<bool> sendOTP(String mobileNo) async {
     FormData formData = FormData.fromMap({
-      'phno': int.parse(mobileNo),
+      'mobileNo': int.parse(mobileNo),
     });
 
     Response response = await _dio.post(
       sendOTPUrl,
       data: formData,
     );
+
+    if (json.decode(response.data)['type'].contains('success')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> verifyOTP(String mobileNo, String otp) async {
+    Response response =
+        await _dio.post('$verifyOTPUrl&mobile=$mobileNo&otp=$otp');
 
     if (json.decode(response.data)['type'].contains('success')) {
       return true;
