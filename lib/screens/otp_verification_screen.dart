@@ -1,13 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:progress_dialog/progress_dialog.dart';
 
 import '../models/user.dart';
 import './registration_form_page1.dart';
-import '../credentials.dart';
 import './products_screen.dart';
 import '../HTTP_handler.dart';
 
@@ -39,29 +34,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   VerificationStatus status = VerificationStatus.notVerified;
 
   ProgressDialog progressDialog;
-
-  // Future<void> _verifyOTP() async {
-  //   if (_otpController.text.isNotEmpty &&
-  //       (_otpController.text.length == 6 || _otpController.text.length == 4)) {
-  //     await progressDialog.show();
-  //     http.Response response = await http.post(
-  //         '$baseUrl/verify?authkey=$MSG91_API_KEY&mobile=91${currentUser.mobileNo}&otp=${_otpController.text}');
-
-  //     Map<String, dynamic> result = json.decode(response.body);
-  //     print(result.toString());
-  //     if (result['type'].contains('success')) {
-  //       print('OTP verified');
-  //       status = VerificationStatus.verified;
-  //       await progressDialog.hide();
-  //       setState(() {});
-  //     } else {
-  //       await progressDialog.hide();
-  //       print('error');
-  //     }
-  //   } else {
-  //     print('Enter a valid OTP');
-  //   }
-  // }
 
   void _confirmUser() {
     if (_passwordController.text.isEmpty ||
@@ -166,8 +138,12 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {
-                    _handler.sendOTP(currentUser.mobileNo).then((bool otpSent) {
+                  onPressed: () async {
+                    await progressDialog.show();
+                    _handler
+                        .sendOTP(currentUser.mobileNo)
+                        .then((bool otpSent) async {
+                      await progressDialog.hide();
                       if (otpSent) {
                         status = VerificationStatus.waiting;
                         setState(() {});
@@ -229,7 +205,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
               child: Container(
                 margin: const EdgeInsets.only(right: 15.0),
                 child: RaisedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_otpController.text.length != 6) {
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text('Enter 6-digit OTP'),
@@ -238,9 +214,11 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       ));
                       return;
                     }
+                    await progressDialog.show();
                     _handler
                         .verifyOTP(currentUser.mobileNo, _otpController.text)
-                        .then((bool otpVerified) {
+                        .then((bool otpVerified) async {
+                      await progressDialog.hide();
                       if (otpVerified) {
                         status = VerificationStatus.verified;
                         setState(() {});

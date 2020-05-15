@@ -47,6 +47,31 @@ class User {
     this.token,
   });
 
+  Map<String, dynamic> userToMap() {
+    return <String, dynamic>{
+      'id': this.id,
+      'name': this.name,
+      'mobileNo': this.mobileNo,
+      'email': this.email,
+      'designation': this.designation,
+      'photoIdType': this.photoIdType,
+      'photoLocation': this.photoLocation,
+      'visitingCardLocation': this.visitingCardLocation,
+      'firmName': this.firmName,
+      'firmNomenclature': this.firmNomenclature,
+      'tradeCategory': this.tradeCategory,
+      'noOfStores': this.noOfStores,
+      'landlineNo': this.landlineNo,
+      'gstNo': this.gstNo,
+      'companyAddress': this.companyAddress,
+      'city': this.city,
+      'state': this.state,
+      'pincode': this.pincode,
+      'agentName': this.agentName,
+      'purchasePerson': this.purchasePerson,
+    };
+  }
+
   void mapToUser(Map<dynamic, dynamic> map) {
     this.id = map['id'];
     this.name = map['name'];

@@ -2,14 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../widgets/product_item.dart';
 import '../dummy_data.dart';
+import '../models/user.dart';
+import '../HTTP_handler.dart';
 
 class ProductsScreen extends StatelessWidget {
   static const routeName = '/products-screen';
 
+  User currentUser;
+
   var dummyData = DummyData();
+
+  getList() async {
+    HTTPHandler().getProductsList(currentUser.token);
+  }
 
   @override
   Widget build(BuildContext context) {
+    currentUser = ModalRoute.of(context).settings.arguments as User;
+    print(currentUser.token);
+    getList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Products'),

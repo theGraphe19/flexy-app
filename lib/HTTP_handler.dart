@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 
 import './models/user.dart';
 import './credentials.dart';
+import './models/product.dart';
 
 class HTTPHandler {
   User currentUser = User();
@@ -56,5 +57,11 @@ class HTTPHandler {
     } else {
       return false;
     }
+  }
+
+  Future<void> getProductsList(String token) async {
+    Response response = await _dio.get(getProductsListUrl + token);
+
+    print(response.data);
   }
 }

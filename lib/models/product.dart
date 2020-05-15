@@ -1,3 +1,5 @@
+import './product_image.dart';
+
 class Product {
   int id;
   String name;
@@ -5,6 +7,8 @@ class Product {
   String description;
   String category;
   String timeStamp;
+  String productSizes;
+  List<ProductImage> productImages;
 
   Product({
     this.id,
@@ -13,5 +17,7 @@ class Product {
     this.description,
     this.category,
     this.timeStamp,
+    this.productSizes,
+    this.productImages,
   });
 }
