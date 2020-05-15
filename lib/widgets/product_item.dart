@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 import '../models/product_image.dart';
+import '../screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
   Product product;
@@ -15,6 +16,10 @@ class ProductItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
         child: GestureDetector(
+          onTap: () => Navigator.of(context).pushNamed(
+            ProductDetailsScreen.routeName,
+            arguments: <dynamic>[product, productImage],
+          ),
           child: Image.asset(
             productImage.productImage,
             fit: BoxFit.cover,
