@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import './models/user.dart';
@@ -5,6 +7,7 @@ import './credentials.dart';
 
 class HTTPHandler {
   User currentUser = User();
+  Dio _dio = Dio();
 
   Future<User> loginUser(String email, String password) async {
     User user = User();
@@ -13,7 +16,7 @@ class HTTPHandler {
       'password': password,
     });
 
-    Response response = await Dio().post(
+    Response response = await _dio.post(
       loginUrl,
       data: formData,
     );
@@ -25,5 +28,22 @@ class HTTPHandler {
     }
 
     return user;
+  }
+
+  Future<bool> sendOTP(String mobileNo) async {
+    FormData formData = FormData.fromMap({
+      'phno': int.parse(mobileNo),
+    });
+
+    Response response = await _dio.post(
+      sendOTPUrl,
+      data: formData,
+    );
+
+    if (json.decode(response.data)['type'].contains('success')) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

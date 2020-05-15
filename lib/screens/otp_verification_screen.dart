@@ -9,6 +9,7 @@ import '../models/user.dart';
 import './registration_form_page1.dart';
 import '../credentials.dart';
 import './products_screen.dart';
+import '../HTTP_handler.dart';
 
 enum VerificationStatus {
   notVerified,
@@ -25,6 +26,10 @@ class OTPVerificationScreen extends StatefulWidget {
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   User currentUser;
+
+  HTTPHandler _handler = HTTPHandler();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   var _otpController = TextEditingController();
   var _passwordController = TextEditingController();
   var _confirmPasswordController = TextEditingController();
@@ -34,25 +39,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   VerificationStatus status = VerificationStatus.notVerified;
 
   ProgressDialog progressDialog;
-
-  Future<void> _sendOTP() async {
-    await progressDialog.show();
-
-    http.Response response = await http.get(
-        '$baseUrl?authkey=$MSG91_API_KEY&mobile=91${currentUser.mobileNo}&otp_length=6');
-
-    Map<String, dynamic> result = json.decode(response.body);
-    print(result.toString());
-    if (result['type'].contains('success')) {
-      print('OTP received');
-      status = VerificationStatus.waiting;
-      await progressDialog.hide();
-      setState(() {});
-    } else {
-      await progressDialog.hide();
-      print('error');
-    }
-  }
 
   Future<void> _verifyOTP() async {
     if (_otpController.text.isNotEmpty && _otpController.text.length == 6) {
@@ -118,6 +104,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       insetAnimCurve: Curves.easeInOut,
     );
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Verify your Number'),
       ),
@@ -178,7 +165,22 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: _sendOTP,
+                  onPressed: () {
+                    _handler
+                        .sendOTP(currentUser.mobileNo)
+                        .then((bool otpSent) {
+                      if (otpSent) {
+                        status = VerificationStatus.waiting;
+                        setState(() {});
+                      } else {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('Unable to send OTP!'),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 5),
+                        ));
+                      }
+                    });
+                  },
                 ),
               ],
             )
