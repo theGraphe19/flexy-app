@@ -1,4 +1,5 @@
 class User {
+  int id;
   String name;
   String mobileNo;
   String email;
@@ -19,8 +20,10 @@ class User {
   String agentName;
   String purchasePerson;
   String password;
+  String token;
 
   User({
+    this.id,
     this.name,
     this.mobileNo,
     this.email,
@@ -41,5 +44,30 @@ class User {
     this.agentName,
     this.purchasePerson,
     this.password,
+    this.token,
   });
+
+  void mapToUser(Map<dynamic, dynamic> map) {
+    this.id = map['id'];
+    this.name = map['name'];
+    this.mobileNo = map['mobileNo'];
+    this.email = map['email'];
+    this.token = map['api_token'];
+    this.designation = map['designation'];
+    this.photoIdType = map['photoIdType'];
+    this.photoLocation = map['photoLocation'];
+    this.visitingCardLocation = map['visitingCardLocation'];
+    this.firmName = map['firmName'];
+    this.firmNomenclature = map['firmNomenclature'];
+    this.tradeCategory = map['tradeCategory'];
+    this.noOfStores = map['noOfStores'];
+    this.landlineNo = map['landlineNo'];
+    this.gstNo = map['gstNo'];
+    this.companyAddress = map['companyAddress'];
+    this.city = map['city'];
+    this.state = map['state'];
+    this.pincode = map['pincode'];
+    this.agentName = map['agentName'];
+    this.purchasePerson = map['purchasePerson'];
+  }
 }

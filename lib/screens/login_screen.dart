@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import './products_screen.dart';
-
-/*
-  TODO - Add authentication(Awaiting API)
-*/
+import '../HTTP_handler.dart';
+import '../models/user.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
@@ -14,14 +13,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  HTTPHandler _handler = HTTPHandler();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
 
-  void _loginUser() {
-    //TODO - Add login logic
-
-    Navigator.of(context).popAndPushNamed(ProductsScreen.routeName);
-  }
+  ProgressDialog progressDialog;
 
   @override
   void dispose() {
@@ -32,7 +30,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+      showLogs: true,
+    );
+    progressDialog.style(
+      message: 'Please wait!',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+    );
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Enter Credentials'),
       ),
@@ -71,7 +84,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   'LOGIN',
                   style: TextStyle(color: Colors.white),
                 ),
-                onPressed: _loginUser,
+                onPressed: () async {
+                  if (_emailController.text.isEmpty ||
+                      _passwordController.text.isEmpty) {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      duration: Duration(seconds: 5),
+                      backgroundColor: Colors.red,
+                      content: Text("Empty Credentials"),
+                    ));
+                    return;
+                  }
+                  await progressDialog.show();
+                  _handler
+                      .loginUser(
+                    _emailController.text,
+                    _passwordController.text,
+                  )
+                      .then((User user) async {
+                    if (user != null) {
+                      print(user.name);
+                      await progressDialog.hide();
+                      Navigator.of(context).pushNamed(ProductsScreen.routeName);
+                    }
+                  });
+                },
               ),
             ),
           ),
