@@ -264,27 +264,16 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
       });
 
   Widget imagePreview() {
-    return (currentUser.photoLocation != null)
-        ? Container(
-            width: double.infinity,
-            height: 400.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(5.0),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: FileImage(File(currentUser.photoLocation)),
-              ),
-            ),
-          )
-        : FutureBuilder<File>(
+    return (imageFile != null)
+        ? FutureBuilder<File>(
             future: imageFile,
             builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-              currentUser.photoLocation = snapshot.data.path;
+              if (snapshot.data != null)
+                currentUser.photoLocation = snapshot.data.path;
               return Container(
                 width: double.infinity,
                 height: 400.0,
-                decoration: (imageFile != null)
+                decoration: (imageFile != null && snapshot.data != null)
                     ? BoxDecoration(
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(5.0),
@@ -296,6 +285,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
                     : BoxDecoration(),
               );
             },
-          );
+          )
+        : Container();
   }
 }

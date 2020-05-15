@@ -277,11 +277,12 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
     return FutureBuilder<File>(
       future: imageFile,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        currentUser.visitingCardLocation = snapshot.data.path;
+        if (snapshot.data != null)
+          currentUser.visitingCardLocation = snapshot.data.path;
         return Container(
           width: double.infinity,
-          height: 400.0,
-          decoration: (imageFile != null)
+          height: (imageFile != null && snapshot.data != null) ? 400.0 : 0.0,
+          decoration: (imageFile != null && snapshot.data != null)
               ? BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5.0),
