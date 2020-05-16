@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
-import './models/user.dart';
 import './credentials.dart';
+import './models/user.dart';
 import './models/product.dart';
+import './models/product_details.dart';
 
 class HTTPHandler {
   User currentUser = User();
@@ -65,11 +66,20 @@ class HTTPHandler {
     Response response = await _dio.get(getProductsListUrl + token);
 
     print(response.data);
-    for (var i = 0 ; i < response.data['products'].length ; i++) {
+    for (var i = 0; i < response.data['products'].length; i++) {
       Product product = Product();
-      product.mapToUser(response.data['products'][i]);
+      product.mapToProduct(response.data['products'][i]);
       productList.add(product);
     }
     return productList;
+  }
+
+  Future<ProductDetails> getProductDetails(int productId) async {
+    ProductDetails details = ProductDetails();
+    Response response = await _dio.get(getProductDetailsUrl + '$productId');
+    
+    details.mapToProductDetails(response.data);
+    
+    return details;
   }
 }
