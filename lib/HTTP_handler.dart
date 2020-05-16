@@ -9,6 +9,7 @@ import './models/product.dart';
 class HTTPHandler {
   User currentUser = User();
   Dio _dio = Dio();
+  List<Product> productList = [];
 
   Future<User> loginUser(String email, String password) async {
     User user = User();
@@ -59,9 +60,16 @@ class HTTPHandler {
     }
   }
 
-  Future<void> getProductsList(String token) async {
+  Future<List<Product>> getProductsList(String token) async {
+    productList.clear();
     Response response = await _dio.get(getProductsListUrl + token);
 
     print(response.data);
+    for (var i = 0 ; i < response.data['products'].length ; i++) {
+      Product product = Product();
+      product.mapToUser(response.data['products'][i]);
+      productList.add(product);
+    }
+    return productList;
   }
 }

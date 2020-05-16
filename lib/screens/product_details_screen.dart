@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
-import '../models/product_image.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   static const routeName = '/product-details-screen';
 
   Product product;
-  ProductImage productImage;
 
   @override
   Widget build(BuildContext context) {
-    var arguments = ModalRoute.of(context).settings.arguments as List<dynamic>;
-    product = arguments[0];
-    productImage = arguments[1];
+    product = ModalRoute.of(context).settings.arguments as Product;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -34,10 +30,14 @@ class ProductDetailsScreen extends StatelessWidget {
             Container(
               width: double.infinity,
               height: 400.0,
-              child: Image.asset(
-                productImage.productImage,
-                fit: BoxFit.cover,
+              color: Colors.white,
+              child: Center(
+                child: Text(product.productImages[0]),
               ),
+              // child: Image.asset(
+              //   productImage.productImage,
+              //   fit: BoxFit.cover,
+              // ),
             ),
             SizedBox(height: 10.0),
             //NAME

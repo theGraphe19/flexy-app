@@ -1,5 +1,3 @@
-import './product_image.dart';
-
 class Product {
   int id;
   String name;
@@ -8,7 +6,8 @@ class Product {
   String category;
   String timeStamp;
   String productSizes;
-  List<ProductImage> productImages;
+  List<dynamic> productImages;
+  // CHANGE TYPE TO PRODUCT_IMAGE ONCE IMAGE IS UPLOADED
 
   Product({
     this.id,
@@ -20,4 +19,15 @@ class Product {
     this.productSizes,
     this.productImages,
   });
+
+  void mapToUser(Map<dynamic, dynamic> map) {
+    this.id = map['id'];
+    this.name = map['name'];
+    this.productType = map['prod_type'];
+    this.description = map['description'];
+    this.category = map['category'];
+    this.timeStamp = map['created_at'];
+    this.productSizes = map['product_sizes'];
+    this.productImages = map['product_images'];
+  }
 }

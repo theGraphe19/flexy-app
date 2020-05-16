@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
-import '../models/product_image.dart';
 import '../screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
   Product product;
-  ProductImage productImage;
 
-  ProductItem(this.product, this.productImage);
+  ProductItem(this.product);
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +16,13 @@ class ProductItem extends StatelessWidget {
         child: GestureDetector(
           onTap: () => Navigator.of(context).pushNamed(
             ProductDetailsScreen.routeName,
-            arguments: <dynamic>[product, productImage],
+            arguments: product,
           ),
-          child: Image.asset(
-            productImage.productImage,
-            fit: BoxFit.cover,
-          ),
+          child: Center(child: Text(product.productImages[0])),
+          // child: Image.asset(
+          //   productImage.productImage,
+          //   fit: BoxFit.cover,
+          // ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,
