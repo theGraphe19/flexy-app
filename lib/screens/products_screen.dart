@@ -35,16 +35,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
         title: Text('Products'),
       ),
       body: GridView.builder(
-          padding: const EdgeInsets.all(10.0),
-          itemCount: productList.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 3 / 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemBuilder: (BuildContext context, int index) =>
-              ProductItem(productList[index])),
+        padding: const EdgeInsets.all(10.0),
+        itemCount: productList.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 3 / 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemBuilder: (BuildContext context, int index) =>
+            ProductItem(productList[index], token),
+      ),
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
+import '../models/product_details.dart';
+import '../HTTP_handler.dart';
+
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
 
@@ -10,10 +13,27 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Product product;
+  String token;
+
+  ProductDetails productDetails;
+
+  var currentActiveIndex = 0;
+
+  getProductDetails() {
+    HTTPHandler().getProductDetails(product.id, token).then((value) {
+      productDetails = value;
+      print(productDetails.product.name);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    product = ModalRoute.of(context).settings.arguments as Product;
+    List<dynamic> arguments =
+        ModalRoute.of(context).settings.arguments as List<dynamic>;
+    product = arguments[0] as Product;
+    token = arguments[1] as String;
+    print('Token : $token');
+    getProductDetails();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -36,7 +56,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               height: 400.0,
               color: Colors.white,
               child: Center(
-                child: Text(product.productImages[0]),
+                child: (product.productImages.length > 0)
+                    ? imagePageView()
+                    : Text(product.productImages[0]),
               ),
               // child: Image.asset(
               //   productImage.productImage,
@@ -88,5 +110,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
           ],
         ),
+      );
+
+  Widget imagePageView() => PageView.builder(
+        itemCount: product.productImages.length,
+        onPageChanged: (int currentIndex) {
+          setState(() {
+            currentActiveIndex = currentIndex;
+          });
+        },
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            width: double.infinity,
+            height: 400.0,
+            color: Colors.white,
+            child: Center(
+              child: Text(product.productImages[currentActiveIndex]),
+            ),
+          );
+        },
       );
 }

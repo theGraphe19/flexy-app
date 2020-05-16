@@ -74,12 +74,13 @@ class HTTPHandler {
     return productList;
   }
 
-  Future<ProductDetails> getProductDetails(int productId) async {
+  Future<ProductDetails> getProductDetails(int productId, String token) async {
     ProductDetails details = ProductDetails();
-    Response response = await _dio.get(getProductDetailsUrl + '$productId');
-    
+    Response response =
+        await _dio.get(getProductDetailsUrl + '$productId?api_token=$token');
+
     details.mapToProductDetails(response.data);
-    
+
     return details;
   }
 }

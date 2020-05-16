@@ -2,27 +2,23 @@ import './product.dart';
 import './product_size.dart';
 
 class ProductDetails {
-  List<Product> productList;
+  Product product;
   List<ProductSize> productSizeList;
   List<dynamic> productImages;
   //  CHNGE STRING TO PRODUCT IMAGES ONCE IMAGE IS UPLOADED ON SERVER
 
   ProductDetails({
-    this.productList,
+    this.product,
     this.productSizeList,
     this.productImages,
   }) {
-    this.productList = [];
+    this.product = Product();
     this.productSizeList = [];
     this.productImages = [];
   }
 
   void mapToProductDetails(Map<dynamic, dynamic> map) {
-    for (var i = 0; i < map['product'].length; i++) {
-      Product product = Product();
-      product.mapToDetails(map['product'][i]);
-      productList.add(product);
-    }
+    product.mapToDetails(map['product']);
     for (var i = 0; i < map['product_sizes'].length; i++) {
       ProductSize productSize = ProductSize();
       productSize.mapToProductSize(map['product_sizes'][i]);

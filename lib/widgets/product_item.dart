@@ -5,8 +5,12 @@ import '../screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
   Product product;
+  String token;
 
-  ProductItem(this.product);
+  ProductItem(
+    this.product,
+    this.token,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +20,11 @@ class ProductItem extends StatelessWidget {
         child: GestureDetector(
           onTap: () => Navigator.of(context).pushNamed(
             ProductDetailsScreen.routeName,
-            arguments: product,
+            arguments: <dynamic>[
+              product,
+              token,
+            ],
+            //arguments: <dynamic>[product.id, token],
           ),
           child: Center(child: Text(product.productImages[0])),
           // child: Image.asset(
