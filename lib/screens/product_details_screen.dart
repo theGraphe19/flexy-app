@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
+import './orders_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
@@ -41,50 +42,56 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
       ),
       body: Container(
-        margin: const EdgeInsets.all(10.0),
-        padding: const EdgeInsets.all(10.0),
+        margin: const EdgeInsets.all(15.0),
         decoration: BoxDecoration(
           color: Colors.grey[350],
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(20.0),
         ),
-        child: Column(
-          children: <Widget>[
-            //IMAGE
-            Container(
-              width: double.infinity,
-              height: 400.0,
-              color: Colors.white,
-              child: Center(
-                child: (product.productImages.length > 0)
-                    ? imagePageView()
-                    : Text(product.productImages[0]),
-              ),
-              // child: Image.asset(
-              //   productImage.productImage,
-              //   fit: BoxFit.cover,
-              // ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: GridTile(
+            child: Column(
+              children: <Widget>[
+                //IMAGE
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  width: double.infinity,
+                  height: 400.0,
+                  color: Colors.grey[350],
+                  child: Center(
+                    child: (product.productImages.length > 0)
+                        ? imagePageView()
+                        : Text(product.productImages[0]),
+                  ),
+                  // child: Image.asset(
+                  //   productImage.productImage,
+                  //   fit: BoxFit.cover,
+                  // ),
+                ),
+                SizedBox(height: 10.0),
+                //NAME
+                Text(
+                  product.name.toUpperCase(),
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                //DESCRIPTION
+                Text(product.description),
+                SizedBox(height: 10.0),
+                //CATEGORY
+                titleValue('CATEGORY', product.category),
+                SizedBox(height: 10.0),
+                //PRODUCT TYPE
+                titleValue('TYPE', product.productType),
+              ],
             ),
-            SizedBox(height: 10.0),
-            //NAME
-            Text(
-              product.name.toUpperCase(),
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            //DESCRIPTION
-            Text(product.description),
-            SizedBox(height: 10.0),
-            //CATEGORY
-            titleValue('CATEGORY', product.category),
-            SizedBox(height: 10.0),
-            //PRODUCT TYPE
-            titleValue('TYPE', product.productType),
-          ],
+            footer: orderButton(),
+          ),
         ),
       ),
     );
@@ -94,7 +101,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         text: TextSpan(
           children: <TextSpan>[
             TextSpan(
-              text: '${title} : ',
+              text: '$title : ',
               style: TextStyle(
                 fontSize: 15.0,
                 color: Colors.black87,
@@ -129,5 +136,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
           );
         },
+      );
+
+  Widget orderButton() => GridTileBar(
+        backgroundColor: Colors.blue,
+        title: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              OrdersScreen.routeName,
+              arguments: productDetails,
+            );
+          },
+          child: Text(
+            'ORDER NOW',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
+          ),
+        ),
       );
 }

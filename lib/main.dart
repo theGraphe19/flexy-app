@@ -8,6 +8,7 @@ import './screens/otp_verification_screen.dart';
 import './screens/login_screen.dart';
 import './screens/products_screen.dart';
 import './screens/product_details_screen.dart';
+import './screens/orders_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (ctx) => LoginScreen(),
         ProductsScreen.routeName: (ctx) => ProductsScreen(),
         ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
+        OrdersScreen.routeName: (ctx) => OrdersScreen(),
       },
     );
   }
