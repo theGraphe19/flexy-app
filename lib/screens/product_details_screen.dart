@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
-import '../models/product_details.dart';
-import '../HTTP_handler.dart';
-
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
 
@@ -13,19 +10,10 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Product product;
-  ProductDetails productDetails;
-
-  getProductDetails() {
-    HTTPHandler().getProductDetails(product.id).then((value) {
-      productDetails = value;
-      print(productDetails.productSizeList.toString());
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     product = ModalRoute.of(context).settings.arguments as Product;
-    getProductDetails();
     return Scaffold(
       appBar: AppBar(
         title: Text(

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/product_item.dart';
-import '../dummy_data.dart';
-import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
 
@@ -14,27 +12,24 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  User currentUser;
+  String token = '';
+  var prodListCounterCalled = false;
 
   List<Product> productList = [];
 
   getList() async {
-    HTTPHandler().getProductsList(currentUser.token).then((value) {
+    prodListCounterCalled = true;
+    HTTPHandler().getProductsList(token).then((value) {
       productList = value;
       setState(() {});
     });
   }
 
   @override
-  void initState() {
-    getList();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    currentUser = ModalRoute.of(context).settings.arguments as User;
-    print(currentUser.token);
+    token = ModalRoute.of(context).settings.arguments;
+    print(token);
+    if (!prodListCounterCalled) getList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Products'),
