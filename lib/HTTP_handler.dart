@@ -83,4 +83,25 @@ class HTTPHandler {
 
     return details;
   }
+
+  Future<Map> placeOrder(
+    int productId,
+    String token,
+    List<Map<String, dynamic>> ordersList,
+  ) async {
+    Map<String, dynamic> orderData = {};
+    for (var i = 0; i < ordersList.length; i++) {
+      orderData['orders[$i][size]'] = ordersList[i]['size'];
+      orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
+    }
+    print(orderData);
+    FormData formData = FormData.fromMap(orderData);
+
+    Response response = await _dio.post(
+      '$placeorderUrl/$productId?api_token=$token',
+      data: formData,
+    );
+
+    return response.data;
+  }
 }

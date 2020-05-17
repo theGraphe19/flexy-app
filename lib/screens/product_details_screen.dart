@@ -144,7 +144,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           onTap: () {
             Navigator.of(context).pushNamed(
               OrdersScreen.routeName,
-              arguments: productDetails,
+              arguments: <dynamic>[
+                productDetails,
+                token,
+              ],
             );
           },
           child: Text(

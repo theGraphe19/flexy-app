@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import '../models/product_details.dart';
 import '../models/product_size.dart';
 import '../utils/form_validator.dart';
 import '../widgets/order_item.dart';
+import '../HTTP_handler.dart';
+import './products_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   static const routeName = '/orders-screen';
@@ -20,7 +25,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   List<Map<String, dynamic>> _orders = [];
 
+  String token = '';
   String _size = '';
+
+  ProgressDialog progressDialog;
 
   List<Map<String, dynamic>> _getDataSource() {
     List<Map<String, dynamic>> _dataSource = [];
@@ -33,18 +41,84 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return _dataSource;
   }
 
+  Timer _timer;
+  int _start = 5;
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(
+        () {
+          if (_start < 1) {
+            timer.cancel();
+            Navigator.of(context).popAndPushNamed(
+              ProductsScreen.routeName,
+              arguments: token,
+            );
+          } else {
+            _start = _start - 1;
+          }
+        },
+      ),
+    );
+  }
+
+  void _confirmOrder() async {
+    await progressDialog.show();
+    HTTPHandler()
+        .placeOrder(
+      productDetails.product.id,
+      token,
+      _orders,
+    )
+        .then((response) async {
+      await progressDialog.show();
+      if (response['status'].contains('success')) {
+        startTimer();
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Order placed!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 5),
+        ));
+      } else
+        _scaffoldKey.currentState
+            .showSnackBar(snackBar('Order couldn\'t be placed'));
+
+      await progressDialog.hide();
+    });
+    await progressDialog.hide();
+  }
+
   @override
   void dispose() {
     _quantityController.dispose();
+    _timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    productDetails =
-        ModalRoute.of(context).settings.arguments as ProductDetails;
+    var arguments = ModalRoute.of(context).settings.arguments as List<dynamic>;
 
-    print(productDetails.product.description);
+    productDetails = arguments[0];
+    token = arguments[1];
+
+    print(productDetails.product.description + token);
+    progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+      showLogs: true,
+    );
+    progressDialog.style(
+      message: 'Please wait!',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+    );
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.grey[350],
@@ -55,7 +129,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             margin: const EdgeInsets.only(right: 10.0),
             child: IconButton(
               icon: Icon(Icons.done),
-              onPressed: () => print('Confirm Order'),
+              onPressed: _confirmOrder,
             ),
           )
         ],
