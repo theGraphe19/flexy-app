@@ -11,6 +11,11 @@ import '../widgets/order_item.dart';
 import '../HTTP_handler.dart';
 import './products_screen.dart';
 
+enum OrderState {
+  orderPending,
+  orderDone,
+}
+
 class OrdersScreen extends StatefulWidget {
   static const routeName = '/orders-screen';
 
@@ -19,9 +24,12 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
+  final _remarkController = TextEditingController();
   final _quantityController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   ProductDetails productDetails = ProductDetails();
+
+  HTTPHandler _handler = HTTPHandler();
 
   List<Map<String, dynamic>> _orders = [];
 
@@ -29,6 +37,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   String _size = '';
 
   ProgressDialog progressDialog;
+
+  OrderState state = OrderState.orderPending;
 
   List<Map<String, dynamic>> _getDataSource() {
     List<Map<String, dynamic>> _dataSource = [];
@@ -41,32 +51,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return _dataSource;
   }
 
-  Timer _timer;
-  int _start = 5;
-
-  void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) => setState(
-        () {
-          if (_start < 1) {
-            timer.cancel();
-            Navigator.of(context).popAndPushNamed(
-              ProductsScreen.routeName,
-              arguments: token,
-            );
-          } else {
-            _start = _start - 1;
-          }
-        },
-      ),
-    );
-  }
-
   void _confirmOrder() async {
     await progressDialog.show();
-    HTTPHandler()
+    _handler
         .placeOrder(
       productDetails.product.id,
       token,
@@ -75,7 +62,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
         .then((response) async {
       await progressDialog.show();
       if (response['status'].contains('success')) {
-        startTimer();
+        setState(() {
+          state = OrderState.orderDone;
+        });
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text('Order placed!'),
           backgroundColor: Colors.green,
@@ -90,10 +79,32 @@ class _OrdersScreenState extends State<OrdersScreen> {
     await progressDialog.hide();
   }
 
+  void _addRemarks() async {
+    await progressDialog.show();
+    print(_remarkController.text);
+    _handler
+        .addRemarks(
+      productDetails.product.id,
+      token,
+      _remarkController.text,
+    )
+        .then((value) async {
+      await progressDialog.hide();
+      if (!value) {
+        _scaffoldKey.currentState
+            .showSnackBar(snackBar('Remarks couldn\'t be added'));
+      } else {
+        Navigator.of(context).popAndPushNamed(
+          ProductsScreen.routeName,
+          arguments: token,
+        );
+      }
+    });
+  }
+
   @override
   void dispose() {
     _quantityController.dispose();
-    _timer.cancel();
     super.dispose();
   }
 
@@ -123,44 +134,81 @@ class _OrdersScreenState extends State<OrdersScreen> {
       key: _scaffoldKey,
       backgroundColor: Colors.grey[350],
       appBar: AppBar(
-        title: Text('ORDER'),
+        title:
+            Text((state == OrderState.orderPending) ? 'ORDER' : 'Add a remark'),
         actions: <Widget>[
           Container(
             margin: const EdgeInsets.only(right: 10.0),
             child: IconButton(
               icon: Icon(Icons.done),
-              onPressed: _confirmOrder,
+              onPressed: (state == OrderState.orderPending)
+                  ? _confirmOrder
+                  : _addRemarks,
             ),
           )
         ],
       ),
-      body: Container(
+      body: (state == OrderState.orderPending)
+          ? Container(
+              margin: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      orderImage(),
+                      orderDescription(),
+                    ],
+                  ),
+                  SizedBox(height: 15.0),
+                  allProducts(),
+                  SizedBox(height: 15.0),
+                  total(),
+                  SizedBox(height: 15.0),
+                  addProduct(),
+                ],
+              ),
+            )
+          : remarkScreen(),
+    );
+  }
+
+  Widget remarkScreen() => Container(
+        width: double.infinity,
         margin: const EdgeInsets.all(20.0),
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
-          color: Colors.white,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white,
         ),
         child: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                orderImage(),
-                orderDescription(),
-              ],
+            Text(
+              'Leave a remark',
+              style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+              ),
             ),
-            SizedBox(height: 15.0),
-            allProducts(),
-            SizedBox(height: 15.0),
-            total(),
-            SizedBox(height: 15.0),
-            addProduct(),
+            SizedBox(height: 10.0),
+            TextField(
+              controller: _remarkController,
+              decoration: InputDecoration(
+                hintText: 'Please add a remark about this product',
+              ),
+              maxLines: 5,
+              minLines: 1,
+            ),
           ],
         ),
-      ),
-    );
-  }
+      );
 
   Widget orderImage() => Container(
         height: 100.0,
@@ -280,9 +328,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   }
                 }
 
-                if (quantity > int.parse(productSize.inStock)) {
+                if (quantity > int.parse(productSize.quantity)) {
                   _scaffoldKey.currentState.showSnackBar(
-                      snackBar('Only ${productSize.inStock} available.'));
+                      snackBar('Only ${productSize.quantity} available.'));
                   return;
                 }
 
@@ -292,6 +340,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   'price': productSize.price,
                 });
                 print(_orders.toString());
+                _quantityController.text = '';
                 setState(() {});
               },
               icon: Icon(

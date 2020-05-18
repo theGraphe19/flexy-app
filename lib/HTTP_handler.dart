@@ -104,4 +104,24 @@ class HTTPHandler {
 
     return response.data;
   }
+
+  Future<bool> addRemarks(
+    int productId,
+    String token,
+    String remarks,
+  ) async {
+    FormData formData = FormData.fromMap({
+      'remarks': remarks,
+    });
+
+    Response response = await _dio.post(
+      '$addRemarkUrl/$productId?api_token=$token',
+      data: formData,
+    );
+
+    if (response.data['remarks'].isNotEmpty)
+      return true;
+    else
+      return false;
+  }
 }
