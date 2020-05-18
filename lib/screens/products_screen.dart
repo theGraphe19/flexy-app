@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
+import './my_orders_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -33,6 +34,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Products'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert),
+            onSelected: handleClick,
+            itemBuilder: (BuildContext context) {
+              return {
+                'My Orders',
+                'LogOut',
+              }.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: GridView.builder(
         padding: const EdgeInsets.all(10.0),
@@ -47,5 +65,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ProductItem(productList[index], token),
       ),
     );
+  }
+
+  void handleClick(String value) {
+    switch (value) {
+      case 'My Orders':
+        Navigator.of(context).pushNamed(
+          MyOrdersScreen.routeName,
+          arguments: token,
+        );
+        break;
+      case 'LogOut':
+        break;
+    }
   }
 }

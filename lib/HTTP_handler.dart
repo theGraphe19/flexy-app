@@ -6,6 +6,7 @@ import './credentials.dart';
 import './models/user.dart';
 import './models/product.dart';
 import './models/product_details.dart';
+import './models/order.dart';
 
 class HTTPHandler {
   User currentUser = User();
@@ -123,5 +124,18 @@ class HTTPHandler {
       return true;
     else
       return false;
+  }
+
+  Future<List<Order>> getMyOrders(String token) async {
+    List<Order> orderedItems = [];
+    Response response = await _dio.get(getMyOrdersUrl + token);
+
+    for (var i = 0 ; i < response.data.length ; i++) {
+      Order order = Order();
+      order.mapToOrder(response.data[i]);
+      orderedItems.add(order);
+    }
+
+    return orderedItems;
   }
 }
