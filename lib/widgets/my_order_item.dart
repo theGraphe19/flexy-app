@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../models/order.dart';
 
-enum OrderStatus {
-  rejected,
-  pending,
-  accepted,
-  dispatched,
-  completed,
-}
-
 class MyOrderItem extends StatelessWidget {
   Order order = Order();
 
@@ -45,6 +37,11 @@ class MyOrderItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: titleValue('Quantity', order.quantity.toString()),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: titleValue('Price',
+                '${order.amount} ( ${order.pricePerPc} x ${order.quantity} )'),
           ),
           Align(
             alignment: Alignment.bottomRight,
@@ -104,7 +101,7 @@ class MyOrderItem extends StatelessWidget {
         break;
       case 3:
         text = 'COMPLETED';
-        color = Colors.green;
+        color = Colors.grey;
         break;
     }
 

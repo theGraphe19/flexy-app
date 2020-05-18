@@ -8,6 +8,8 @@ class Order {
   String quantity;
   String availability;
   int status;
+  int amount;
+  String pricePerPc;
 
   Order({
     this.id,
@@ -19,6 +21,8 @@ class Order {
     this.quantity,
     this.availability,
     this.status,
+    this.amount,
+    this.pricePerPc,
   });
 
   void mapToOrder(Map<dynamic, dynamic> map) {
@@ -31,5 +35,7 @@ class Order {
     this.quantity = map['quantity'];
     this.availability = map['available'];
     this.status = map['status'];
+    this.amount = map['amount'];
+    this.pricePerPc = map['price(per pc.)'];
   }
 }
