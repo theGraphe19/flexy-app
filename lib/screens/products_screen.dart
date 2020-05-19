@@ -4,6 +4,7 @@ import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
 import './my_orders_screen.dart';
+import './login_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -16,11 +17,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
   String token = '';
   var prodListCounterCalled = false;
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  HTTPHandler _handler = HTTPHandler();
+
   List<Product> productList = [];
 
   getList() async {
     prodListCounterCalled = true;
-    HTTPHandler().getProductsList(token).then((value) {
+    _handler.getProductsList(token).then((value) {
       productList = value;
       setState(() {});
     });
@@ -32,6 +36,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     print(token);
     if (!prodListCounterCalled) getList();
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Products'),
         actions: <Widget>[
@@ -76,6 +81,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
         );
         break;
       case 'LogOut':
+        _handler.logOut(token).then((loggedOut) {
+          if (loggedOut)
+            Navigator.of(context).popAndPushNamed(
+              LoginScreen.routeName,
+            );
+          else
+            _scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: Text('LogOut failed'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+            ));
+        });
         break;
     }
   }

@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (user != null) {
                       print(user.name);
                       await progressDialog.hide();
-                      Navigator.of(context).pushNamed(
+                      Navigator.of(context).popAndPushNamed(
                         ProductsScreen.routeName,
                         arguments: user.token,
                       );

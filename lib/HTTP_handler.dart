@@ -34,6 +34,17 @@ class HTTPHandler {
     return user;
   }
 
+  Future<bool> logOut(String token) async {
+    Response response = await _dio.get(logOutUrl + token);
+
+    print(response.data);
+    if (response.data['status'].contains('success')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> sendOTP(String mobileNo) async {
     FormData formData = FormData.fromMap({
       'mobileNo': int.parse(mobileNo),
@@ -130,7 +141,7 @@ class HTTPHandler {
     List<Order> orderedItems = [];
     Response response = await _dio.get(getMyOrdersUrl + token);
 
-    for (var i = 0 ; i < response.data.length ; i++) {
+    for (var i = 0; i < response.data.length; i++) {
       Order order = Order();
       order.mapToOrder(response.data[i]);
       orderedItems.add(order);
