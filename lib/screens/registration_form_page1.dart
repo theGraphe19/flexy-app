@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 
@@ -29,7 +30,10 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
 
   pickImageFromSystem(ImageSource source) {
     setState(() {
-      imageFile = ImagePicker.pickImage(source: source);
+      imageFile = ImagePicker.pickImage(
+        source: source,
+        imageQuality: 50,
+      );
     });
   }
 

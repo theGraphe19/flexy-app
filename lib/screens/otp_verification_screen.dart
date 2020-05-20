@@ -31,22 +31,44 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
   String baseUrl = 'https://api.msg91.com/api/v5/otp';
 
-  VerificationStatus status = VerificationStatus.notVerified;
+  VerificationStatus status = VerificationStatus.verified; /////////
 
   ProgressDialog progressDialog;
 
-  void _confirmUser() {
+  void _confirmUser() async {
     if (_passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      print('Please fill all the fields.');
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Please enter value in both text fields.'),
+        backgroundColor: Colors.red,
+      ));
     } else {
       if (_passwordController.text.contains(_confirmPasswordController.text) &&
           _confirmPasswordController.text.contains(_passwordController.text)) {
         currentUser.password = _confirmPasswordController.text;
+        print(currentUser.password);
+        await progressDialog.show();
+        _handler.registerUser(currentUser).then((value) async {
+          if (value != null) {
+            await progressDialog.hide();
+            Navigator.of(context).popAndPushNamed(
+              ProductsScreen.routeName,
+              arguments: value,
+            );
+          } else
+            await progressDialog.hide();
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text('User registration failed, try again later.'),
+            backgroundColor: Colors.red,
+          ));
+        });
 
-        Navigator.of(context).popAndPushNamed(ProductsScreen.routeName);
+        //Navigator.of(context).popAndPushNamed(ProductsScreen.routeName);
       } else {
-        print('Please enter same password in both the fields.');
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Please enter same value in both text fields.'),
+          backgroundColor: Colors.red,
+        ));
       }
     }
   }
@@ -141,7 +163,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   onPressed: () async {
                     await progressDialog.show();
                     _handler
-                        .sendOTP(currentUser.mobileNo)
+                        .sendOTP('91${currentUser.mobileNo}')
                         .then((bool otpSent) async {
                       await progressDialog.hide();
                       if (otpSent) {
@@ -216,7 +238,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     }
                     await progressDialog.show();
                     _handler
-                        .verifyOTP(currentUser.mobileNo, _otpController.text)
+                        .verifyOTP(
+                            '91${currentUser.mobileNo}', _otpController.text)
                         .then((bool otpVerified) async {
                       await progressDialog.hide();
                       if (otpVerified) {

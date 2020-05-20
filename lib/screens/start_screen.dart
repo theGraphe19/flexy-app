@@ -4,6 +4,7 @@ import './registration_form_page1.dart';
 import './login_screen.dart';
 
 class StartScreen extends StatelessWidget {
+  static const routeName = '/start-screen';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

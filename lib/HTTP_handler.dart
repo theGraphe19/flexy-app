@@ -13,6 +13,56 @@ class HTTPHandler {
   Dio _dio = Dio();
   List<Product> productList = [];
 
+  Future<String> registerUser(User user) async {
+    print(user.photoLocation);
+    print(user.visitingCardLocation);
+    try {
+      FormData formData = FormData.fromMap({
+        'category': 1,
+        'name': user.name,
+        'mobileNo': user.mobileNo,
+        'email': user.email,
+        'designation': user.designation,
+        'photoIdType': user.photoIdType,
+        'photoLocation': user.photoLocation,
+        'visitingCardLocation': user.visitingCardLocation,
+        'photo_id': await MultipartFile.fromFile(user.photoLocation,
+            filename: '${user.photoIdType}-${user.id}'),
+        'visiting_card': await MultipartFile.fromFile(user.visitingCardLocation,
+            filename: 'VisitingCard-${user.id}'),
+        'firmName': user.firmName,
+        'firmNomenclature': user.firmNomenclature,
+        'tradeCategory': user.tradeCategory,
+        'noOfStores': user.noOfStores,
+        'landlineNo': user.landlineNo,
+        'gstNo': user.gstNo,
+        'companyAddress': user.companyAddress,
+        'city': user.city,
+        'state': user.state,
+        'pincode': user.pincode,
+        'agentName': user.agentName,
+        'purchasePerson': user.purchasePerson,
+        'password': user.password,
+      });
+
+      Response response = await _dio.post(
+        registerUrl,
+        data: formData,
+      );
+
+      print(response.statusCode);
+      if (response.data['status']
+          .contains('success')) if (response.data['user']['api_token'] != null)
+        return response.data['user']['api_token'];
+      else
+        return null;
+      else
+        return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<User> loginUser(String email, String password) async {
     User user = User();
     FormData formData = FormData.fromMap({
@@ -49,11 +99,14 @@ class HTTPHandler {
     FormData formData = FormData.fromMap({
       'mobileNo': int.parse(mobileNo),
     });
+    print(int.parse(mobileNo));
 
     Response response = await _dio.post(
       sendOTPUrl,
       data: formData,
     );
+
+    print(response.data);
 
     if (json.decode(response.data)['type'].contains('success')) {
       return true;

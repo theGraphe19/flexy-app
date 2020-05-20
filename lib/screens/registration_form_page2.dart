@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -31,7 +32,10 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
 
   pickImageFromSystem(ImageSource source) {
     setState(() {
-      imageFile = ImagePicker.pickImage(source: source);
+      imageFile = ImagePicker.pickImage(
+        source: source,
+        imageQuality: 50,
+      );
     });
   }
 

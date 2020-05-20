@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: StartScreen(),
       routes: {
+        StartScreen.routeName: (ctx) => StartScreen(),
         RegistrationFormPag1.routeName: (ctx) => RegistrationFormPag1(),
         RegistrationFormPart2.routeName: (ctx) => RegistrationFormPart2(),
         RegistrationFormPage3.routeName: (ctx) => RegistrationFormPage3(),

@@ -4,7 +4,7 @@ import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
 import './my_orders_screen.dart';
-import './login_screen.dart';
+import './start_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -84,7 +84,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         _handler.logOut(token).then((loggedOut) {
           if (loggedOut)
             Navigator.of(context).popAndPushNamed(
-              LoginScreen.routeName,
+              StartScreen.routeName,
             );
           else
             _scaffoldKey.currentState.showSnackBar(SnackBar(
