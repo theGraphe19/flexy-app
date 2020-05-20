@@ -4,6 +4,7 @@ import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
 import './orders_screen.dart';
+import '../credentials.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
@@ -62,7 +63,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: Center(
                     child: (product.productImages.length > 0)
                         ? imagePageView()
-                        : Text(product.productImages[0]),
+                        : Image.network(productImagesURL +
+                            product.productImages[currentActiveIndex]),
                   ),
                   // child: Image.asset(
                   //   productImage.productImage,
@@ -132,7 +134,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             height: 400.0,
             color: Colors.white,
             child: Center(
-              child: Text(product.productImages[currentActiveIndex]),
+              child: Image.network(
+                  productImagesURL + product.productImages[currentActiveIndex]),
+              //child: Text(product.productImages[currentActiveIndex]),
             ),
           );
         },

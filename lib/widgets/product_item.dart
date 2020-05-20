@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
+import '../credentials.dart';
 
 class ProductItem extends StatelessWidget {
   Product product;
@@ -26,11 +27,11 @@ class ProductItem extends StatelessWidget {
             ],
             //arguments: <dynamic>[product.id, token],
           ),
-          child: Center(child: Text(product.productImages[0])),
-          // child: Image.asset(
-          //   productImage.productImage,
-          //   fit: BoxFit.cover,
-          // ),
+          // child: Center(child: Text(product.productImages[0])),
+          child: Image.network(
+            productImagesURL + product.productImages[0],
+            fit: BoxFit.cover,
+          ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,

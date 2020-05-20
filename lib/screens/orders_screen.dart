@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -10,6 +8,7 @@ import '../utils/form_validator.dart';
 import '../widgets/order_item.dart';
 import '../HTTP_handler.dart';
 import './products_screen.dart';
+import '../credentials.dart';
 
 enum OrderState {
   orderPending,
@@ -218,8 +217,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(10.0),
           image: DecorationImage(
-            image: AssetImage(
-              'assets/icon/icon.png', //  CHANGE THE IMAGE TO PRODUCT IMAGE
+            image: NetworkImage(
+              productImagesURL + productDetails.productImages[0], //  CHANGE THE IMAGE TO PRODUCT IMAGE
             ),
             fit: BoxFit.cover,
           ),
