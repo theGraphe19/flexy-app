@@ -29,9 +29,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   var _passwordController = TextEditingController();
   var _confirmPasswordController = TextEditingController();
 
-  String baseUrl = 'https://api.msg91.com/api/v5/otp';
-
-  VerificationStatus status = VerificationStatus.verified; /////////
+  VerificationStatus status = VerificationStatus.notVerified;
 
   ProgressDialog progressDialog;
 
@@ -273,7 +271,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: TextField(
               controller: _passwordController,
-              keyboardType: TextInputType.number,
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                 hintText: 'Enter Password',
               ),
@@ -284,7 +283,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: TextField(
               controller: _confirmPasswordController,
-              keyboardType: TextInputType.number,
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                 hintText: 'Confirm Password',
               ),

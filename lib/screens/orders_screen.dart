@@ -144,7 +144,19 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   ? _confirmOrder
                   : _addRemarks,
             ),
-          )
+          ),
+          (state == OrderState.orderPending)
+              ? Container()
+              : Container(
+                  margin: const EdgeInsets.only(left: 10.0),
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).popAndPushNamed(
+                      ProductsScreen.routeName,
+                      arguments: token,
+                    ),
+                  ),
+                ),
         ],
       ),
       body: (state == OrderState.orderPending)
@@ -218,7 +230,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
           borderRadius: BorderRadius.circular(10.0),
           image: DecorationImage(
             image: NetworkImage(
-              productImagesURL + productDetails.productImages[0], //  CHANGE THE IMAGE TO PRODUCT IMAGE
+              productImagesURL +
+                  productDetails
+                      .productImages[0], //  CHANGE THE IMAGE TO PRODUCT IMAGE
             ),
             fit: BoxFit.cover,
           ),

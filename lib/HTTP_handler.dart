@@ -65,23 +65,27 @@ class HTTPHandler {
 
   Future<User> loginUser(String email, String password) async {
     User user = User();
-    FormData formData = FormData.fromMap({
-      'email': email,
-      'password': password,
-    });
+    try {
+      FormData formData = FormData.fromMap({
+        'email': email,
+        'password': password,
+      });
 
-    Response response = await _dio.post(
-      loginUrl,
-      data: formData,
-    );
+      Response response = await _dio.post(
+        loginUrl,
+        data: formData,
+      );
 
-    print(response.data['status']);
-    if (response.data['status'].contains('success')) {
-      user.mapToUser(response.data['user']);
-      currentUser = user;
+      print(response.data['status']);
+      if (response.data['status'].contains('success')) {
+        user.mapToUser(response.data['user']);
+        currentUser = user;
+      }
+
+      return user;
+    } catch (e) {
+      throw e;
     }
-
-    return user;
   }
 
   Future<bool> logOut(String token) async {

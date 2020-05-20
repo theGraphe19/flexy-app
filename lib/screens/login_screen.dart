@@ -65,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           SizedBox(height: 20.0),
           TextField(
+            obscureText: true,
             controller: _passwordController,
             keyboardType: TextInputType.visiblePassword,
             decoration: InputDecoration(hintText: 'Password'),
@@ -109,6 +110,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         arguments: user.token,
                       );
                     }
+                  }).catchError((onError) async {
+                    await progressDialog.hide();
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      duration: Duration(seconds: 5),
+                      backgroundColor: Colors.red,
+                      content: Text("Wrong password or not registered"),
+                    ));
                   });
                 },
               ),
