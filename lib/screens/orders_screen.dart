@@ -225,16 +225,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
         height: 100.0,
         width: 100.0,
         decoration: BoxDecoration(
-          color: Colors.pink,
+          color: Colors.grey[350],
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(10.0),
           image: DecorationImage(
             image: NetworkImage(
-              productImagesURL +
-                  productDetails
-                      .productImages[0], //  CHANGE THE IMAGE TO PRODUCT IMAGE
+              productImagesURL + productDetails.productImages[0],
             ),
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
           ),
         ),
       );

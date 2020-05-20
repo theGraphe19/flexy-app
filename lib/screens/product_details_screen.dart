@@ -5,6 +5,7 @@ import '../models/product_details.dart';
 import '../HTTP_handler.dart';
 import './orders_screen.dart';
 import '../credentials.dart';
+import '../widgets/loading_body.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
@@ -17,14 +18,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Product product;
   String token;
 
+  bool productsController = false;
+
   ProductDetails productDetails;
 
   var currentActiveIndex = 0;
 
   getProductDetails() {
+    productsController = true;
     HTTPHandler().getProductDetails(product.id, token).then((value) {
       productDetails = value;
       print(productDetails.product.name);
+      setState(() {});
     });
   }
 
@@ -35,67 +40,67 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     product = arguments[0] as Product;
     token = arguments[1] as String;
     print('Token : $token');
-    getProductDetails();
+    if (!productsController) getProductDetails();
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Flexy - ${product.name.toUpperCase()}',
         ),
       ),
-      body: Container(
-        margin: const EdgeInsets.all(15.0),
-        decoration: BoxDecoration(
-          color: Colors.grey[350],
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15.0),
-          child: GridTile(
-            child: Column(
-              children: <Widget>[
-                //IMAGE
-                Container(
-                  padding: const EdgeInsets.all(10.0),
-                  width: double.infinity,
-                  height: 400.0,
-                  color: Colors.grey[350],
-                  child: Center(
-                    child: (product.productImages.length > 0)
-                        ? imagePageView()
-                        : Image.network(productImagesURL +
-                            product.productImages[currentActiveIndex]),
+      body: (productDetails == null)
+          ? LoadingBody()
+          : Container(
+              margin: const EdgeInsets.all(15.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[350],
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15.0),
+                child: GridTile(
+                  child: Column(
+                    children: <Widget>[
+                      //IMAGE
+                      Container(
+                        padding: const EdgeInsets.all(10.0),
+                        width: double.infinity,
+                        height: 400.0,
+                        color: Colors.grey[350],
+                        child: Center(
+                          child: (product.productImages.length > 0)
+                              ? imagePageView()
+                              : Image.network(productImagesURL +
+                                  product.productImages[currentActiveIndex]),
+                        ),
+                        // child: Image.asset(
+                        //   productImage.productImage,
+                        //   fit: BoxFit.cover,
+                        // ),
+                      ),
+                      SizedBox(height: 10.0),
+                      //NAME
+                      Text(
+                        product.name.toUpperCase(),
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      //DESCRIPTION
+                      Text(product.description),
+                      //CATEGORY
+                      titleValue('CATEGORY', product.category),
+                      //PRODUCT TYPE
+                      titleValue('TYPE', product.productType),
+                    ],
                   ),
-                  // child: Image.asset(
-                  //   productImage.productImage,
-                  //   fit: BoxFit.cover,
-                  // ),
+                  footer: orderButton(),
                 ),
-                SizedBox(height: 10.0),
-                //NAME
-                Text(
-                  product.name.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                //DESCRIPTION
-                Text(product.description),
-                SizedBox(height: 10.0),
-                //CATEGORY
-                titleValue('CATEGORY', product.category),
-                SizedBox(height: 10.0),
-                //PRODUCT TYPE
-                titleValue('TYPE', product.productType),
-              ],
+              ),
             ),
-            footer: orderButton(),
-          ),
-        ),
-      ),
     );
   }
 

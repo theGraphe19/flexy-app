@@ -55,7 +55,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               )
             : Center(
                 child: Text(
-                  'You havr no orders',
+                  'You have no orders',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 25.0,

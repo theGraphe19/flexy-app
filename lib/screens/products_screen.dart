@@ -5,6 +5,7 @@ import '../HTTP_handler.dart';
 import '../models/product.dart';
 import './my_orders_screen.dart';
 import './start_screen.dart';
+import '../widgets/loading_body.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -20,7 +21,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
 
-  List<Product> productList = [];
+  List<Product> productList;
 
   getList() async {
     prodListCounterCalled = true;
@@ -57,18 +58,20 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(10.0),
-        itemCount: productList.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemBuilder: (BuildContext context, int index) =>
-            ProductItem(productList[index], token),
-      ),
+      body: (productList == null)
+          ? LoadingBody()
+          : GridView.builder(
+              padding: const EdgeInsets.all(10.0),
+              itemCount: productList.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 3 / 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemBuilder: (BuildContext context, int index) =>
+                  ProductItem(productList[index], token),
+            ),
     );
   }
 
