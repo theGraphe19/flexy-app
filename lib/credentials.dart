@@ -13,3 +13,4 @@ const addRemarkUrl = "https://developers.thegraphe.com/flexy/addremarks";
 const getMyOrdersUrl = "https://developers.thegraphe.com/flexy/myorders?api_token=";
 
 const productImagesURL = 'https://developers.thegraphe.com/flexy/storage/app/product_images/';
+const billUrl = "https://developers.thegraphe.com/flexy/showbill";

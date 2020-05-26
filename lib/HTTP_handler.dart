@@ -7,6 +7,7 @@ import './models/user.dart';
 import './models/product.dart';
 import './models/product_details.dart';
 import './models/order.dart';
+import './models/bill.dart';
 
 class HTTPHandler {
   User currentUser = User();
@@ -205,5 +206,16 @@ class HTTPHandler {
     }
 
     return orderedItems;
+  }
+
+  Future<List<Bill>> getBills(String token, String orderId) async {
+    List<Bill> bills = [];
+    Response response = await _dio.get('$billUrl/$orderId?api_token=$token');
+
+    //print(response.data);
+    for (var i = 0; i < response.data['bills'].length; i++)
+      bills.add(Bill.mapToBill(response.data['bills'][i]));
+    print(bills.toString());
+    return bills;
   }
 }

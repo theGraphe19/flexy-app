@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../models/bill.dart';
 import '../models/order.dart';
-import '../screens/bill_screen.dart';
 
-class MyOrderItem extends StatelessWidget {
-  Order order = Order();
+class BillItem extends StatelessWidget {
+  final Bill bill;
+  final Order order;
 
-  MyOrderItem(this.order);
+  BillItem(this.bill, this.order);
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,14 @@ class MyOrderItem extends StatelessWidget {
           SizedBox(height: 10.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: titleValue('Order Id', bill.orderId),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: titleValue('Product Id', bill.productId),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: titleValue('Size', order.productSize.toString()),
           ),
           Padding(
@@ -44,37 +53,54 @@ class MyOrderItem extends StatelessWidget {
             child: titleValue('Price',
                 '${order.amount} ( ${order.pricePerPc} x ${order.quantity} )'),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  print('tapped : ${order.id}');
-                  Navigator.of(context).pushNamed(
-                    BillScreen.routeName,
-                    arguments: order,
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    'Show Bill',
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: orderStatus(order.status),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: GestureDetector(
+              onTap: () => print('bill download'),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  'Download Bill',
+                  style: TextStyle(
+                    color: Colors.blue[900],
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
-              SizedBox(height: 10.0),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: orderStatus(order.status),
-              ),
-            ],
+            ),
           ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: <Widget>[
+          //     GestureDetector(
+          //       onTap: () {
+          //         print('tapped : ${order.id}');
+          //         // Navigator.of(context).pushNamed(
+          //         //   BillScreen.routeName,
+          //         //   arguments: order,
+          //         // );
+          //       },
+          //       child: Padding(
+          //         padding: const EdgeInsets.all(10.0),
+          //         child: Text(
+          //           'Show Bill',
+          //           style: TextStyle(
+          //             color: Colors.blue[900],
+          //             fontSize: 15.0,
+          //             fontWeight: FontWeight.bold,
+          //             decoration: TextDecoration.underline,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           SizedBox(height: 10.0),
         ],
       ),
@@ -105,37 +131,25 @@ class MyOrderItem extends StatelessWidget {
 
   Widget orderStatus(int status) {
     String text;
-    Color color;
 
     switch (status) {
       case -1:
         text = 'REJECTED';
-        color = Colors.red;
         break;
       case 0:
         text = 'PENDING';
-        color = Colors.yellow[700];
         break;
       case 1:
         text = 'ACCEPTED';
-        color = Colors.green;
         break;
       case 2:
         text = 'DISPATCHED';
-        color = Colors.blue;
         break;
       case 3:
         text = 'COMPLETED';
-        color = Colors.grey;
         break;
     }
 
-    return Text(
-      text,
-      style: TextStyle(
-        color: color,
-        fontWeight: FontWeight.bold,
-      ),
-    );
+    return titleValue('Status', text);
   }
 }
