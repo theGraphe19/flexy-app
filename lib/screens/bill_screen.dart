@@ -72,6 +72,7 @@ class _BillScreenState extends State<BillScreen> {
                           BillItem(
                         bills[index],
                         order,
+                        token,
                       ),
                     ),
             ),

@@ -14,3 +14,4 @@ const getMyOrdersUrl = "https://developers.thegraphe.com/flexy/myorders?api_toke
 
 const productImagesURL = 'https://developers.thegraphe.com/flexy/storage/app/product_images/';
 const billUrl = "https://developers.thegraphe.com/flexy/showbill";
+const billDownloadUrl = 'https://developers.thegraphe.com/flexy/billdwnld';

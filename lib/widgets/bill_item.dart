@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../models/bill.dart';
 import '../models/order.dart';
+import '../HTTP_handler.dart';
 
 class BillItem extends StatelessWidget {
   final Bill bill;
   final Order order;
+  String token;
 
-  BillItem(this.bill, this.order);
+  BillItem(
+    this.bill,
+    this.order,
+    this.token,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +66,14 @@ class BillItem extends StatelessWidget {
           Align(
             alignment: Alignment.bottomRight,
             child: GestureDetector(
-              onTap: () => print('bill download'),
+              onTap: () {
+                print('bill download');
+                HTTPHandler().downloadBillIOS(
+                  bill.billDocument,
+                  bill.id.toString(),
+                  token,
+                );
+              },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
@@ -75,32 +88,6 @@ class BillItem extends StatelessWidget {
               ),
             ),
           ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: <Widget>[
-          //     GestureDetector(
-          //       onTap: () {
-          //         print('tapped : ${order.id}');
-          //         // Navigator.of(context).pushNamed(
-          //         //   BillScreen.routeName,
-          //         //   arguments: order,
-          //         // );
-          //       },
-          //       child: Padding(
-          //         padding: const EdgeInsets.all(10.0),
-          //         child: Text(
-          //           'Show Bill',
-          //           style: TextStyle(
-          //             color: Colors.blue[900],
-          //             fontSize: 15.0,
-          //             fontWeight: FontWeight.bold,
-          //             decoration: TextDecoration.underline,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           SizedBox(height: 10.0),
         ],
       ),

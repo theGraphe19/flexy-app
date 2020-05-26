@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 
 import './credentials.dart';
 import './models/user.dart';
@@ -217,5 +219,54 @@ class HTTPHandler {
       bills.add(Bill.mapToBill(response.data['bills'][i]));
     print(bills.toString());
     return bills;
+  }
+
+  Future downloadBillIOS(
+    String fileName,
+    String billId,
+    String token,
+  ) async {
+    final directory = await getApplicationDocumentsDirectory();
+    // final directory = await getApplicationDocumentsDirectory();
+    // CancelToken cancelToken = CancelToken();
+    // try {
+    //   await _dio.download(
+    //     '$billDownloadUrl/$billId?api_token=$token',
+    //     '${directory.path}/flexy/$fileName',
+    //     onReceiveProgress: showDownloadProgress,
+    //     cancelToken: cancelToken,
+    //   );
+    // } catch (e) {
+    //   print(e);
+    // }
+
+    try {
+      Response response = await _dio.get(
+        '$billDownloadUrl/$billId?api_token=$token',
+        onReceiveProgress: showDownloadProgress,
+        //Received data with List<int>
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          receiveTimeout: 0,
+        ),
+      );
+      print(response.headers);
+      print('Path : ${directory.path}');
+      File file = File('${directory.path}/flexy/$fileName');
+      var raf = file.openSync(mode: FileMode.write);
+      // response.data is List<int> type
+      raf.writeFromSync(response.data);
+      await raf.close();
+      print('download complete');
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void showDownloadProgress(received, total) {
+    if (total != -1) {
+      print((received / total * 100).toStringAsFixed(0) + "%");
+    }
   }
 }
