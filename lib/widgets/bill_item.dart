@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../models/bill.dart';
 import '../models/order.dart';
-import '../HTTP_handler.dart';
+import '../screens/download_screen.dart';
+import '../credentials.dart';
 
 class BillItem extends StatelessWidget {
   final Bill bill;
   final Order order;
   String token;
+  GlobalKey<ScaffoldState> scaffoldKey;
 
   BillItem(
     this.bill,
     this.order,
     this.token,
+    this.scaffoldKey,
   );
 
   @override
@@ -66,13 +69,23 @@ class BillItem extends StatelessWidget {
           Align(
             alignment: Alignment.bottomRight,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 print('bill download');
-                HTTPHandler().downloadBillIOS(
-                  bill.billDocument,
-                  bill.id.toString(),
-                  token,
-                );
+                final response = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => FileDownloader(
+                            '$billDownloadUrl/${bill.id}?api_token=$token')));
+
+                if (response)
+                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text('Bill downloaded'),
+                    backgroundColor: Colors.green,
+                  ));
+                else
+                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text('Bill download failed'),
+                    backgroundColor: Colors.red,
+                  ));
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),

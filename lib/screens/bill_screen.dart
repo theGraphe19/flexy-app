@@ -17,6 +17,8 @@ class BillScreen extends StatefulWidget {
 class _BillScreenState extends State<BillScreen> {
   Order order;
 
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   String token;
   List<Bill> bills;
 
@@ -42,6 +44,7 @@ class _BillScreenState extends State<BillScreen> {
     order = ModalRoute.of(context).settings.arguments as Order;
     if (!_tokenController) _getToken();
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Bill'),
       ),
@@ -73,6 +76,7 @@ class _BillScreenState extends State<BillScreen> {
                         bills[index],
                         order,
                         token,
+                        scaffoldKey,
                       ),
                     ),
             ),
