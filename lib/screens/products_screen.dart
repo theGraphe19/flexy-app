@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
@@ -32,21 +31,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
-  void _storeToken(String token) async {
-    SharedPreferences.setMockInitialValues({});
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear().then((isCleared) async {
-      await prefs.setString('token', token);
-      print('data stored');
-    });
-    print(prefs.getString('token'));
-  }
-
   @override
   Widget build(BuildContext context) {
     token = ModalRoute.of(context).settings.arguments;
     print(token);
-    _storeToken(token);
 
     if (!prodListCounterCalled) getList();
     return Scaffold(
