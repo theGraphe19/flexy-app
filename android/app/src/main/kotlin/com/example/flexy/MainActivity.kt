@@ -1,4 +1,4 @@
-package com.example.flexy
+package com.graphe.flexy
 
 import io.flutter.embedding.android.FlutterActivity
 
