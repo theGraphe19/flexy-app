@@ -15,13 +15,22 @@ class StartScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Image.asset(
+              'assets/icon/icon.png',
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
+                  Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: child,
+              ),
+            ),
+            SizedBox(height: 20.0),
             GestureDetector(
               onTap: () => Navigator.of(context)
                   .popAndPushNamed(RegistrationFormPag1.routeName),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 30.0,
-                  horizontal: 80.0,
+                  vertical: 20.0,
+                  horizontal: 50.0,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.blue,
@@ -44,8 +53,8 @@ class StartScreen extends StatelessWidget {
                   Navigator.of(context).pushNamed(LoginScreen.routeName),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 30.0,
-                  horizontal: 95.0,
+                  vertical: 20.0,
+                  horizontal: 65.0,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.blue,
