@@ -50,7 +50,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       body: (productDetails == null)
           ? LoadingBody()
           : Container(
-              margin: const EdgeInsets.all(15.0),
+              margin: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                 color: Colors.grey[350],
                 shape: BoxShape.rectangle,
@@ -88,13 +88,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 10.0),
+                      SizedBox(height: 15.0),
                       //DESCRIPTION
                       Text(product.description),
-                      //CATEGORY
-                      titleValue('CATEGORY', product.category),
-                      //PRODUCT TYPE
-                      titleValue('TYPE', product.productType),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          //CATEGORY
+                          titleValue('CATEGORY', product.category),
+                          SizedBox(width: 10.0),
+                          //PRODUCT TYPE
+                          titleValue('TYPE', product.productType),
+                        ],
+                      ),
                     ],
                   ),
                   footer: orderButton(),

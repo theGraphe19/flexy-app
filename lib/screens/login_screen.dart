@@ -35,13 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
     String email,
     String password,
   ) async {
-    //SharedPreferences.setMockInitialValues({});
     prefs = await SharedPreferences.getInstance();
     await prefs.clear().then((isCleared) async {
       await prefs.setBool('loggedIn', loggedIn);
       await prefs.setString('loggedInEmail', email);
       await prefs.setString('loggedInPassword', password);
-      await prefs.setString('loggedInTime', DateTime.now().toString());
       await prefs.setString('token', token);
       print('data stored');
     });
@@ -71,14 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
             email,
             password,
           );
-          //await progressDialog.hide();
           Navigator.of(context).popAndPushNamed(
             ProductsScreen.routeName,
             arguments: user.token,
           );
         }
       }).catchError((onError) async {
-        //await progressDialog.hide();
         _stayLoggedIn = false;
         setState(() {});
         _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -87,6 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text("Error occured"),
         ));
       });
+    } else {
+      setState(() {});
     }
     print(_stayLoggedIn);
   }
@@ -107,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _retreiveData();
+    //_retreiveData();
     progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,

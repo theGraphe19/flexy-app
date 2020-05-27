@@ -131,6 +131,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
     return Scaffold(
       key: _scaffoldKey,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[350],
       appBar: AppBar(
         title:
@@ -160,29 +161,34 @@ class _OrdersScreenState extends State<OrdersScreen> {
         ],
       ),
       body: (state == OrderState.orderPending)
-          ? Container(
-              margin: const EdgeInsets.all(20.0),
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: <Widget>[
-                  Row(
+          ? SingleChildScrollView(
+              child: Card(
+                margin: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height - 50,
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Column(
                     children: <Widget>[
-                      orderImage(),
-                      orderDescription(),
+                      Row(
+                        children: <Widget>[
+                          orderImage(),
+                          orderDescription(),
+                        ],
+                      ),
+                      SizedBox(height: 15.0),
+                      allProducts(),
+                      SizedBox(height: 15.0),
+                      total(),
+                      SizedBox(height: 15.0),
+                      addProduct(),
                     ],
                   ),
-                  SizedBox(height: 15.0),
-                  allProducts(),
-                  SizedBox(height: 15.0),
-                  total(),
-                  SizedBox(height: 15.0),
-                  addProduct(),
-                ],
+                ),
               ),
             )
           : remarkScreen(),
@@ -373,7 +379,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
         duration: Duration(seconds: 5),
       );
 
-  Widget allProducts() => Expanded(
+  Widget allProducts() => Flexible(
+        fit: FlexFit.tight,
         child: Column(
           children: <Widget>[
             Container(
@@ -393,7 +400,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
               color: Colors.black,
             ),
             SizedBox(height: 10.0),
-            Expanded(
+            Flexible(
+              fit: FlexFit.tight,
               child: ListView.builder(
                 itemCount: _orders.length,
                 itemBuilder: (BuildContext context, int index) {
