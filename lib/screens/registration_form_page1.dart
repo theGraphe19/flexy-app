@@ -229,6 +229,24 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             valueField: "value",
           ),
           SizedBox(height: 10.0),
+          (imageFile != null)
+              ? Container(
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        print('close pressed');
+                        imageFile = null;
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.clear),
+                      label: Text('Remove'),
+                    ),
+                  ),
+                )
+              : Container(),
+          SizedBox(height: 10.0),
           (imageFile != null) ? imagePreview() : Container(),
         ],
       );
@@ -338,7 +356,6 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
                       alignment: Alignment.topRight,
                       child: FlatButton.icon(
                         onPressed: () {
-                          print('pressed change');
                           _showModalSheet(context);
                         },
                         icon: Icon(Icons.edit),
