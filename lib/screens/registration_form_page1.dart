@@ -310,19 +310,45 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
               if (snapshot.data != null)
                 currentUser.photoLocation = snapshot.data.path;
-              return Container(
-                width: double.infinity,
-                height: 400.0,
-                decoration: (imageFile != null && snapshot.data != null)
-                    ? BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(5.0),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: FileImage(snapshot.data),
+              return Stack(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    height: 400.0,
+                    decoration: (imageFile != null && snapshot.data != null)
+                        ? BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(5.0),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: FileImage(snapshot.data),
+                            ),
+                          )
+                        : BoxDecoration(),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 10.0,
+                    ),
+                    width: double.infinity,
+                    height: 400.0,
+                    color: Colors.transparent,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FlatButton.icon(
+                        onPressed: () {
+                          print('pressed change');
+                          _showModalSheet(context);
+                        },
+                        icon: Icon(Icons.edit),
+                        label: Text(
+                          'Change Image',
                         ),
-                      )
-                    : BoxDecoration(),
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
           )
