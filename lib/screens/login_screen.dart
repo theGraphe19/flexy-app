@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Enter Credentials'),
+        title: Text('Login'),
       ),
       body: (_stayLoggedIn == null)
           ? LoadingBody()
@@ -137,6 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget emailAndPassword() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           TextField(
             controller: _emailController,
