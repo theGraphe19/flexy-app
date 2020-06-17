@@ -10,6 +10,7 @@ import '../utils/form_validator.dart';
 import '../models/user.dart';
 import './registration_form_page2.dart';
 import '../HTTP_handler.dart';
+import './start_screen.dart';
 
 class RegistrationFormPag1 extends StatefulWidget {
   static const routeName = '/registration-form-page1';
@@ -72,25 +73,31 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
       currentUser = new User();
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Flexy - Register'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(15.0),
-          padding: const EdgeInsets.all(10.0),
-          child: Form(
-            key: _formKey,
-            autovalidate: _autoValidate,
-            child: formUI(),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).popAndPushNamed(StartScreen.routeName);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Flexy - Register'),
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(10.0),
+            child: Form(
+              key: _formKey,
+              autovalidate: _autoValidate,
+              child: formUI(),
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _validateInput,
-        label: Text('Next'),
-        icon: Icon(Icons.chevron_right),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: _validateInput,
+          label: Text('Next'),
+          icon: Icon(Icons.chevron_right),
+        ),
       ),
     );
   }
