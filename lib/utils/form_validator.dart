@@ -8,7 +8,7 @@ class FormValidator {
 
   String validateMobile(String value) {
     if (value.length != 10)
-      return 'Enter a Valid Number';
+      return 'Enter 10 digit Mobile Number';
     else
       return null;
   }

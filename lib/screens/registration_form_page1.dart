@@ -1,14 +1,15 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:toast/toast.dart';
 
 import '../utils/form_validator.dart';
 import '../models/user.dart';
 import './registration_form_page2.dart';
+import '../HTTP_handler.dart';
 
 class RegistrationFormPag1 extends StatefulWidget {
   static const routeName = '/registration-form-page1';
@@ -25,6 +26,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
 
   var _designation = '';
   var _photoIdType = '';
+  List<String> mobiles = [];
 
   Future<File> imageFile;
 
@@ -34,6 +36,26 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
         source: source,
         imageQuality: 50,
       );
+    });
+  }
+
+  bool _checkMobileAvailability(String inputNumber) {
+    for (var i = 0; i < mobiles.length; i++) {
+      if (mobiles[i].contains(inputNumber) &&
+          inputNumber.contains(mobiles[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    HTTPHandler().getMobiles().then((List<String> serverValues) {
+      print(serverValues.toString());
+      mobiles = serverValues;
     });
   }
 
@@ -169,7 +191,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             titleText: 'Photo Id',
             autovalidate: false,
             hintText: 'Please select any one',
-            validator: (value) => _validator.validateDropDownSelector(value),
+            // validator: (value) => _validator.validateDropDownSelector(value),
             value: _photoIdType,
             onSaved: (value) {
               setState(() {
@@ -214,7 +236,21 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   void _validateInput() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      if (currentUser.photoLocation != null)
+      if (currentUser.photoLocation == null)
+        Toast.show(
+          "Please add a photo ID",
+          context,
+          duration: Toast.LENGTH_SHORT,
+          gravity: Toast.CENTER,
+        );
+      else if (!_checkMobileAvailability(currentUser.mobileNo))
+        Toast.show(
+          "Mobile Number already exists!",
+          context,
+          duration: Toast.LENGTH_SHORT,
+          gravity: Toast.CENTER,
+        );
+      else
         Navigator.of(context).popAndPushNamed(
           RegistrationFormPart2.routeName,
           arguments: currentUser,

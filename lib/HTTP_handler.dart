@@ -14,6 +14,21 @@ class HTTPHandler {
   Dio _dio = Dio();
   List<Product> productList = [];
 
+  Future<List<String>> getMobiles() async {
+    try {
+      List<String> mobiles = [];
+      Response response = await _dio.get(getMobilesUrl);
+
+      for (var i = 0; i < response.data.length; i++)
+        mobiles.add(response.data[i]['mobile']);
+
+      return mobiles;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   Future<String> registerUser(User user) async {
     print(user.photoLocation);
     print(user.visitingCardLocation);

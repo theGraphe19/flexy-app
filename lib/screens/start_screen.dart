@@ -26,7 +26,7 @@ class StartScreen extends StatelessWidget {
             SizedBox(height: 20.0),
             GestureDetector(
               onTap: () => Navigator.of(context)
-                  .popAndPushNamed(RegistrationFormPag1.routeName),
+                  .pushNamed(RegistrationFormPag1.routeName),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 20.0,

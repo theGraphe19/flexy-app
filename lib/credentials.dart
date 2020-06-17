@@ -1,4 +1,5 @@
 const MSG91_API_KEY = "314319Asz8t1bwU0qU5e27d970P1";
+const getMobilesUrl = "https://developers.thegraphe.com/flexy/getmobiles";
 const registerUrl = "https://developers.thegraphe.com/flexy/reg";
 const loginUrl = "https://developers.thegraphe.com/flexy/login";
 const logOutUrl = "https://developers.thegraphe.com/flexy/logout?api_token=";
