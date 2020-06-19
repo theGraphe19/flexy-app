@@ -27,6 +27,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
 
   var _firmNomenclature = '';
   var _tradeCategory = '';
+  String path;
 
   Future<File> imageFile;
 
@@ -49,6 +50,9 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
 
     if (currentUser.tradeCategory != null)
       _tradeCategory = currentUser.tradeCategory;
+
+    if (currentUser.visitingCardLocation != null)
+      path = currentUser.visitingCardLocation;
 
     return Scaffold(
       appBar: AppBar(
@@ -109,7 +113,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
             ),
           ),
           SizedBox(height: 10.0),
-          (imageFile != null)
+          (imageFile != null || path != null)
               ? Container(
                   width: double.infinity,
                   child: Align(
@@ -126,7 +130,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
                   ),
                 )
               : Container(),
-          (imageFile != null) ? imagePreview() : Container(),
+          (imageFile != null || path != null) ? imagePreview() : Container(),
           SizedBox(height: 10.0),
           TextFormField(
             initialValue:
@@ -307,51 +311,90 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
       });
 
   Widget imagePreview() {
-    return FutureBuilder<File>(
-      future: imageFile,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.data != null)
-          currentUser.visitingCardLocation = snapshot.data.path;
-        return Stack(
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: 400.0,
-              decoration: (imageFile != null && snapshot.data != null)
-                  ? BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(5.0),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(snapshot.data),
-                      ),
-                    )
-                  : BoxDecoration(),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 10.0,
-              ),
-              width: double.infinity,
-              height: 400.0,
-              color: Colors.transparent,
-              child: Align(
-                alignment: Alignment.topRight,
-                child: FlatButton.icon(
-                  onPressed: () {
-                    _showModalSheet(context);
-                  },
-                  icon: Icon(Icons.edit),
-                  label: Text(
-                    'Change Image',
+    return (imageFile != null)
+        ? FutureBuilder<File>(
+            future: imageFile,
+            builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+              if (snapshot.data != null)
+                currentUser.visitingCardLocation = snapshot.data.path;
+              return Stack(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    height: 400.0,
+                    decoration: (imageFile != null && snapshot.data != null)
+                        ? BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(5.0),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: FileImage(snapshot.data),
+                            ),
+                          )
+                        : BoxDecoration(),
                   ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 10.0,
+                    ),
+                    width: double.infinity,
+                    height: 400.0,
+                    color: Colors.transparent,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FlatButton.icon(
+                        onPressed: () {
+                          _showModalSheet(context);
+                        },
+                        icon: Icon(Icons.edit),
+                        label: Text(
+                          'Change Image',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        : (path != null)
+            ? Stack(
+                children: <Widget>[
+                  Container(
+                      width: double.infinity,
+                      height: 400.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5.0),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: FileImage(File(path)),
+                        ),
+                      )),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 10.0,
+                    ),
+                    width: double.infinity,
+                    height: 400.0,
+                    color: Colors.transparent,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FlatButton.icon(
+                        onPressed: () {
+                          _showModalSheet(context);
+                        },
+                        icon: Icon(Icons.edit),
+                        label: Text(
+                          'Change Image',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Container();
   }
 }

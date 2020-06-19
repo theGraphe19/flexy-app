@@ -28,6 +28,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   var _designation = '';
   var _photoIdType = '';
   List<String> mobiles = [];
+  String path;
 
   Future<File> imageFile;
 
@@ -69,6 +70,8 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
 
       if (currentUser.photoIdType != null)
         _photoIdType = currentUser.photoIdType;
+
+      if (currentUser.photoLocation != null) path = currentUser.photoLocation;
     } else {
       currentUser = new User();
     }
@@ -236,7 +239,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             valueField: "value",
           ),
           SizedBox(height: 10.0),
-          (imageFile != null)
+          (imageFile != null || path != null)
               ? Container(
                   width: double.infinity,
                   child: Align(
@@ -254,7 +257,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
                 )
               : Container(),
           SizedBox(height: 10.0),
-          (imageFile != null) ? imagePreview() : Container(),
+          (imageFile != null || path != null) ? imagePreview() : Container(),
         ],
       );
 
@@ -376,6 +379,43 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
               );
             },
           )
-        : Container();
+        : (path != null)
+            ? Stack(
+                children: <Widget>[
+                  Container(
+                      width: double.infinity,
+                      height: 400.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5.0),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: FileImage(File(path)),
+                        ),
+                      )),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 10.0,
+                    ),
+                    width: double.infinity,
+                    height: 400.0,
+                    color: Colors.transparent,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FlatButton.icon(
+                        onPressed: () {
+                          _showModalSheet(context);
+                        },
+                        icon: Icon(Icons.edit),
+                        label: Text(
+                          'Change Image',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Container();
   }
 }
