@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -108,7 +107,25 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
                   : 'Add Visiting Card'),
             ),
           ),
-          (visitingPressed) ? imagePreview() : Container(),
+          SizedBox(height: 10.0),
+          (imageFile != null)
+              ? Container(
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: FlatButton.icon(
+                      onPressed: () {
+                        print('close pressed');
+                        imageFile = null;
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.clear),
+                      label: Text('Remove'),
+                    ),
+                  ),
+                )
+              : Container(),
+          (imageFile != null) ? imagePreview() : Container(),
           SizedBox(height: 10.0),
           TextFormField(
             initialValue:
@@ -218,6 +235,10 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
                   onSaved: (String val) => currentUser.noOfStores = val,
                 )
               : Container(),
+          (_tradeCategory.endsWith("Boutique") ||
+                  _tradeCategory.endsWith("Retailer"))
+              ? SizedBox(height: 50.0)
+              : Container(),
         ],
       );
 
@@ -283,19 +304,44 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.data != null)
           currentUser.visitingCardLocation = snapshot.data.path;
-        return Container(
-          width: double.infinity,
-          height: (imageFile != null && snapshot.data != null) ? 400.0 : 0.0,
-          decoration: (imageFile != null && snapshot.data != null)
-              ? BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5.0),
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: FileImage(snapshot.data),
+        return Stack(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              height: 400.0,
+              decoration: (imageFile != null && snapshot.data != null)
+                  ? BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(5.0),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: FileImage(snapshot.data),
+                      ),
+                    )
+                  : BoxDecoration(),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 10.0,
+              ),
+              width: double.infinity,
+              height: 400.0,
+              color: Colors.transparent,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: FlatButton.icon(
+                  onPressed: () {
+                    _showModalSheet(context);
+                  },
+                  icon: Icon(Icons.edit),
+                  label: Text(
+                    'Change Image',
                   ),
-                )
-              : BoxDecoration(),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
