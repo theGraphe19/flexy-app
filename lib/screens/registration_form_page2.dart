@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:toast/toast.dart';
 
 import '../models/user.dart';
 import '../utils/form_validator.dart';
@@ -249,6 +250,13 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
         Navigator.of(context).popAndPushNamed(
           RegistrationFormPage3.routeName,
           arguments: currentUser,
+        );
+      else
+        Toast.show(
+          "Please add a visiting card!",
+          context,
+          duration: Toast.LENGTH_SHORT,
+          gravity: Toast.CENTER,
         );
     } else {
       setState(() {
