@@ -1,7 +1,7 @@
 class FormValidator {
-  String validateName(String value) {
+  String validateName(String name, String value) {
     if (value.length < 3)
-      return 'Name must be more than 2 charater';
+      return '$name must be more than 2 charater';
     else
       return null;
   }
@@ -9,6 +9,13 @@ class FormValidator {
   String validateMobile(String value) {
     if (value.length != 10)
       return 'Enter 10 digit Mobile Number';
+    else
+      return null;
+  }
+
+  String validateLandLine(String value) {
+    if (value.length != 10)
+      return 'StateCode - Number';
     else
       return null;
   }
@@ -48,8 +55,7 @@ class FormValidator {
   }
 
   String validatePIN(String value) {
-    Pattern pattern =
-        r'^[1-9][0-9]{5}$';
+    Pattern pattern = r'^[1-9][0-9]{5}$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
       return 'Enter Valid PINCODE';

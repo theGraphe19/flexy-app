@@ -116,7 +116,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.text,
-            validator: (value) => _validator.validateName(value),
+            validator: (value) => _validator.validateName('Name', value),
             onSaved: (String val) => currentUser.name = val,
           ),
           SizedBox(height: 10.0),

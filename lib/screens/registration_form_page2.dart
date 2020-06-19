@@ -140,7 +140,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.text,
-            validator: (value) => _validator.validateName(value),
+            validator: (value) => _validator.validateName('Firm Name', value),
             onSaved: (String val) => currentUser.firmName = val,
           ),
           SizedBox(height: 10.0),
