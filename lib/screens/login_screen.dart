@@ -10,6 +10,7 @@ import '../widgets/loading_body.dart';
 enum ForgotPassword {
   notForgot,
   forgotAndNotVerified,
+  waitingForOTP,
 }
 
 class LoginScreen extends StatefulWidget {
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
+  var _mobileController = TextEditingController();
   var _otpController = TextEditingController();
 
   ProgressDialog progressDialog;
@@ -108,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _mobileController.dispose();
     _otpController.dispose();
     super.dispose();
   }
@@ -142,16 +145,61 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.all(12.0),
                   child: (status == ForgotPassword.notForgot)
                       ? emailAndPassword()
-                      : otpVerify(),
+                      : (status == ForgotPassword.forgotAndNotVerified)
+                          ? otpVerify()
+                          : otpCheck(),
                 ),
     );
   }
+
+  Widget otpCheck() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TextField(
+            controller: _otpController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'Enter OTP'),
+          ),
+          SizedBox(height: 20.0),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsets.only(right: 10.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: FlatButton(
+                child: Text(
+                  'VERIFY OTP',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () async {
+                  print('verify otp');
+                  if (_otpController.text == '') {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Enter OTP first'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 5),
+                    ));
+                  } else {
+                    _handler
+                        .verifyOTP(_mobileController.text, _otpController.text)
+                        .then((value) => print(value));
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      );
 
   Widget otpVerify() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           TextField(
-            controller: _otpController,
+            controller: _mobileController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(hintText: 'Enter Mobile Number'),
           ),
@@ -172,14 +220,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: () async {
                   print('req otp');
-                  if (_otpController.text == '') {
+                  if (_mobileController.text == '') {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text('Enter a number'),
                       backgroundColor: Colors.red,
                       duration: Duration(seconds: 5),
                     ));
                   } else {
-                    _handler.requestPwdChangeOTP(_otpController.text);
+                    _handler
+                        .requestPwdChangeOTP(_mobileController.text)
+                        .then((int uid) {
+                      if (uid == null) {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('Network error! Try again.'),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 5),
+                        ));
+                      } else {
+                        status = ForgotPassword.waitingForOTP;
+                        setState(() {});
+                      }
+                    });
                   }
                 },
               ),

@@ -136,8 +136,11 @@ class HTTPHandler {
   }
 
   Future<bool> verifyOTP(String mobileNo, String otp) async {
+    print(mobileNo + ' => ' + otp);
     Response response =
         await _dio.post('$verifyOTPUrl&mobile=$mobileNo&otp=$otp');
+
+    print(response);
 
     if (json.decode(response.data)['type'].contains('success')) {
       return true;
@@ -244,7 +247,7 @@ class HTTPHandler {
       data: formData,
     );
 
-    print(response);
+    print((response.data)['uid']);
 
     if ((response.data).containsKey('uid')) {
       return (response.data)['uid'];
