@@ -233,4 +233,23 @@ class HTTPHandler {
     print(bills.toString());
     return bills;
   }
+
+  Future<int> requestPwdChangeOTP(String mobileNo) async {
+    FormData formData = FormData.fromMap({
+      'mobileNo': mobileNo,
+    });
+
+    Response response = await _dio.post(
+      forgetPwdOTP,
+      data: formData,
+    );
+
+    print(response);
+
+    if ((response.data).containsKey('uid')) {
+      return (response.data)['uid'];
+    } else {
+      return null;
+    }
+  }
 }

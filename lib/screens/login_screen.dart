@@ -7,6 +7,11 @@ import '../HTTP_handler.dart';
 import '../models/user.dart';
 import '../widgets/loading_body.dart';
 
+enum ForgotPassword {
+  notForgot,
+  forgotAndNotVerified,
+}
+
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
 
@@ -20,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
+  var _otpController = TextEditingController();
 
   ProgressDialog progressDialog;
 
@@ -28,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _checkedValue = false;
 
   bool _stayLoggedIn;
+
+  var status = ForgotPassword.notForgot;
 
   void _storeData(
     String token,
@@ -100,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
 
@@ -131,10 +140,53 @@ class _LoginScreenState extends State<LoginScreen> {
               ? LoadingBody()
               : Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: emailAndPassword(),
+                  child: (status == ForgotPassword.notForgot)
+                      ? emailAndPassword()
+                      : otpVerify(),
                 ),
     );
   }
+
+  Widget otpVerify() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TextField(
+            controller: _otpController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'Enter Mobile Number'),
+          ),
+          SizedBox(height: 20.0),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsets.only(right: 10.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: FlatButton(
+                child: Text(
+                  'REQUEST OTP',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () async {
+                  print('req otp');
+                  if (_otpController.text == '') {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Enter a number'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 5),
+                    ));
+                  } else {
+                    _handler.requestPwdChangeOTP(_otpController.text);
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      );
 
   Widget emailAndPassword() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -152,6 +204,25 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: InputDecoration(hintText: 'Password'),
           ),
           SizedBox(height: 20.0),
+          Container(
+            padding: const EdgeInsets.only(right: 5.0),
+            width: MediaQuery.of(context).size.width,
+            child: GestureDetector(
+              onTap: () {
+                print('forgot password');
+                status = ForgotPassword.forgotAndNotVerified;
+                setState(() {});
+              },
+              child: Text(
+                'Forgot Password?',
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  color: Colors.blue[800],
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ),
           CheckboxListTile(
             title: Text("Remember Me"),
             value: _checkedValue,

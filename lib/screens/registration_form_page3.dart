@@ -162,6 +162,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
             validator: (value) => _validator.validateName('Name', value),
             onSaved: (String val) => currentUser.purchasePerson = val,
           ),
+          SizedBox(height: 50.0),
         ],
       );
 

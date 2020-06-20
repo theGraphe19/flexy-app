@@ -8,11 +8,15 @@ const verifyOTPUrl =
     "https://api.msg91.com/api/v5/otp/verify?authkey=$MSG91_API_KEY&sender=FLEXYM&";
 const getProductsListUrl =
     "https://developers.thegraphe.com/flexy/neworder?api_token=";
-const getProductDetailsUrl = "https://developers.thegraphe.com/flexy/proddetails/";
-const placeorderUrl = "https://developers.thegraphe.com/flexy/placeorder";   
-const addRemarkUrl = "https://developers.thegraphe.com/flexy/addremarks"; 
-const getMyOrdersUrl = "https://developers.thegraphe.com/flexy/myorders?api_token=";
+const getProductDetailsUrl =
+    "https://developers.thegraphe.com/flexy/proddetails/";
+const placeorderUrl = "https://developers.thegraphe.com/flexy/placeorder";
+const addRemarkUrl = "https://developers.thegraphe.com/flexy/addremarks";
+const getMyOrdersUrl =
+    "https://developers.thegraphe.com/flexy/myorders?api_token=";
 
-const productImagesURL = 'https://developers.thegraphe.com/flexy/storage/app/product_images/';
+const productImagesURL =
+    'https://developers.thegraphe.com/flexy/storage/app/product_images/';
 const billUrl = "https://developers.thegraphe.com/flexy/showbill";
 const billDownloadUrl = 'https://developers.thegraphe.com/flexy/billdwnld';
+const forgetPwdOTP = 'https://developers.thegraphe.com/flexy/frgtpassOTP';
