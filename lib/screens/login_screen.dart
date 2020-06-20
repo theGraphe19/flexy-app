@@ -11,6 +11,7 @@ enum ForgotPassword {
   notForgot,
   forgotAndNotVerified,
   waitingForOTP,
+  verified,
 }
 
 class LoginScreen extends StatefulWidget {
@@ -28,6 +29,10 @@ class _LoginScreenState extends State<LoginScreen> {
   var _passwordController = TextEditingController();
   var _mobileController = TextEditingController();
   var _otpController = TextEditingController();
+  var _newPasswordController = TextEditingController();
+  var _confirmNewPasswordController = TextEditingController();
+
+  var _uid;
 
   ProgressDialog progressDialog;
 
@@ -112,6 +117,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     _mobileController.dispose();
     _otpController.dispose();
+    _newPasswordController.dispose();
+    _confirmNewPasswordController.dispose();
     super.dispose();
   }
 
@@ -147,10 +154,105 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? emailAndPassword()
                       : (status == ForgotPassword.forgotAndNotVerified)
                           ? otpVerify()
-                          : otpCheck(),
+                          : (status == ForgotPassword.waitingForOTP)
+                              ? otpCheck()
+                              : newPassword(),
                 ),
     );
   }
+
+  Widget newPassword() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TextField(
+            obscureText: true,
+            controller: _newPasswordController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(hintText: 'New Password'),
+          ),
+          SizedBox(height: 20.0),
+          TextField(
+            obscureText: true,
+            controller: _confirmNewPasswordController,
+            keyboardType: TextInputType.visiblePassword,
+            decoration: InputDecoration(hintText: 'Confirm Password'),
+          ),
+          SizedBox(height: 20.0),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsets.only(right: 10.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: FlatButton(
+                child: Text(
+                  'CHANGE PASSWORD',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  print('ok');
+                  if (_newPasswordController.text == '') {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Password field is empty!'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 5),
+                    ));
+                  } else if (_confirmNewPasswordController.text == '') {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Confirm Password field is empty!'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 5),
+                    ));
+                  } else if (!_newPasswordController.text
+                          .contains(_confirmNewPasswordController.text) ||
+                      !_confirmNewPasswordController.text
+                          .contains(_newPasswordController.text)) {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Password don\'t match!'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 5),
+                    ));
+                  } else if (_newPasswordController.text.length < 8) {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Password should be atleast 8 characters!'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 5),
+                    ));
+                  } else {
+                    // go for kill
+                    _handler
+                        .changePassword(_uid, _newPasswordController.text)
+                        .then((bool passwordUpdated) {
+                      print(passwordUpdated);
+                      if (passwordUpdated) {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content:
+                              Text('Password updated! Please login again.'),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 5),
+                        ));
+                        status = ForgotPassword.notForgot;
+                        setState(() {});
+                      } else {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('Network error! Try again later.'),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 5),
+                        ));
+                        status = ForgotPassword.notForgot;
+                        setState(() {});
+                      }
+                    });
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      );
 
   Widget otpCheck() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -186,7 +288,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     _handler
                         .verifyOTP(_mobileController.text, _otpController.text)
-                        .then((value) => print(value));
+                        .then((bool verified) {
+                      print(verified);
+                      if (verified) {
+                        status = ForgotPassword.verified;
+                        setState(() {});
+                      } else {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('Wrong OTP'),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 5),
+                        ));
+                      }
+                    });
                   }
                 },
               ),
@@ -230,6 +344,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     _handler
                         .requestPwdChangeOTP(_mobileController.text)
                         .then((int uid) {
+                      _uid = uid;
                       if (uid == null) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text('Network error! Try again.'),

@@ -255,4 +255,23 @@ class HTTPHandler {
       return null;
     }
   }
+
+  Future<bool> changePassword(int uid, String password) async {
+    FormData formData = FormData.fromMap({
+      'password': password,
+    });
+
+    Response response = await _dio.post(
+      '$changePwdUrl?id=$uid',
+      data: formData,
+    );
+
+    print(response.data);
+
+    if ((response.data)['status'].contains('success')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

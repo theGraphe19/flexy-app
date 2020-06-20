@@ -20,3 +20,4 @@ const productImagesURL =
 const billUrl = "https://developers.thegraphe.com/flexy/showbill";
 const billDownloadUrl = 'https://developers.thegraphe.com/flexy/billdwnld';
 const forgetPwdOTP = 'https://developers.thegraphe.com/flexy/frgtpassOTP';
+const changePwdUrl = 'https://developers.thegraphe.com/flexy/changepassword';
