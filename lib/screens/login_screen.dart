@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           Navigator.of(context).popAndPushNamed(
             ProductsScreen.routeName,
-            arguments: user.token,
+            arguments: user,
           );
         }
       }).catchError((onError) async {
@@ -452,7 +452,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       await progressDialog.hide();
                       Navigator.of(context).popAndPushNamed(
                         ProductsScreen.routeName,
-                        arguments: user.token,
+                        arguments: user,
                       );
                     }
                   }).catchError((onError) async {

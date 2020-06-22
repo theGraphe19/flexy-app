@@ -21,6 +21,8 @@ class User {
   String purchasePerson;
   String password;
   String token;
+  int status;
+  int category;
 
   User({
     this.id,
@@ -45,6 +47,8 @@ class User {
     this.purchasePerson,
     this.password,
     this.token,
+    this.status,
+    this.category,
   });
 
   void mapToUser(Map<dynamic, dynamic> map) {
@@ -69,5 +73,7 @@ class User {
     this.pincode = map['pincode'];
     this.agentName = map['agentName'];
     this.purchasePerson = map['purchasePerson'];
+    this.status = int.parse(map['status']);
+    this.category = int.parse(map['category']);
   }
 }
