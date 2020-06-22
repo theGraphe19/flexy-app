@@ -84,8 +84,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.number,
-            validator: (value) => _validator
-                .validateNumber(value), //TODO - chnage to GSTVALIDATOR
+            validator: (value) => _validator.validateGST(value),
             onSaved: (String val) => currentUser.gstNo = val,
           ),
           SizedBox(height: 10.0),

@@ -240,10 +240,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
                   onSaved: (String val) => currentUser.noOfStores = val,
                 )
               : Container(),
-          (_tradeCategory.endsWith("Boutique") ||
-                  _tradeCategory.endsWith("Retailer"))
-              ? SizedBox(height: 50.0)
-              : Container(),
+          SizedBox(height: 50.0),
         ],
       );
 
