@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import '../models/user.dart';
 import '../utils/form_validator.dart';
@@ -65,6 +66,19 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
 
   Widget formUI() => Column(
         children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(15.0),
+            child: new LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width - 80,
+              animation: true,
+              lineHeight: 20.0,
+              animationDuration: 1500,
+              percent: 1.0,
+              center: Text("3 / 3"),
+              linearStrokeCap: LinearStrokeCap.roundAll,
+              progressColor: Colors.blue,
+            ),
+          ),
           TextFormField(
             initialValue:
                 (currentUser.landlineNo != null) ? currentUser.landlineNo : '',
