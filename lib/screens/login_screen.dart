@@ -3,6 +3,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './products_screen.dart';
+import './categories_screen.dart';
 import '../HTTP_handler.dart';
 import '../models/user.dart';
 import '../widgets/loading_body.dart';
@@ -85,8 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
             password,
           );
           Navigator.of(context).popAndPushNamed(
-            ProductsScreen.routeName,
-            arguments: user.token,
+            CategoriesScreen.routeName,
+            arguments: user,
           );
         }
       }).catchError((onError) async {
@@ -451,8 +452,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                       await progressDialog.hide();
                       Navigator.of(context).popAndPushNamed(
-                        ProductsScreen.routeName,
-                        arguments: user.token,
+                        CategoriesScreen.routeName,
+                        arguments: user,
                       );
                     }
                   }).catchError((onError) async {

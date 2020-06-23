@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:toast/toast.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import '../models/user.dart';
 import '../utils/form_validator.dart';
@@ -97,6 +98,19 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
 
   Widget formUI() => Column(
         children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(15.0),
+            child: new LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width - 80,
+              animation: true,
+              lineHeight: 20.0,
+              animationDuration: 1500,
+              percent: 0.66,
+              center: Text("2 / 3"),
+              linearStrokeCap: LinearStrokeCap.roundAll,
+              progressColor: Colors.blue,
+            ),
+          ),
           Container(
             width: double.infinity,
             child: FlatButton.icon(
@@ -240,10 +254,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
                   onSaved: (String val) => currentUser.noOfStores = val,
                 )
               : Container(),
-          (_tradeCategory.endsWith("Boutique") ||
-                  _tradeCategory.endsWith("Retailer"))
-              ? SizedBox(height: 50.0)
-              : Container(),
+          SizedBox(height: 50.0),
         ],
       );
 

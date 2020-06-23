@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toast/toast.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import '../utils/form_validator.dart';
 import '../models/user.dart';
@@ -107,6 +108,19 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
 
   Widget formUI() => Column(
         children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(15.0),
+            child: new LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width - 80,
+              animation: true,
+              lineHeight: 20.0,
+              animationDuration: 1500,
+              percent: 0.33,
+              center: Text("1 / 3"),
+              linearStrokeCap: LinearStrokeCap.roundAll,
+              progressColor: Colors.blue,
+            ),
+          ),
           TextFormField(
             initialValue: (currentUser != null && currentUser.name != null)
                 ? currentUser.name

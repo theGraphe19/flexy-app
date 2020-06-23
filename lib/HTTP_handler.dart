@@ -8,11 +8,13 @@ import './models/product.dart';
 import './models/product_details.dart';
 import './models/order.dart';
 import './models/bill.dart';
+import './models/category.dart';
 
 class HTTPHandler {
   User currentUser = User();
   Dio _dio = Dio();
   List<Product> productList = [];
+  String baseURL = 'https://developers.thegraphe.com/flexy';
 
   Future<List<String>> getMobiles() async {
     try {
@@ -147,6 +149,17 @@ class HTTPHandler {
     } else {
       return false;
     }
+  }
+
+  Future<List<Category>> getCategoriesList(String token) async {
+    Response response = await _dio.get('$baseURL/categories?api_token=$token');
+
+    List<Category> categories = [];
+    for (var i = 0; i < (response.data).length; i++)
+      categories.add(Category.frommap((response.data)[i]));
+
+    print(categories);
+    return categories;
   }
 
   Future<List<Product>> getProductsList(String token) async {

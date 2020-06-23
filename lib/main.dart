@@ -6,6 +6,7 @@ import './screens/registration_form_page2.dart';
 import './screens/registration_form_page3.dart';
 import './screens/otp_verification_screen.dart';
 import './screens/login_screen.dart';
+import './screens/categories_screen.dart';
 import './screens/products_screen.dart';
 import './screens/product_details_screen.dart';
 import './screens/orders_screen.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         RegistrationFormPage3.routeName: (ctx) => RegistrationFormPage3(),
         OTPVerificationScreen.routeName: (ctx) => OTPVerificationScreen(),
         LoginScreen.routeName: (ctx) => LoginScreen(),
+        CategoriesScreen.routeName: (ctx) => CategoriesScreen(),
         ProductsScreen.routeName: (ctx) => ProductsScreen(),
         ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
         OrdersScreen.routeName: (ctx) => OrdersScreen(),

@@ -6,6 +6,7 @@ import '../models/product.dart';
 import './my_orders_screen.dart';
 import './start_screen.dart';
 import '../widgets/loading_body.dart';
+import '../models/user.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -17,6 +18,7 @@ class ProductsScreen extends StatefulWidget {
 class _ProductsScreenState extends State<ProductsScreen> {
   String token = '';
   var prodListCounterCalled = false;
+  User _currentUser;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
@@ -33,47 +35,48 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    token = ModalRoute.of(context).settings.arguments;
+    _currentUser = ModalRoute.of(context).settings.arguments as User;
+    token = _currentUser.token;
     print(token);
 
     if (!prodListCounterCalled) getList();
+
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Products'),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert),
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {
-                'My Orders',
-                'LogOut',
-              }.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          ),
-        ],
-      ),
-      body: (productList == null)
-          ? LoadingBody()
-          : GridView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: productList.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 3 / 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (BuildContext context, int index) =>
-                  ProductItem(productList[index], token),
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text('Products'),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert),
+              onSelected: handleClick,
+              itemBuilder: (BuildContext context) {
+                return {
+                  'My Orders',
+                  'LogOut',
+                }.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
             ),
-    );
+          ],
+        ),
+        body: (productList == null)
+            ? LoadingBody()
+            : GridView.builder(
+                padding: const EdgeInsets.all(10.0),
+                itemCount: productList.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 3 / 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                itemBuilder: (BuildContext context, int index) =>
+                    ProductItem(productList[index], token),
+              ));
   }
 
   void handleClick(String value) {
