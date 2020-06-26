@@ -29,11 +29,17 @@ class _ProductItemState extends State<ProductItem> {
       favouriteList = json.decode(favs);
     else
       favouriteList = [];
-    favouriteList.add(widget.product.id);
-    await prefs.setString(
-        'favourites-${widget.categoryId}', json.encode(favouriteList));
+    if (!_isFavourite) {
+      favouriteList.add(widget.product.id);
+      await prefs.setString(
+          'favourites-${widget.categoryId}', json.encode(favouriteList));
+    } else {
+      favouriteList.remove(widget.product.id);
+      await prefs.setString(
+          'favourites-${widget.categoryId}', json.encode(favouriteList));
+    }
     setState(() {
-      _isFavourite = true;
+      _isFavourite = !_isFavourite;
     });
   }
 
