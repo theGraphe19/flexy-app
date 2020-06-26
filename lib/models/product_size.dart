@@ -1,23 +1,23 @@
 class ProductSize {
   String size;
-  String quantity;
-  String price;
-  String inStock;
-  bool availability;
+  int available;
+  int price;
+  int inStock;
+  String colors;
 
   ProductSize({
     this.size,
-    this.quantity,
+    this.available,
     this.price,
     this.inStock,
-    this.availability,
+    this.colors,
   });
 
-  void mapToProductSize(Map<dynamic, dynamic> map) {
+  ProductSize.mapToProductSize(Map<dynamic, dynamic> map) {
     this.size = map['size'];
-    this.quantity = map['quantity'];
-    this.price = map['price'];
-    this.inStock = map['in_stock'];
-    this.availability = map['availability'];
+    this.available = int.parse(map['available']);
+    this.price = int.parse(map['price']);
+    this.inStock = int.parse(map['in_stock']);
+    this.colors = map['colors'];
   }
 }

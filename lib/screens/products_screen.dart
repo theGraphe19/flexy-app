@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
@@ -7,6 +11,7 @@ import './my_orders_screen.dart';
 import './start_screen.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
+import '../providers/product_provider.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -16,33 +21,64 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  String token = '';
+  int categoryId;
   var prodListCounterCalled = false;
   User _currentUser;
+  var _onlyFavourites = false;
 
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
 
   List<Product> productList;
+  ProductProvider _productProvider;
 
   getList() async {
+    _onlyFavourites = false;
     prodListCounterCalled = true;
-    _handler.getProductsList(token).then((value) {
+    _handler
+        .getProductsList(context, _currentUser.token, categoryId.toString())
+        .then((value) {
       productList = value;
       setState(() {});
     });
   }
 
+  getWishlist() async {
+    _onlyFavourites = true;
+    _productProvider = Provider.of<ProductProvider>(context);
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String favs = _prefs.getString('favourites-$categoryId');
+    List<dynamic> favouriteList;
+    if (favs != null) {
+      favouriteList = json.decode(favs);
+      productList.clear();
+      for (var i = 0; i < favouriteList.length; i++)
+        productList.add(_productProvider.getProduct(favouriteList[i]));
+    } else {
+      favouriteList = null;
+      productList = null;
+    }
+    print(productList.toString());
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    _currentUser = ModalRoute.of(context).settings.arguments as User;
-    token = _currentUser.token;
-    print(token);
+    var data =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    _currentUser = data['user'];
+    print(_currentUser.token);
+    categoryId = data['category_id'];
+    print(categoryId);
 
-    if (!prodListCounterCalled) getList();
+    if (!prodListCounterCalled && !_onlyFavourites) getList();
+    // if (_onlyFavourites) {
+    //   print('get that list');
+    //   getWishlist();
+    // }
 
     return Scaffold(
-        key: _scaffoldKey,
+        key: scaffoldKey,
         appBar: AppBar(
           title: Text('Products'),
           actions: <Widget>[
@@ -51,6 +87,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               onSelected: handleClick,
               itemBuilder: (BuildContext context) {
                 return {
+                  (_onlyFavourites) ? 'All Products' : 'My Wishlist',
                   'My Orders',
                   'LogOut',
                 }.map((String choice) {
@@ -74,27 +111,40 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemBuilder: (BuildContext context, int index) =>
-                    ProductItem(productList[index], token),
+                itemBuilder: (BuildContext context, int index) => ProductItem(
+                  productList[index],
+                  _currentUser.token,
+                  categoryId,
+                  scaffoldKey,
+                ),
               ));
   }
 
   void handleClick(String value) {
     switch (value) {
+      case 'All Products':
+        getList();
+        break;
+
+      case 'My Wishlist':
+        getWishlist();
+        break;
+
       case 'My Orders':
         Navigator.of(context).pushNamed(
           MyOrdersScreen.routeName,
-          arguments: token,
+          arguments: _currentUser.token,
         );
         break;
+
       case 'LogOut':
-        _handler.logOut(token).then((loggedOut) {
+        _handler.logOut(_currentUser.token).then((loggedOut) {
           if (loggedOut)
             Navigator.of(context).popAndPushNamed(
               StartScreen.routeName,
             );
           else
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
+            scaffoldKey.currentState.showSnackBar(SnackBar(
               content: Text('LogOut failed'),
               backgroundColor: Colors.red,
               duration: Duration(seconds: 3),

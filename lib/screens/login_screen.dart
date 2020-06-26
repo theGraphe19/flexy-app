@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './products_screen.dart';
 import './categories_screen.dart';
 import '../HTTP_handler.dart';
 import '../models/user.dart';
@@ -52,13 +51,22 @@ class _LoginScreenState extends State<LoginScreen> {
     String password,
   ) async {
     prefs = await SharedPreferences.getInstance();
-    await prefs.clear().then((isCleared) async {
-      await prefs.setBool('loggedIn', loggedIn);
-      await prefs.setString('loggedInEmail', email);
-      await prefs.setString('loggedInPassword', password);
-      await prefs.setString('token', token);
-      print('data stored');
-    });
+    await prefs.remove('loggedIn');
+    await prefs.remove('loggedInEmail');
+    await prefs.remove('loggedInPassword');
+    await prefs.remove('token');
+    await prefs.setBool('loggedIn', loggedIn);
+    await prefs.setString('loggedInEmail', email);
+    await prefs.setString('loggedInPassword', password);
+    await prefs.setString('token', token);
+    print('data stored');
+    // await prefs.clear().then((isCleared) async {
+    //   await prefs.setBool('loggedIn', loggedIn);
+    //   await prefs.setString('loggedInEmail', email);
+    //   await prefs.setString('loggedInPassword', password);
+    //   await prefs.setString('token', token);
+    //   print('data stored');
+    // });
     print(prefs.getBool('loggedIn'));
     print(prefs.getString('token'));
   }

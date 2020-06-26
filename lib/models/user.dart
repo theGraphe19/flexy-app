@@ -74,6 +74,6 @@ class User {
     this.agentName = map['agentName'];
     this.purchasePerson = map['purchasePerson'];
     this.status = int.parse(map['status']);
-    this.category = int.parse(map['category']);
+    this.category = int.parse(map['mem']);
   }
 }
