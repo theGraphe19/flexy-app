@@ -35,6 +35,10 @@ class ProductItem extends StatelessWidget {
         footer: GridTileBar(
           backgroundColor: Colors.black54,
           title: Text(product.name),
+          trailing: Icon(
+            Icons.favorite,
+            color: Colors.white,
+          ),
         ),
       ),
     );

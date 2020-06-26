@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
@@ -7,6 +8,7 @@ import './my_orders_screen.dart';
 import './start_screen.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
+import '../providers/product_provider.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -24,10 +26,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
   HTTPHandler _handler = HTTPHandler();
 
   List<Product> productList;
+  ProductProvider _productProvider;
 
   getList() async {
     prodListCounterCalled = true;
-    _handler.getProductsList(_currentUser.token, categoryId.toString()).then((value) {
+    _handler
+        .getProductsList(context, _currentUser.token, categoryId.toString())
+        .then((value) {
       productList = value;
       setState(() {});
     });
@@ -43,6 +48,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
     print(categoryId);
 
     if (!prodListCounterCalled) getList();
+    if (prodListCounterCalled) {
+      _productProvider = Provider.of<ProductProvider>(context);
+      print(_productProvider.products.toString());
+    }
 
     return Scaffold(
         key: _scaffoldKey,

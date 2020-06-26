@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import './credentials.dart';
+import './providers/product_provider.dart';
 import './models/user.dart';
 import './models/product.dart';
 import './models/product_details.dart';
@@ -162,9 +165,14 @@ class HTTPHandler {
     return categories;
   }
 
-  Future<List<Product>> getProductsList(String token, String categoryId) async {
+  Future<List<Product>> getProductsList(
+      BuildContext context, String token, String categoryId) async {
     productList.clear();
-    Response response = await _dio.get('$baseURL/prodpercategory/$categoryId?api_token=$token');
+    Response response =
+        await _dio.get('$baseURL/prodpercategory/$categoryId?api_token=$token');
+
+    final productProvider =
+        Provider.of<ProductProvider>(context, listen: false);
 
     print(response.data);
     for (var i = 0; i < (response.data).length; i++) {
@@ -172,6 +180,9 @@ class HTTPHandler {
       product.mapToProduct((response.data)[i]);
       productList.add(product);
     }
+
+    productProvider.clear();
+    productProvider.addItem(productList);
     return productList;
   }
 
