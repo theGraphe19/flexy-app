@@ -17,14 +17,13 @@ class ProductProvider with ChangeNotifier {
     print('Products added successfully');
   }
 
-  void removeProduct(int productId) {
-    print('removing item');
-    _products.remove(productId.toString());
-    notifyListeners();
+  Product getProduct(String productId) {
+    return _products[productId];
   }
 
   void clear() {
     _products = {};
+    _productList = [];
     notifyListeners();
   }
 }

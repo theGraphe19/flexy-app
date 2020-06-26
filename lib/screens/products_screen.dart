@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
@@ -21,6 +24,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   int categoryId;
   var prodListCounterCalled = false;
   User _currentUser;
+  var _onlyFavourites = false;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
@@ -29,6 +33,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   ProductProvider _productProvider;
 
   getList() async {
+    _onlyFavourites = false;
     prodListCounterCalled = true;
     _handler
         .getProductsList(context, _currentUser.token, categoryId.toString())
@@ -36,6 +41,25 @@ class _ProductsScreenState extends State<ProductsScreen> {
       productList = value;
       setState(() {});
     });
+  }
+
+  getWishlist() async {
+    _onlyFavourites = true;
+    _productProvider = Provider.of<ProductProvider>(context);
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String favs = _prefs.getString('favourites-$categoryId');
+    List<dynamic> favouriteList;
+    if (favs != null) {
+      favouriteList = json.decode(favs);
+      productList.clear();
+      for (var i = 0; i < favouriteList.length; i++)
+        productList.add(_productProvider.getProduct(favouriteList[i]));
+    } else {
+      favouriteList = null;
+      productList = null;
+    }
+    print(productList.toString());
+    setState(() {});
   }
 
   @override
@@ -47,11 +71,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
     categoryId = data['category_id'];
     print(categoryId);
 
-    if (!prodListCounterCalled) getList();
-    if (prodListCounterCalled) {
-      _productProvider = Provider.of<ProductProvider>(context);
-      print(_productProvider.products.toString());
-    }
+    if (!prodListCounterCalled && !_onlyFavourites) getList();
+    // if (_onlyFavourites) {
+    //   print('get that list');
+    //   getWishlist();
+    // }
 
     return Scaffold(
         key: scaffoldKey,
@@ -63,6 +87,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               onSelected: handleClick,
               itemBuilder: (BuildContext context) {
                 return {
+                  (_onlyFavourites) ? 'All Products' : 'My Wishlist',
                   'My Orders',
                   'LogOut',
                 }.map((String choice) {
@@ -97,12 +122,21 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   void handleClick(String value) {
     switch (value) {
+      case 'All Products':
+        getList();
+        break;
+
+      case 'My Wishlist':
+        getWishlist();
+        break;
+
       case 'My Orders':
         Navigator.of(context).pushNamed(
           MyOrdersScreen.routeName,
           arguments: _currentUser.token,
         );
         break;
+
       case 'LogOut':
         _handler.logOut(_currentUser.token).then((loggedOut) {
           if (loggedOut)
