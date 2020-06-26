@@ -18,10 +18,10 @@ class ProductDetails {
   }
 
   void mapToProductDetails(Map<dynamic, dynamic> map) {
-    product.mapToDetails(map['product']);
+    //product.mapToDetails(map['product']);     
     for (var i = 0; i < map['product_sizes'].length; i++) {
       ProductSize productSize = ProductSize();
-      productSize.mapToProductSize(map['product_sizes'][i]);
+      //productSize.mapToProductSize(map['product_sizes'][i]);
       productSizeList.add(productSize);
     }
     productImages = map['product_images'];

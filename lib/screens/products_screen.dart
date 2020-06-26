@@ -16,7 +16,7 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  String token = '';
+  int categoryId;
   var prodListCounterCalled = false;
   User _currentUser;
 
@@ -27,7 +27,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   getList() async {
     prodListCounterCalled = true;
-    _handler.getProductsList(token).then((value) {
+    _handler.getProductsList(_currentUser.token, categoryId.toString()).then((value) {
       productList = value;
       setState(() {});
     });
@@ -35,9 +35,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _currentUser = ModalRoute.of(context).settings.arguments as User;
-    token = _currentUser.token;
-    print(token);
+    var data =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    _currentUser = data['user'];
+    print(_currentUser.token);
+    categoryId = data['category_id'];
+    print(categoryId);
 
     if (!prodListCounterCalled) getList();
 
@@ -75,7 +78,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   mainAxisSpacing: 10,
                 ),
                 itemBuilder: (BuildContext context, int index) =>
-                    ProductItem(productList[index], token),
+                    ProductItem(productList[index], _currentUser.token),
               ));
   }
 
@@ -84,11 +87,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
       case 'My Orders':
         Navigator.of(context).pushNamed(
           MyOrdersScreen.routeName,
-          arguments: token,
+          arguments: _currentUser.token,
         );
         break;
       case 'LogOut':
-        _handler.logOut(token).then((loggedOut) {
+        _handler.logOut(_currentUser.token).then((loggedOut) {
           if (loggedOut)
             Navigator.of(context).popAndPushNamed(
               StartScreen.routeName,

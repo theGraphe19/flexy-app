@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './products_screen.dart';
 import './categories_screen.dart';
 import '../HTTP_handler.dart';
 import '../models/user.dart';

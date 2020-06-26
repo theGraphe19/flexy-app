@@ -81,7 +81,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               onTap: () {
                                 Navigator.of(context).pushNamed(
                                   ProductsScreen.routeName,
-                                  arguments: _currentUser,
+                                  arguments: <String, dynamic>{
+                                    'user': _currentUser,
+                                    'category_id': categoriesList[index].id,
+                                  },
                                 );
                               },
                             );

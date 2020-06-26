@@ -5,8 +5,8 @@ import '../screens/product_details_screen.dart';
 import '../credentials.dart';
 
 class ProductItem extends StatelessWidget {
-  Product product;
-  String token;
+  final Product product;
+  final String token;
 
   ProductItem(
     this.product,
@@ -25,13 +25,12 @@ class ProductItem extends StatelessWidget {
               product,
               token,
             ],
-            //arguments: <dynamic>[product.id, token],
           ),
-          // child: Center(child: Text(product.productImages[0])),
-          child: Image.network(
-            productImagesURL + product.productImages[0],
-            fit: BoxFit.cover,
-          ),
+          child: Center(child: Text(product.subCategory)), //CHANGE TO IMAGE
+          // child: Image.network(
+          //   productImagesURL + product.productImages[0],
+          //   fit: BoxFit.cover,
+          // ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,

@@ -52,53 +52,53 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   void _confirmOrder() async {
     await progressDialog.show();
-    _handler
-        .placeOrder(
-      productDetails.product.id,
-      token,
-      _orders,
-    )
-        .then((response) async {
-      await progressDialog.show();
-      if (response['status'].contains('success')) {
-        setState(() {
-          state = OrderState.orderDone;
-        });
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('Order placed!'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 5),
-        ));
-      } else
-        _scaffoldKey.currentState
-            .showSnackBar(snackBar('Order couldn\'t be placed'));
+  //   _handler
+  //       .placeOrder(
+  //     productDetails.product.id,
+  //     token,
+  //     _orders,
+  //   )
+  //       .then((response) async {
+  //     await progressDialog.show();
+  //     if (response['status'].contains('success')) {
+  //       setState(() {
+  //         state = OrderState.orderDone;
+  //       });
+  //       _scaffoldKey.currentState.showSnackBar(SnackBar(
+  //         content: Text('Order placed!'),
+  //         backgroundColor: Colors.green,
+  //         duration: Duration(seconds: 5),
+  //       ));
+  //     } else
+  //       _scaffoldKey.currentState
+  //           .showSnackBar(snackBar('Order couldn\'t be placed'));
 
-      await progressDialog.hide();
-    });
-    await progressDialog.hide();
-  }
+  //     await progressDialog.hide();
+  //   });
+  //   await progressDialog.hide();
+  // }
 
-  void _addRemarks() async {
-    await progressDialog.show();
-    print(_remarkController.text);
-    _handler
-        .addRemarks(
-      productDetails.product.id,
-      token,
-      _remarkController.text,
-    )
-        .then((value) async {
-      await progressDialog.hide();
-      if (!value) {
-        _scaffoldKey.currentState
-            .showSnackBar(snackBar('Remarks couldn\'t be added'));
-      } else {
-        Navigator.of(context).popAndPushNamed(
-          ProductsScreen.routeName,
-          arguments: token,
-        );
-      }
-    });
+  // void _addRemarks() async {
+  //   await progressDialog.show();
+  //   print(_remarkController.text);
+  //   _handler
+  //       .addRemarks(
+  //     productDetails.product.id,
+  //     token,
+  //     _remarkController.text,
+  //   )
+  //       .then((value) async {
+  //     await progressDialog.hide();
+  //     if (!value) {
+  //       _scaffoldKey.currentState
+  //           .showSnackBar(snackBar('Remarks couldn\'t be added'));
+  //     } else {
+  //       Navigator.of(context).popAndPushNamed(
+  //         ProductsScreen.routeName,
+  //         arguments: token,
+  //       );
+  //     }
+  //   });
   }
 
   @override
@@ -141,9 +141,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
             margin: const EdgeInsets.only(right: 10.0),
             child: IconButton(
               icon: Icon(Icons.done),
-              onPressed: (state == OrderState.orderPending)
-                  ? _confirmOrder
-                  : _addRemarks,
+            //   onPressed: (state == OrderState.orderPending)
+            //       ? _confirmOrder
+            //       : _addRemarks,
             ),
           ),
           (state == OrderState.orderPending)
@@ -270,7 +270,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             SizedBox(height: 5.0),
             orderDescriptiontile('Id', productDetails.product.id.toString()),
             SizedBox(height: 5.0),
-            orderDescriptiontile('Type', productDetails.product.productType),
+            //orderDescriptiontile('Type', productDetails.product.productType),
             SizedBox(height: 5.0),
             orderDescriptiontile('Category', productDetails.product.category),
           ],
@@ -345,11 +345,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   }
                 }
 
-                if (quantity > int.parse(productSize.quantity)) {
-                  _scaffoldKey.currentState.showSnackBar(
-                      snackBar('Only ${productSize.quantity} available.'));
-                  return;
-                }
+                // if (quantity > int.parse(productSize.quantity)) {
+                //   _scaffoldKey.currentState.showSnackBar(
+                //       snackBar('Only ${productSize.quantity} available.'));
+                //   return;
+                // }
 
                 _orders.add({
                   'size': _size,

@@ -26,11 +26,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   getProductDetails() {
     productsController = true;
-    HTTPHandler().getProductDetails(product.id, token).then((value) {
-      productDetails = value;
-      print(productDetails.product.name);
-      setState(() {});
-    });
+    // HTTPHandler().getProductDetails(product.id, token).then((value) {
+    //   productDetails = value;
+    //   print(productDetails.product.name);
+    //   setState(() {});
+    // });
   }
 
   @override
@@ -98,7 +98,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           titleValue('CATEGORY', product.category),
                           SizedBox(width: 10.0),
                           //PRODUCT TYPE
-                          titleValue('TYPE', product.productType),
+                          //titleValue('TYPE', product.productType),
                         ],
                       ),
                     ],

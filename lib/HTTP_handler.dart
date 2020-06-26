@@ -162,14 +162,14 @@ class HTTPHandler {
     return categories;
   }
 
-  Future<List<Product>> getProductsList(String token) async {
+  Future<List<Product>> getProductsList(String token, String categoryId) async {
     productList.clear();
-    Response response = await _dio.get(getProductsListUrl + token);
+    Response response = await _dio.get('$baseURL/prodpercategory/$categoryId?api_token=$token');
 
     print(response.data);
-    for (var i = 0; i < response.data['products'].length; i++) {
+    for (var i = 0; i < (response.data).length; i++) {
       Product product = Product();
-      product.mapToProduct(response.data['products'][i]);
+      product.mapToProduct((response.data)[i]);
       productList.add(product);
     }
     return productList;
