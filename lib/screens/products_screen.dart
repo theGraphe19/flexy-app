@@ -22,7 +22,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   var prodListCounterCalled = false;
   User _currentUser;
 
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
 
   List<Product> productList;
@@ -54,7 +54,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
 
     return Scaffold(
-        key: _scaffoldKey,
+        key: scaffoldKey,
         appBar: AppBar(
           title: Text('Products'),
           actions: <Widget>[
@@ -90,6 +90,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   productList[index],
                   _currentUser.token,
                   categoryId,
+                  scaffoldKey,
                 ),
               ));
   }
@@ -109,7 +110,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               StartScreen.routeName,
             );
           else
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
+            scaffoldKey.currentState.showSnackBar(SnackBar(
               content: Text('LogOut failed'),
               backgroundColor: Colors.red,
               duration: Duration(seconds: 3),

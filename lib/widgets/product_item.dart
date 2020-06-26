@@ -10,8 +10,14 @@ class ProductItem extends StatefulWidget {
   final Product product;
   final String token;
   final int categoryId;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  ProductItem(this.product, this.token, this.categoryId);
+  ProductItem(
+    this.product,
+    this.token,
+    this.categoryId,
+    this.scaffoldKey,
+  );
 
   @override
   _ProductItemState createState() => _ProductItemState();
@@ -38,6 +44,12 @@ class _ProductItemState extends State<ProductItem> {
       await prefs.setString(
           'favourites-${widget.categoryId}', json.encode(favouriteList));
     }
+    widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
+          (_isFavourite) ? 'Removed from wishlist!' : 'Added to wishlist!'),
+      backgroundColor: (_isFavourite) ? Colors.yellow[700] : Colors.green,
+      duration: Duration(seconds: 2),
+    ));
     setState(() {
       _isFavourite = !_isFavourite;
     });
