@@ -23,7 +23,6 @@ class ProductProvider with ChangeNotifier {
 
   void clear() {
     _products = {};
-    _productList = [];
     notifyListeners();
   }
 }

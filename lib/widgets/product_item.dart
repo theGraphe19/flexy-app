@@ -55,8 +55,26 @@ class _ProductItemState extends State<ProductItem> {
     });
   }
 
+  void retreiveDataFromPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    String favs = prefs.getString('favourites-${widget.categoryId}');
+    List<dynamic> favouriteList;
+    if (favs != null)
+      favouriteList = json.decode(favs);
+    else
+      favouriteList = [];
+
+    if (favouriteList.length == 0) {
+      _isFavourite = false;
+    } else {
+      if (favouriteList.contains(widget.product.id)) _isFavourite = true;
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    retreiveDataFromPrefs();
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
