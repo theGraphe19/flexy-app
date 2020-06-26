@@ -86,8 +86,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemBuilder: (BuildContext context, int index) =>
-                    ProductItem(productList[index], _currentUser.token),
+                itemBuilder: (BuildContext context, int index) => ProductItem(
+                  productList[index],
+                  _currentUser.token,
+                  categoryId,
+                ),
               ));
   }
 
