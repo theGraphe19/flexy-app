@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
+import '../utils/cart_bottom_sheet.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
@@ -108,6 +109,7 @@ class _ProductItemState extends State<ProductItem> {
                 ),
                 onPressed: () {
                   print('cart pressed');
+                  CartBottomSheet().showBottomSheet(context, widget.product);
                 },
               ),
               IconButton(
@@ -126,4 +128,6 @@ class _ProductItemState extends State<ProductItem> {
       ),
     );
   }
+
+  
 }
