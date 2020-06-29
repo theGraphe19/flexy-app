@@ -26,6 +26,7 @@ class ProductItem extends StatefulWidget {
 class _ProductItemState extends State<ProductItem> {
   SharedPreferences prefs;
   bool _isFavourite = false;
+  bool retreiveDataHandler = false;
 
   void addDataToPrefs() async {
     prefs = await SharedPreferences.getInstance();
@@ -56,8 +57,10 @@ class _ProductItemState extends State<ProductItem> {
   }
 
   void retreiveDataFromPrefs() async {
+    retreiveDataHandler = true;
     prefs = await SharedPreferences.getInstance();
     String favs = prefs.getString('favourites-${widget.categoryId}');
+    print(favs);
     List<dynamic> favouriteList;
     if (favs != null)
       favouriteList = json.decode(favs);
@@ -74,7 +77,7 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    retreiveDataFromPrefs();
+    if (!retreiveDataHandler) retreiveDataFromPrefs();
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(

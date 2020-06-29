@@ -1,23 +1,22 @@
+import './product_color.dart';
+
 class ProductSize {
   String size;
-  int available;
   int price;
-  int inStock;
-  String colors;
+  List<ProductColor> colors;
 
   ProductSize({
     this.size,
-    this.available,
     this.price,
-    this.inStock,
     this.colors,
   });
 
   ProductSize.mapToProductSize(Map<dynamic, dynamic> map) {
     this.size = map['size'];
-    this.available = int.parse(map['available']);
     this.price = int.parse(map['price']);
-    this.inStock = int.parse(map['in_stock']);
-    this.colors = map['colors'];
+    this.colors = [];
+    for (var i = 0; i < (map['colors']).length; i++) {
+      this.colors.add(ProductColor.fromMap(map['colors'][i]));
+    }
   }
 }
