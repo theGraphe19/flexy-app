@@ -99,15 +99,28 @@ class _ProductItemState extends State<ProductItem> {
         footer: GridTileBar(
           backgroundColor: Colors.black54,
           title: Text(widget.product.name),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.favorite,
-              color: (_isFavourite) ? Colors.red : Colors.white,
-            ),
-            onPressed: () {
-              print('pressed');
-              addDataToPrefs();
-            },
+          trailing: Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  print('cart pressed');
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.favorite,
+                  color: (_isFavourite) ? Colors.red : Colors.white,
+                ),
+                onPressed: () {
+                  print('pressed');
+                  addDataToPrefs();
+                },
+              ),
+            ],
           ),
         ),
       ),
