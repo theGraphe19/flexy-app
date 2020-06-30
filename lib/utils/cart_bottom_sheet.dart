@@ -98,7 +98,9 @@ class CartBottomSheet {
                 );
               }).toList(),
             ),
-            SizedBox(height: 40.0,),
+            SizedBox(
+              height: 40.0,
+            ),
             TextField(
               controller: qtyNumber,
               keyboardType: TextInputType.number,
@@ -106,20 +108,30 @@ class CartBottomSheet {
                 hintText: 'Enter Quantity',
               ),
             ),
-            SizedBox(height: 40.0,),
+            SizedBox(
+              height: 40.0,
+            ),
             Material(
               color: Colors.transparent,
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  HTTPHandler().addToCart(token, sizeSelected, int.parse(qtyNumber.text), colorSelected).then((value) {
-                    if (int.parse(qtyNumber.text) <=
-                        qtyList[someInt1][someInt2]) {
-                      Toast.show('Added to Cart', newContext);
-                    } else {
-                      Toast.show('Some Error Occured', newContext);
-                    }
-                  });
+                  if (int.parse(qtyNumber.text) <=
+                      qtyList[someInt1][someInt2]) {
+                    HTTPHandler()
+                        .addToCart(token, sizeSelected,
+                            int.parse(qtyNumber.text), colorSelected)
+                        .then((value) {
+                      if (value==true) {
+                        Toast.show('Added to Cart', newContext);
+                      } else {
+                        Toast.show('Some Error Occured', newContext);
+                      }
+                    });
+                  } else {
+                    Toast.show('Qty Not Available', newContext);
+                  }
+                  ;
                 },
                 child: Container(
                   height: 50.0,
