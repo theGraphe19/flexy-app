@@ -12,6 +12,7 @@ import './models/product_details.dart';
 import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
+import './models/cart.dart';
 
 class HTTPHandler {
   User currentUser = User();
@@ -259,6 +260,17 @@ class HTTPHandler {
       return true;
     else
       return false;
+  }
+
+  Future<List<Cart>> getCartItems(String token) async {
+    List<Cart> cartItems = [];
+
+    Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
+
+    for (var i = 0; i < (response.data).length; i++)
+      cartItems.add(Cart.fromMap((response.data)[i]));
+
+    print(cartItems);
   }
 
   Future<List<Order>> getMyOrders(String token) async {

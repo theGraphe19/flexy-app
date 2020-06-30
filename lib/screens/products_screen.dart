@@ -108,7 +108,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           ],
         ),
-        drawer: SideDrawer().drawer(),
+        drawer: SideDrawer().drawer(context),
         body: (productList == null)
             ? LoadingBody()
             : GridView.builder(
