@@ -12,6 +12,7 @@ import './start_screen.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
 import '../providers/product_provider.dart';
+import '../utils/drawer.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -80,6 +81,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              print('more pressed');
+              scaffoldKey.currentState.openDrawer();
+            },
+          ),
           title: Text('Products'),
           actions: <Widget>[
             PopupMenuButton<String>(
@@ -100,6 +108,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           ],
         ),
+        drawer: SideDrawer().drawer(context),
         body: (productList == null)
             ? LoadingBody()
             : GridView.builder(

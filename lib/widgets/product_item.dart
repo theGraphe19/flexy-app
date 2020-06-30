@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:flexy/models/product_color.dart';
+import 'package:flexy/models/product_size.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
+import '../utils/cart_bottom_sheet.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
@@ -26,6 +29,7 @@ class ProductItem extends StatefulWidget {
 class _ProductItemState extends State<ProductItem> {
   SharedPreferences prefs;
   bool _isFavourite = false;
+  bool retreiveDataHandler = false;
 
   void addDataToPrefs() async {
     prefs = await SharedPreferences.getInstance();
@@ -56,8 +60,10 @@ class _ProductItemState extends State<ProductItem> {
   }
 
   void retreiveDataFromPrefs() async {
+    retreiveDataHandler = true;
     prefs = await SharedPreferences.getInstance();
     String favs = prefs.getString('favourites-${widget.categoryId}');
+    print(favs);
     List<dynamic> favouriteList;
     if (favs != null)
       favouriteList = json.decode(favs);
@@ -74,7 +80,7 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    retreiveDataFromPrefs();
+    if (!retreiveDataHandler) retreiveDataFromPrefs();
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
@@ -96,15 +102,50 @@ class _ProductItemState extends State<ProductItem> {
         footer: GridTileBar(
           backgroundColor: Colors.black54,
           title: Text(widget.product.name),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.favorite,
-              color: (_isFavourite) ? Colors.red : Colors.white,
-            ),
-            onPressed: () {
-              print('pressed');
-              addDataToPrefs();
-            },
+          trailing: Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  var colorList = new List<List<String>>();
+                  var qtyList = new List<List<int>>();
+                  for (ProductSize productSize in widget.product.productSizes) {
+                    var temp1 = new List<String>();
+                    var temp2 = new List<int>();
+                    var ttp = 0;
+                    for (ProductColor productColor in productSize.colors) {
+                      if (!temp1.contains(productColor.color)) {
+                        temp1.add(productColor.color);
+                        temp2.add(productColor.quantity);
+                      }
+                    }
+                    colorList.add(temp1);
+                    qtyList.add(temp2);
+                  }
+                  CartBottomSheet().showBottomSheet(
+                    context,
+                    widget.product,
+                    widget.scaffoldKey,
+                    colorList,
+                    qtyList,
+                    widget.token,
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.favorite,
+                  color: (_isFavourite) ? Colors.red : Colors.white,
+                ),
+                onPressed: () {
+                  print('pressed');
+                  addDataToPrefs();
+                },
+              ),
+            ],
           ),
         ),
       ),

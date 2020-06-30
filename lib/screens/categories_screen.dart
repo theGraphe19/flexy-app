@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import './products_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
+import '../utils/drawer.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';
@@ -16,6 +17,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   User _currentUser;
   bool categoryListHandler = false;
   List<Category> categoriesList;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         });
     }
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            print('more pressed');
+            _scaffoldKey.currentState.openDrawer();
+          },
+        ),
         title: Text('Categories'),
       ),
+      drawer: SideDrawer().drawer(context),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(

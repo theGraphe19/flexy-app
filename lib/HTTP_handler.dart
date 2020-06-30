@@ -12,6 +12,7 @@ import './models/product_details.dart';
 import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
+import './models/cart.dart';
 
 class HTTPHandler {
   User currentUser = User();
@@ -235,6 +236,42 @@ class HTTPHandler {
       return true;
     else
       return false;
+  }
+
+  Future<bool> addToCart(
+    String token,
+    String productId,
+    String size,
+    int qty,
+    String color,
+  ) async {
+    FormData formData = FormData.fromMap({
+      'size': size,
+      'quantity': qty,
+      'color': color,
+    });
+
+    Response response = await _dio.post(
+      '$baseURL/addtocart/$productId?api_token=$token',
+      data: formData,
+    );
+
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+  Future<List<Cart>> getCartItems(String token) async {
+    List<Cart> cartItems = [];
+
+    Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
+
+    for (var i = 0; i < (response.data).length; i++)
+      cartItems.add(Cart.fromMap((response.data)[i]));
+
+    print(cartItems);
+    return cartItems;
   }
 
   Future<List<Order>> getMyOrders(String token) async {
