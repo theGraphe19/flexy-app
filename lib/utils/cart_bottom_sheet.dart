@@ -97,20 +97,15 @@ class CartBottomSheet {
                 });
               },
               items: someList.map<DropdownMenuItem<String>>((String value) {
-                Color color = Color(
-                    int.parse(value.substring(1, 7), radix: 16) + 0xFF000000);
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      CircleAvatar(
-                        foregroundColor: color,
-                        backgroundColor: color,
-                      ),
-                      SizedBox(width: 20.0),
-                      Text(value),
-                    ],
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      color: Color(int.parse(value.substring(1, 7), radix: 16) +
+                          0xFF000000),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 );
               }).toList(),
