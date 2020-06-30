@@ -10,7 +10,6 @@ class CartBottomSheet {
       BuildContext newContext,
       Product product,
       GlobalKey<ScaffoldState> scaffoldKey,
-      //List<String> sizeList,
       List<List<String>> colorList,
       List<List<int>> qtyList,
       String token) async {
@@ -45,7 +44,8 @@ class CartBottomSheet {
                 )
               ],
             ),
-            Text('Size selector dropdown'),
+            SizedBox(height: 30.0,),
+
             DropdownButton<String>(
               value: sizeSelected,
               icon: Icon(Icons.arrow_drop_down),
@@ -67,8 +67,6 @@ class CartBottomSheet {
                   sizeSelected = newValue;
                   someList = colorList[someInt1];
                   colorSelected = colorList[someInt1][0];
-                  print(someInt1);
-                  print(someList);
                 });
               },
               items:
@@ -93,8 +91,8 @@ class CartBottomSheet {
               ),
               onChanged: (String newValue) {
                 _controller.setState(() {
+                  colorSelected = newValue;
                   someInt2 = colorList[someInt1].indexOf(newValue);
-                  print(someInt2);
                 });
               },
               items: someList.map<DropdownMenuItem<String>>((String value) {
@@ -122,27 +120,34 @@ class CartBottomSheet {
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  if (int.parse(qtyNumber.text) <=
-                      qtyList[someInt1][someInt2]) {
-                    print(
-                        '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
-                    HTTPHandler()
-                        .addToCart(
-                      token,
-                      product.productId.toString(),
-                      sizeSelected,
-                      int.parse(qtyNumber.text),
-                      colorSelected,
-                    )
-                        .then((value) {
-                      if (value == true) {
-                        Toast.show('Added to Cart', newContext);
-                      } else {
-                        Toast.show('Some Error Occured', newContext);
-                      }
-                    });
+                  if (qtyNumber.text.isNotEmpty) {
+                    if (int.parse(qtyNumber.text) <=
+                        qtyList[someInt1][someInt2]) {
+                      print(
+                          '$token => ${product
+                              .productId} => $sizeSelected => ${qtyNumber
+                              .text} => $colorSelected');
+                      HTTPHandler()
+                          .addToCart(
+                        token,
+                        product.productId.toString(),
+                        sizeSelected,
+                        int.parse(qtyNumber.text),
+                        colorSelected,
+                      )
+                          .then((value) {
+                        if (value == true) {
+                          Toast.show('Added to Cart', newContext);
+                          Navigator.of(newContext).pop();
+                        } else {
+                          Toast.show('Some Error Occurred', newContext);
+                        }
+                      });
+                    } else {
+                      Toast.show('Qty Not Available', newContext);
+                    }
                   } else {
-                    Toast.show('Qty Not Available', newContext);
+                    Toast.show('Enter Valid Qty', newContext);
                   }
                 },
                 child: Container(
