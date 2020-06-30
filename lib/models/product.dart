@@ -2,6 +2,7 @@ import './product_size.dart';
 
 class Product {
   String id;
+  int productId;
   String name;
   String description;
   String category;
@@ -13,6 +14,7 @@ class Product {
 
   Product({
     this.id,
+    this.productId,
     this.name,
     this.description,
     this.category,
@@ -24,6 +26,7 @@ class Product {
 
   void mapToProduct(Map<dynamic, dynamic> map) {
     this.id = map['uniq_id'];
+    this.productId = map['id'];
     this.name = map['name'];
     this.description = map['description'];
     this.category = map['category'];

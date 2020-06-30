@@ -132,8 +132,16 @@ class _ProductItemState extends State<ProductItem> {
                     qtyList.add(temp2);
                     print(temp1);
                     print(temp2);
-                  };
-                  CartBottomSheet().showBottomSheet(context, widget.product, widget.scaffoldKey, sizeList, colorList, qtyList, widget.token);
+                  }
+                  CartBottomSheet().showBottomSheet(
+                    context,
+                    widget.product,
+                    widget.scaffoldKey,
+                    //sizeList,
+                    colorList,
+                    qtyList,
+                    widget.token,
+                  );
                 },
               ),
               IconButton(
@@ -152,6 +160,4 @@ class _ProductItemState extends State<ProductItem> {
       ),
     );
   }
-
-  
 }

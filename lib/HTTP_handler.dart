@@ -237,7 +237,13 @@ class HTTPHandler {
       return false;
   }
 
-  Future<bool> addToCart(String token, String size, int qty, String color) async {
+  Future<bool> addToCart(
+    String token,
+    String productId,
+    String size,
+    int qty,
+    String color,
+  ) async {
     FormData formData = FormData.fromMap({
       'size': size,
       'quantity': qty,
@@ -245,11 +251,11 @@ class HTTPHandler {
     });
 
     Response response = await _dio.post(
-      '$addRemarkUrl/$productId?api_token=$token',
+      '$baseURL/addtocart/$productId?api_token=$token',
       data: formData,
     );
 
-    if (response.data['remarks'].isNotEmpty)
+    if (response.statusCode == 200)
       return true;
     else
       return false;

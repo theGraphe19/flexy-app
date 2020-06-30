@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
 import '../models/product.dart';
+import '../models/product_size.dart';
 
 class CartBottomSheet {
   void showBottomSheet(
       BuildContext newContext,
       Product product,
       GlobalKey<ScaffoldState> scaffoldKey,
-      List<String> sizeList,
+      //List<String> sizeList,
       List<List<String>> colorList,
       List<List<int>> qtyList,
       String token) async {
+    final sizeList = product.productSizes;
     final qtyNumber = new TextEditingController();
     PersistentBottomSheetController _controller;
-    String sizeSelected = sizeList[0];
+    String sizeSelected = sizeList[0].size;
     String colorSelected = colorList[0][0];
     var someList = colorList[0];
     int someInt1 = 0, someInt2 = 0;
@@ -58,7 +60,10 @@ class CartBottomSheet {
               ),
               onChanged: (String newValue) {
                 _controller.setState(() {
-                  someInt1 = sizeList.indexOf(newValue);
+                  someInt1 = sizeList.indexWhere(
+                      (element) => (element.size.contains(newValue) &&
+                          newValue.contains(element.size)),
+                      0);
                   sizeSelected = newValue;
                   someList = colorList[someInt1];
                   colorSelected = colorList[someInt1][0];
@@ -66,10 +71,11 @@ class CartBottomSheet {
                   print(someList);
                 });
               },
-              items: sizeList.map<DropdownMenuItem<String>>((String value) {
+              items:
+                  sizeList.map<DropdownMenuItem<String>>((ProductSize value) {
                 return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
+                  value: value.size,
+                  child: Text(value.size),
                 );
               }).toList(),
             ),
@@ -87,7 +93,7 @@ class CartBottomSheet {
               ),
               onChanged: (String newValue) {
                 _controller.setState(() {
-                  someInt2 = colorList[someInt1].indexOf(colorSelected);
+                  someInt2 = colorList[someInt1].indexOf(newValue);
                   print(someInt2);
                 });
               },
@@ -118,11 +124,18 @@ class CartBottomSheet {
                 onTap: () {
                   if (int.parse(qtyNumber.text) <=
                       qtyList[someInt1][someInt2]) {
+                    print(
+                        '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
                     HTTPHandler()
-                        .addToCart(token, sizeSelected,
-                            int.parse(qtyNumber.text), colorSelected)
+                        .addToCart(
+                      token,
+                      product.productId.toString(),
+                      sizeSelected,
+                      int.parse(qtyNumber.text),
+                      colorSelected,
+                    )
                         .then((value) {
-                      if (value==true) {
+                      if (value == true) {
                         Toast.show('Added to Cart', newContext);
                       } else {
                         Toast.show('Some Error Occured', newContext);
@@ -131,7 +144,6 @@ class CartBottomSheet {
                   } else {
                     Toast.show('Qty Not Available', newContext);
                   }
-                  ;
                 },
                 child: Container(
                   height: 50.0,
