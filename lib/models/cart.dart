@@ -7,6 +7,7 @@ class Cart {
   String productSize;
   String color;
   int quantity;
+  List<dynamic> productImages;
 
   Cart({
     this.id,
@@ -17,6 +18,7 @@ class Cart {
     this.productSize,
     this.color,
     this.quantity,
+    this.productImages,
   });
 
   Cart.fromMap(Map<String, dynamic> map) {
@@ -27,6 +29,7 @@ class Cart {
     this.productName = map['prod_name'];
     this.productSize = map['prod_size'];
     this.color = map['color'];
-    this.quantity = int.parse(map['quantity']); 
+    this.quantity = int.parse(map['quantity']);
+    this.productImages = map['product_images'];
   }
 }
