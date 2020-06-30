@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flexy/models/product_color.dart';
+import 'package:flexy/models/product_size.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -109,7 +111,29 @@ class _ProductItemState extends State<ProductItem> {
                 ),
                 onPressed: () {
                   print('cart pressed');
-                  CartBottomSheet().showBottomSheet(context, widget.product);
+                  var sizeList = new List<String>();
+                  var colorList = new List<List<String>>();
+                  var qtyList = new List<List<int>>();
+                  int temp = 0;
+                  for (ProductSize productSize in widget.product.productSizes) {
+                    print(productSize.size);
+                    sizeList.add(productSize.size);
+                    var temp1 = new List<String>();
+                    var temp2 = new List<int>();
+                    var ttp = 0;
+                    for (ProductColor productColor in productSize.colors) {
+                      if (!temp1.contains(productColor.color)) {
+                        temp1.add(productColor.color);
+                        temp2.add(productColor.quantity);
+                      }
+                    }
+                    print(ttp);
+                    colorList.add(temp1);
+                    qtyList.add(temp2);
+                    print(temp1);
+                    print(temp2);
+                  };
+                  CartBottomSheet().showBottomSheet(context, widget.product, widget.scaffoldKey, sizeList, colorList, qtyList, widget.token);
                 },
               ),
               IconButton(
