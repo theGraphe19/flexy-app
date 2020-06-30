@@ -44,8 +44,9 @@ class CartBottomSheet {
                 )
               ],
             ),
-            SizedBox(height: 30.0,),
-
+            SizedBox(
+              height: 30.0,
+            ),
             DropdownButton<String>(
               value: sizeSelected,
               icon: Icon(Icons.arrow_drop_down),
@@ -96,15 +97,25 @@ class CartBottomSheet {
                 });
               },
               items: someList.map<DropdownMenuItem<String>>((String value) {
+                Color color = Color(
+                    int.parse(value.substring(1, 7), radix: 16) + 0xFF000000);
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      CircleAvatar(
+                        foregroundColor: color,
+                        backgroundColor: color,
+                      ),
+                      SizedBox(width: 20.0),
+                      Text(value),
+                    ],
+                  ),
                 );
               }).toList(),
             ),
-            SizedBox(
-              height: 40.0,
-            ),
+            SizedBox(height: 40.0),
             TextField(
               controller: qtyNumber,
               keyboardType: TextInputType.number,
@@ -112,9 +123,7 @@ class CartBottomSheet {
                 hintText: 'Enter Quantity',
               ),
             ),
-            SizedBox(
-              height: 40.0,
-            ),
+            SizedBox(height: 40.0),
             Material(
               color: Colors.transparent,
               child: InkWell(
@@ -124,9 +133,7 @@ class CartBottomSheet {
                     if (int.parse(qtyNumber.text) <=
                         qtyList[someInt1][someInt2]) {
                       print(
-                          '$token => ${product
-                              .productId} => $sizeSelected => ${qtyNumber
-                              .text} => $colorSelected');
+                          '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
                       HTTPHandler()
                           .addToCart(
                         token,

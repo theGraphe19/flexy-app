@@ -271,6 +271,7 @@ class HTTPHandler {
       cartItems.add(Cart.fromMap((response.data)[i]));
 
     print(cartItems);
+    return cartItems;
   }
 
   Future<List<Order>> getMyOrders(String token) async {
