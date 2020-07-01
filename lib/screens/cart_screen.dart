@@ -10,10 +10,10 @@ class CartScreen extends StatefulWidget {
   static const routeName = '/cart-screen';
 
   @override
-  _CartScreenState createState() => _CartScreenState();
+  CartScreenState createState() => CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class CartScreenState extends State<CartScreen> {
   List<Cart> items;
   bool itemsHandler = false;
 
@@ -46,7 +46,7 @@ class _CartScreenState extends State<CartScreen> {
               child: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (BuildContext context, int index) =>
-                    CartItem(items[index]),
+                    CartItem(items[index], this, index),
               ),
             ),
     );

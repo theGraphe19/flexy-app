@@ -262,6 +262,19 @@ class HTTPHandler {
       return false;
   }
 
+  Future<bool> removeFromCart(
+      String token,
+      String id,
+      ) async {
+    Response response = await _dio.get(
+      '$baseURL/remcartitem/$id?api_token=$token',
+    );
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
   Future<List<Cart>> getCartItems(String token) async {
     List<Cart> cartItems = [];
 
