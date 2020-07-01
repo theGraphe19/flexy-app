@@ -43,7 +43,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         ),
         title: Text('Categories'),
       ),
-      drawer: SideDrawer().drawer(context),
+      drawer: SideDrawer(_currentUser).drawer(context),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(

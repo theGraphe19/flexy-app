@@ -1,9 +1,13 @@
+import 'package:flexy/models/user.dart';
+import 'package:flexy/screens/ViewUpdateProfile.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/orders_screen.dart';
 import '../screens/cart_screen.dart';
 
 class SideDrawer {
+  User user;
+  SideDrawer(this.user);
   Widget drawer(BuildContext context) => Drawer(
         child: Column(
           children: <Widget>[
@@ -46,6 +50,7 @@ class SideDrawer {
             ),
             _drawerTile('View/Update Profile', () {
               print('view or update profile');
+              Navigator.of(context).pushNamed(ViewUpdateProfile.routeName, arguments: user);
             }),
             _drawerTile('View Cart', () {
               print('view cart');

@@ -1,3 +1,4 @@
+import 'package:flexy/screens/ViewUpdateProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
           MyOrdersScreen.routeName: (ctx) => MyOrdersScreen(),
           BillScreen.routeName: (ctx) => BillScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
+          ViewUpdateProfile.routeName: (ctx) => ViewUpdateProfile(),
         },
       ),
     );

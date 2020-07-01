@@ -275,6 +275,29 @@ class HTTPHandler {
       return false;
   }
 
+  Future<bool> updateProfile(
+      String token,
+      String noOfStores,
+      String city,
+      String state
+      ) async {
+    FormData formData = FormData.fromMap({
+      'noOfStores': noOfStores,
+      'city': city,
+      'state': state,
+    });
+
+    Response response = await _dio.post(
+      '$baseURL/updateuser?api_token=$token',
+      data: formData,
+    );
+
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
   Future<List<Cart>> getCartItems(String token) async {
     List<Cart> cartItems = [];
 
