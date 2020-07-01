@@ -1,4 +1,3 @@
-import 'package:flexy/screens/ViewUpdateProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +14,7 @@ import './screens/orders_screen.dart';
 import './screens/my_orders_screen.dart';
 import './screens/bill_screen.dart';
 import './screens/cart_screen.dart';
+import './screens/view_update_profile_screen.dart';
 
 import './providers/product_provider.dart';
 

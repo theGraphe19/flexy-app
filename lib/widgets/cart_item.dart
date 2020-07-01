@@ -1,9 +1,9 @@
-import 'package:flexy/HTTP_handler.dart';
-import 'package:flexy/screens/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/cart.dart';
+import '../screens/cart_screen.dart';
+import '../HTTP_handler.dart';
 
 class CartItem extends StatelessWidget {
   Cart item;

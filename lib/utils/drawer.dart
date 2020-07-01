@@ -1,9 +1,9 @@
-import 'package:flexy/models/user.dart';
-import 'package:flexy/screens/ViewUpdateProfile.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/orders_screen.dart';
 import '../screens/cart_screen.dart';
+import '../screens/view_update_profile_screen.dart';
+import '../models/user.dart';
 
 class SideDrawer {
   User user;

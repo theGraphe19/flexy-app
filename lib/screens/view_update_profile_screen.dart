@@ -1,10 +1,8 @@
-import 'package:flexy/HTTP_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
-import 'package:toast/toast.dart';
-import '../utils/form_validator.dart';
+
 import '../models/user.dart';
-import './registration_form_page2.dart';
+import '../HTTP_handler.dart';
 
 class ViewUpdateProfile extends StatefulWidget {
   static const routeName = '/view-update-profile';
