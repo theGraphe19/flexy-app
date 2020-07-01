@@ -50,14 +50,17 @@ class SideDrawer {
             ),
             _drawerTile('View/Update Profile', () {
               print('view or update profile');
+              Navigator.pop(context);
               Navigator.of(context).pushNamed(ViewUpdateProfile.routeName, arguments: user);
             }),
             _drawerTile('View Cart', () {
               print('view cart');
+              Navigator.pop(context);
               Navigator.of(context).pushNamed(CartScreen.routeName);
             }),
             _drawerTile('View Orders', () {
               print('view orders');
+              Navigator.pop(context);
               //  ADD ARGUMENTS AS EXPECTED IN ORDERS SCREEN
               Navigator.of(context).pushNamed(OrdersScreen.routeName);
             }),
