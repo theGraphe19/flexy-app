@@ -35,7 +35,8 @@ class CartBottomSheet {
                   product.name,
                   style: TextStyle(
                     color: Colors.black87,
-                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 23.0,
                   ),
                 ),
                 IconButton(
@@ -74,7 +75,7 @@ class CartBottomSheet {
                   sizeList.map<DropdownMenuItem<String>>((ProductSize value) {
                 return DropdownMenuItem<String>(
                   value: value.size,
-                  child: Text(value.size),
+                  child: Text(value.size, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
                 );
               }).toList(),
             ),
@@ -99,22 +100,38 @@ class CartBottomSheet {
               items: someList.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      color: Color(int.parse(value.substring(1, 7), radix: 16) +
-                          0xFF000000),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        value,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                        height: 20.0,
+                        width: 40.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          border: Border.all(color: Colors.black),
+                          color: Color(int.parse(value.substring(1, 7), radix: 16) + 0xFF000000)
+                        ),
+                      ),
+                    ],
+                  )
                 );
               }).toList(),
             ),
             SizedBox(height: 40.0),
             TextField(
               controller: qtyNumber,
+              textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration.collapsed(
+              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
                 hintText: 'Enter Quantity',
               ),
             ),
@@ -138,11 +155,19 @@ class CartBottomSheet {
                         colorSelected,
                       )
                           .then((value) {
+                        Navigator.of(newContext).pop();
                         if (value == true) {
-                          Toast.show('Added to Cart', newContext);
-                          Navigator.of(newContext).pop();
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text('Product Added to Your Cart'),
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 3),
+                          ));
                         } else {
-                          Toast.show('Some Error Occurred', newContext);
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text('Failed to Add the Product to the Cart'),
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 3),
+                          ));
                         }
                       });
                     } else {
@@ -156,7 +181,7 @@ class CartBottomSheet {
                   height: 50.0,
                   child: Center(
                     child: Text(
-                      "Submit",
+                      "Add to Cart",
                       style: TextStyle(
                           color: Color(0xff252427),
                           fontSize: 24.0,
