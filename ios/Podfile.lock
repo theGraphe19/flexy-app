@@ -8,7 +8,7 @@ PODS:
     - Flutter
   - path_provider_macos (0.0.1):
     - Flutter
-  - "permission_handler (5.0.0+hotfix.6)":
+  - "permission_handler (5.0.1+1)":
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
@@ -54,7 +54,7 @@ SPEC CHECKSUMS:
   image_picker: 66aa71bc96850a90590a35d4c4a2907b0d823109
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
-  permission_handler: b7a0953389e699927c6217933754cdcd0fa2c5a7
+  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9

@@ -188,11 +188,11 @@ class HTTPHandler {
   }
 
   Future<ProductDetails> getProductDetails(int productId, String token) async {
-    ProductDetails details = ProductDetails();
     Response response =
-        await _dio.get(getProductDetailsUrl + '$productId?api_token=$token');
+        await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
 
-    details.mapToProductDetails(response.data);
+    print(response.data);
+    ProductDetails details = ProductDetails.mapToProductDetails(response.data);
 
     return details;
   }

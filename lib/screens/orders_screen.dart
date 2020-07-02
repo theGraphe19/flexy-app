@@ -39,16 +39,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   OrderState state = OrderState.orderPending;
 
-  List<Map<String, dynamic>> _getDataSource() {
-    List<Map<String, dynamic>> _dataSource = [];
-    for (var i = 0; i < productDetails.productSizeList.length; i++)
-      _dataSource.add({
-        "display": productDetails.productSizeList[i].size,
-        "value": productDetails.productSizeList[i].size,
-      });
+  // List<Map<String, dynamic>> _getDataSource() {
+  //   List<Map<String, dynamic>> _dataSource = [];
+  //   for (var i = 0; i < productDetails.productSizeList.length; i++)
+  //     _dataSource.add({
+  //       "display": productDetails.productSizeList[i].size,
+  //       "value": productDetails.productSizeList[i].size,
+  //     });
 
-    return _dataSource;
-  }
+  //   return _dataSource;
+  // }
 
   void _confirmOrder() async {
     await progressDialog.show();
@@ -234,12 +234,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
           color: Colors.grey[350],
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(10.0),
-          image: DecorationImage(
-            image: NetworkImage(
-              productImagesURL + productDetails.productImages[0],
-            ),
-            fit: BoxFit.contain,
-          ),
+          // image: DecorationImage(
+          //   image: NetworkImage(
+          //     productImagesURL + productDetails.productImages[0],
+          //   ),
+          //   fit: BoxFit.contain,
+          // ),
         ),
       );
 
@@ -309,7 +309,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 _size = value;
               });
             },
-            dataSource: _getDataSource(),
+            //dataSource: _getDataSource(),
             textField: "display",
             valueField: "value",
           ),
@@ -335,15 +335,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 var quantity = int.parse(_quantityController.text);
 
                 ProductSize productSize;
-                for (var i = 0;
-                    i < productDetails.productSizeList.length;
-                    i++) {
-                  if (productDetails.productSizeList[i].size.contains(_size)) {
-                    productSize = productDetails.productSizeList[i];
-                    print(productSize.price);
-                    break;
-                  }
-                }
+                // for (var i = 0;
+                //     i < productDetails.productSizeList.length;
+                //     i++) {
+                //   if (productDetails.productSizeList[i].size.contains(_size)) {
+                //     productSize = productDetails.productSizeList[i];
+                //     print(productSize.price);
+                //     break;
+                //   }
+                // }
 
                 // if (quantity > int.parse(productSize.quantity)) {
                 //   _scaffoldKey.currentState.showSnackBar(

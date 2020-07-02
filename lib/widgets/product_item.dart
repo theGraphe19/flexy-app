@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
+import '../credentials.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
@@ -92,12 +93,10 @@ class _ProductItemState extends State<ProductItem> {
               widget.token,
             ],
           ),
-          child:
-              Center(child: Text(widget.product.subCategory)), //CHANGE TO IMAGE
-          // child: Image.network(
-          //   productImagesURL + product.productImages[0],
-          //   fit: BoxFit.cover,
-          // ),
+          child: Image.network(
+            productImagesURL + widget.product.productImages[0],
+            fit: BoxFit.contain,
+          ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,

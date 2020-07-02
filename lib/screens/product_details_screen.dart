@@ -26,11 +26,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   getProductDetails() {
     productsController = true;
-    // HTTPHandler().getProductDetails(product.id, token).then((value) {
-    //   productDetails = value;
-    //   print(productDetails.product.name);
-    //   setState(() {});
-    // });
+    HTTPHandler().getProductDetails(product.productId, token).then((value) {
+      productDetails = value;
+      print(productDetails.product.name);
+      setState(() {});
+    });
   }
 
   @override
