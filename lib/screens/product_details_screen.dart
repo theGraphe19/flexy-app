@@ -1,3 +1,7 @@
+import 'package:flexy/models/product_color.dart';
+import 'package:flexy/models/product_size.dart';
+import 'package:flexy/utils/cart_bottom_sheet.dart';
+import 'package:flexy/widgets/product_item.dart';
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
@@ -17,6 +21,9 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Product product;
   String token;
+  int categoryId;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final scrollController  = ScrollController();
 
   bool productsController = false;
 
@@ -42,6 +49,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     print('Token : $token');
     if (!productsController) getProductDetails();
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Flexy - ${product.name.toUpperCase()}',
@@ -58,7 +66,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),
-                child: GridTile(
+                child: SingleChildScrollView(
+                  controller: scrollController,
                   child: Column(
                     children: <Widget>[
                       //IMAGE
@@ -74,32 +83,104 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   product.productImages[currentActiveIndex]),
                         ),
                       ),
+                      orderButton(),
                       SizedBox(height: 10.0),
                       //NAME
-                      Text(
-                        product.name.toUpperCase(),
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: EdgeInsets.only(left: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.name.toUpperCase(),
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 15.0),
+                            //DESCRIPTION
+                            Text(
+                              "Description",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16.0),
+                            ),
+                            Divider(),
+                            Text(product.description),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Text(
+                              "Sub Category",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16.0),
+                            ),
+                            Divider(),
+                            Text(product.subCategory),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Text(
+                              "Product Tags",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16.0),
+                            ),
+                            Divider(),
+                            Text(product.productTags),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                //CATEGORY
+                                titleValue('Category', product.category),
+                                SizedBox(width: 10.0),
+                                //PRODUCT TYPE
+                                //titleValue('TYPE', product.productType),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 15.0),
-                      //DESCRIPTION
-                      Text(product.description),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          //CATEGORY
-                          titleValue('CATEGORY', product.category),
-                          SizedBox(width: 10.0),
-                          //PRODUCT TYPE
-                          //titleValue('TYPE', product.productType),
-                        ],
+                      SizedBox(height: 30.0,),
+                      Container(
+                        padding: EdgeInsets.only(left: 16.0),
+                        width: double.infinity,
+                        child: Text(
+                          'Suggested Products',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
+                      SizedBox(height: 10.0),
+                      Container(
+                          child: GridView.builder(
+                            primary: false,
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.all(10.0),
+                            itemCount: productDetails.relatedProducts.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 3 / 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemBuilder: (BuildContext context, int index) =>
+                                ProductItem(
+                                  productDetails.relatedProducts[index],
+                                  token,
+                                  categoryId,
+                                  scaffoldKey,
+                                ),
+                          )),
                     ],
                   ),
-                  footer: orderButton(),
                 ),
               ),
             ),
@@ -151,25 +232,65 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   Widget orderButton() => GridTileBar(
         backgroundColor: Colors.blue,
-        title: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushNamed(
-              OrdersScreen.routeName,
-              arguments: <dynamic>[
-                productDetails,
-                token,
-              ],
-            );
-          },
-          child: Text(
-            'ORDER NOW',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+        title: Row(
+          children: [
+            SizedBox(width: 30.0),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  OrdersScreen.routeName,
+                  arguments: <dynamic>[
+                    productDetails,
+                    token,
+                  ],
+                );
+              },
+              child: Text(
+                'ORDER NOW',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                ),
+              ),
             ),
-          ),
+            Spacer(),
+            GestureDetector(
+              onTap: () {
+                for (Product prodt in productDetails.relatedProducts) {
+                  print(prodt.name + prodt.id);
+                }
+                var colorList = new List<List<String>>();
+                var qtyList = new List<List<int>>();
+                for (ProductSize productSize in product.productSizes) {
+                  var temp1 = new List<String>();
+                  var temp2 = new List<int>();
+                  var ttp = 0;
+                  for (ProductColor productColor in productSize.colors) {
+                    if (!temp1.contains(productColor.color)) {
+                      temp1.add(productColor.color);
+                      temp2.add(productColor.quantity);
+                    }
+                  }
+                  colorList.add(temp1);
+                  qtyList.add(temp2);
+                }
+                CartBottomSheet().showBottomSheet(
+                    context, product, scaffoldKey, colorList, qtyList, token);
+              },
+              child: Text(
+                'Add To Cart',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.yellow,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                ),
+              ),
+            ),
+            SizedBox(width: 30.0),
+          ],
         ),
       );
 }

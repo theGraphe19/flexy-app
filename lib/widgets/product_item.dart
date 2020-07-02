@@ -91,6 +91,7 @@ class _ProductItemState extends State<ProductItem> {
             arguments: <dynamic>[
               widget.product,
               widget.token,
+              widget.categoryId
             ],
           ),
           child: Image.network(
