@@ -115,7 +115,6 @@ class _ProductItemState extends State<ProductItem> {
                   for (ProductSize productSize in widget.product.productSizes) {
                     var temp1 = new List<String>();
                     var temp2 = new List<int>();
-                    var ttp = 0;
                     for (ProductColor productColor in productSize.colors) {
                       if (!temp1.contains(productColor.color)) {
                         temp1.add(productColor.color);
