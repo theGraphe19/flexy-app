@@ -112,6 +112,9 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                 "value": "Others",
               },
             ],
+            onChanged: (value) {
+              print(value);
+            },
             textField: "display",
             valueField: "value",
           ),
@@ -138,6 +141,9 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                 "value": "Passport",
               },
             ],
+            onChanged: (value) {
+              print(value);
+            },
             textField: "display",
             valueField: "value",
           ),
@@ -179,6 +185,9 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                 "value": "Ltd.",
               },
             ],
+            onChanged: (value) {
+              print(value);
+            },
             textField: "display",
             valueField: "value",
           ),
@@ -206,6 +215,9 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                 "value": "Distributor",
               },
             ],
+            onChanged: (value) {
+              print(value);
+            },
             textField: "display",
             valueField: "value",
           ),
