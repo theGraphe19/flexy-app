@@ -73,10 +73,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               : Image.network(productImagesURL +
                                   product.productImages[currentActiveIndex]),
                         ),
-                        // child: Image.asset(
-                        //   productImage.productImage,
-                        //   fit: BoxFit.cover,
-                        // ),
                       ),
                       SizedBox(height: 10.0),
                       //NAME

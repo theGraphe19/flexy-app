@@ -6,6 +6,7 @@ class ProductDetails {
 
   ProductDetails({
     this.product,
+    this.relatedProducts,
   });
 
   ProductDetails.mapToProductDetails(Map<dynamic, dynamic> map) {
