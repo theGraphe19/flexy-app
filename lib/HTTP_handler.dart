@@ -311,6 +311,19 @@ class HTTPHandler {
       return false;
   }
 
+  Future<bool> notifyAdmin(
+      String token,
+      ) async {
+    Response response = await _dio.get(
+      '$baseURL/notify?api_token=$token',
+    );
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+
   Future<bool> updateProfile(
       User user
       ) async {
