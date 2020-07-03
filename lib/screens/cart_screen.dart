@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 import '../HTTP_handler.dart';
 import '../widgets/cart_item.dart';
@@ -34,7 +35,8 @@ class CartScreenState extends State<CartScreen> {
           setState(() {});
         });
       });
-    };
+    }
+    ;
     _getToken().then((value) {
       setState(() {
         token = value;
@@ -59,34 +61,43 @@ class CartScreenState extends State<CartScreen> {
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          setState(() {
-            itemsHandler = false;
-            _getToken().then((value) {
-              HTTPHandler().placeOrderFromCart(value).then((value) {
-                if (value) {
-                  scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text('Order Placed'),
-                    backgroundColor: Colors.green,
-                    duration: Duration(seconds: 3),
-                  ));
-                  setState(() {
-                    itemsHandler = false;
-                    items = null;
-                  });
-                } else {
-                  scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text('Failed to Place Order'),
-                    backgroundColor: Colors.red,
-                    duration: Duration(seconds: 3),
-                  ));
-                  setState(() {
-                    itemsHandler = false;
-                    items = null;
-                  });
-                }
+          if (items.isEmpty) {
+            Toast.show(
+              "Please add items to cart first!",
+              context,
+              duration: Toast.LENGTH_SHORT,
+              gravity: Toast.CENTER,
+            );
+          } else {
+            setState(() {
+              itemsHandler = false;
+              _getToken().then((value) {
+                HTTPHandler().placeOrderFromCart(value).then((value) {
+                  if (value) {
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Order Placed'),
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 3),
+                    ));
+                    setState(() {
+                      itemsHandler = false;
+                      items = null;
+                    });
+                  } else {
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Failed to Place Order'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 3),
+                    ));
+                    setState(() {
+                      itemsHandler = false;
+                      items = null;
+                    });
+                  }
+                });
               });
             });
-          });
+          }
         },
         label: Text('CheckOut From Cart'),
         icon: Icon(Icons.payment),
