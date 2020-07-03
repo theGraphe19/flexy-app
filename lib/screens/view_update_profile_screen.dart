@@ -28,20 +28,17 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
   bool image2Disturbed = false;
   bool unDisturbed = true;
 
-
   void setThingUp() {
     if (unDisturbed) {
       setState(() {
-        currentUser = ModalRoute
-            .of(context)
-            .settings
-            .arguments as User;
+        currentUser = ModalRoute.of(context).settings.arguments as User;
         designation = currentUser.designation;
         photoIdType = currentUser.photoIdType;
         firmNomenclature = currentUser.firmNomenclature;
         tradeCategory = currentUser.tradeCategory;
       });
-    };
+    }
+    ;
     unDisturbed = false;
   }
 
@@ -69,18 +66,292 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      /*floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _validateInput(currentUser);
         },
         label: Text('Update Profile'),
         icon: Icon(Icons.file_upload),
-      ),
+      ),*/
     );
   }
 
-  Widget formUI() =>
-      Column(
+  Widget formUI() => Column(
+        children: <Widget>[
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.name,
+            decoration: const InputDecoration(
+              labelText: 'Name',
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.mobileNo,
+            decoration: const InputDecoration(
+              labelText: 'Phone Number',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.email,
+            decoration: const InputDecoration(
+              labelText: 'Email ID',
+            ),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          SizedBox(height: 10.0),
+          DropDownFormField(
+            titleText: 'Designation',
+            autovalidate: false,
+            value: currentUser.designation,
+            dataSource: [
+              {
+                "display": "Director",
+                "value": "Director",
+              },
+              {
+                "display": "Partner",
+                "value": "Partner",
+              },
+              {
+                "display": "Proprietor",
+                "value": "Proprietor",
+              },
+              {
+                "display": "Salesman",
+                "value": "Salesman",
+              },
+              {
+                "display": "Purchaser",
+                "value": "Purchaser",
+              },
+              {
+                "display": "Branch Head",
+                "value": "Branch Head",
+              },
+              {
+                "display": "Others",
+                "value": "Others",
+              },
+            ],
+            textField: "display",
+            valueField: "value",
+          ),
+          SizedBox(height: 10.0),
+          DropDownFormField(
+            titleText: 'Photo Id',
+            autovalidate: false,
+            value: currentUser.photoIdType,
+            dataSource: [
+              {
+                "display": "Pan Card",
+                "value": "Pan Card",
+              },
+              {
+                "display": "Aadhar Card",
+                "value": "Aadhar Card",
+              },
+              {
+                "display": "Voter Card",
+                "value": "Voter Card",
+              },
+              {
+                "display": "Passport",
+                "value": "Passport",
+              },
+            ],
+            textField: "display",
+            valueField: "value",
+          ),
+          SizedBox(height: 10.0),
+          Container(
+            width: double.infinity,
+            height: 400.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Image.network(
+              photoLocationURL + '${currentUser.photoIdType}-${currentUser.id}',
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(height: 10.0),
+          Text("Visiting Card Photo" + currentUser.photoLocation.toString()),
+          SizedBox(height: 10.0),
+          Container(
+            width: double.infinity,
+            height: 400.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Image.network(
+              visitingCardLocationURL + 'VisitingCard-${currentUser.id}',
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.firmName,
+            decoration: const InputDecoration(
+              labelText: 'Firm Name',
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 10.0),
+          DropDownFormField(
+            titleText: 'Firm Nomenclature',
+            autovalidate: false,
+            hintText: 'Please select any one',
+            value: currentUser.firmNomenclature,
+            dataSource: [
+              {
+                "display": "Partnership",
+                "value": "Partnership",
+              },
+              {
+                "display": "Proprietorship",
+                "value": "Proprietorship",
+              },
+              {
+                "display": "Pvt. Ltd",
+                "value": "Pvt. Ltd",
+              },
+              {
+                "display": "LLP",
+                "value": "LLP",
+              },
+              {
+                "display": "Ltd.",
+                "value": "Ltd.",
+              },
+            ],
+            textField: "display",
+            valueField: "value",
+          ),
+          SizedBox(height: 10.0),
+          DropDownFormField(
+            titleText: 'Trade Category',
+            autovalidate: false,
+            hintText: 'Please select any one',
+            value: currentUser.tradeCategory,
+            dataSource: [
+              {
+                "display": "Boutique",
+                "value": "Boutique",
+              },
+              {
+                "display": "Retailer",
+                "value": "Retailer",
+              },
+              {
+                "display": "Wholesaler",
+                "value": "Wholesaler",
+              },
+              {
+                "display": "Distributor",
+                "value": "Distributor",
+              },
+            ],
+            textField: "display",
+            valueField: "value",
+          ),
+          (currentUser.tradeCategory.endsWith("Boutique") ||
+                  currentUser.tradeCategory.endsWith("Retailer"))
+              ? TextFormField(
+                  enabled: false,
+                  initialValue: currentUser.noOfStores,
+                  decoration: const InputDecoration(
+                    labelText: 'Number of Stores',
+                  ),
+                  keyboardType: TextInputType.number,
+                )
+              : Container(),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.landlineNo,
+            decoration: const InputDecoration(
+              labelText: 'Land-Line Number (Eg. 0657-1234567)',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.gstNo,
+            decoration: const InputDecoration(
+              labelText: 'GST Number',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.companyAddress,
+            decoration: const InputDecoration(
+              labelText: 'Company Address',
+            ),
+            minLines: 1,
+            maxLines: 3,
+            keyboardType: TextInputType.text,
+          ),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.city,
+            decoration: const InputDecoration(
+              labelText: 'City',
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.state,
+            decoration: const InputDecoration(
+              labelText: 'State',
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.pincode,
+            decoration: const InputDecoration(
+              labelText: 'PIN',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.agentName,
+            decoration: const InputDecoration(
+              labelText: 'Agent Name',
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.purchasePerson,
+            decoration: const InputDecoration(
+              labelText: 'Person incharge of Purchase Department',
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 50.0),
+        ],
+      );
+
+  Widget formUIUpdate() => Column(
         children: <Widget>[
           TextFormField(
             enabled: false,
@@ -200,184 +471,178 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           SizedBox(height: 10.0),
           image1Disturbed
               ? FutureBuilder<File>(
-            future: imageFile1,
-            builder:
-                (BuildContext context, AsyncSnapshot<File> snapshot) {
-              if (snapshot.data != null)
-                currentUser.photoLocation = snapshot.data.path;
-              else {
-                setState(() {
-                  image1Disturbed = false;
-                });
-              }
-              return Stack(
-                children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    height: 400.0,
-                    decoration:
-                    (imageFile1 != null && snapshot.data != null)
-                        ? BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(5.0),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(snapshot.data),
+                  future: imageFile1,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<File> snapshot) {
+                    if (snapshot.data != null)
+                      currentUser.photoLocation = snapshot.data.path;
+                    print(currentUser.photoLocation);
+                    return Stack(
+                      children: <Widget>[
+                        Container(
+                          width: double.infinity,
+                          height: 400.0,
+                          decoration:
+                              (imageFile1 != null && snapshot.data != null)
+                                  ? BoxDecoration(
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: FileImage(snapshot.data),
+                                      ),
+                                    )
+                                  : BoxDecoration(),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 10.0,
+                          ),
+                          width: double.infinity,
+                          height: 400.0,
+                          color: Colors.transparent,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: FlatButton.icon(
+                              onPressed: () {
+                                _showModalSheet1(context);
+                              },
+                              icon: Icon(Icons.edit),
+                              label: Text(
+                                'Change Image',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )
+              : Stack(
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: 400.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
-                    )
-                        : BoxDecoration(),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 10.0,
+                      child: Image.network(
+                        productImagesURL + currentUser.photoLocation.toString(),
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    width: double.infinity,
-                    height: 400.0,
-                    color: Colors.transparent,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: FlatButton.icon(
-                        onPressed: () {
-                          _showModalSheet1(context);
-                        },
-                        icon: Icon(Icons.edit),
-                        label: Text(
-                          'Change Image',
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 10.0,
+                      ),
+                      width: double.infinity,
+                      height: 400.0,
+                      color: Colors.transparent,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: FlatButton.icon(
+                          onPressed: () {
+                            _showModalSheet1(context);
+                          },
+                          icon: Icon(Icons.edit),
+                          label: Text(
+                            'Change Image',
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
-          ) : Stack(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                height: 400.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5.0),
+                  ],
                 ),
-                child: Image.network(
-                  productImagesURL + currentUser.photoLocation.toString(),
-                  fit: BoxFit.contain,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 10.0,
-                ),
-                width: double.infinity,
-                height: 400.0,
-                color: Colors.transparent,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: FlatButton.icon(
-                    onPressed: () {
-                      _showModalSheet2(context);
-                    },
-                    icon: Icon(Icons.edit),
-                    label: Text(
-                      'Change Image',
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
           image2Disturbed
               ? FutureBuilder<File>(
-            future: imageFile2,
-            builder:
-                (BuildContext context, AsyncSnapshot<File> snapshot) {
-              if (snapshot.data != null)
-                currentUser.visitingCardLocation = snapshot.data.path;
-              else {
-                setState(() {
-                  image2Disturbed = false;
-                });
-              }
-              return Stack(
-                children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    height: 400.0,
-                    decoration:
-                    (imageFile2 != null && snapshot.data != null)
-                        ? BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(5.0),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(snapshot.data),
+                  future: imageFile2,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<File> snapshot) {
+                    if (snapshot.data != null)
+                      currentUser.visitingCardLocation = snapshot.data.path;
+                    print(currentUser.photoLocation);
+                    return Stack(
+                      children: <Widget>[
+                        Container(
+                          width: double.infinity,
+                          height: 400.0,
+                          decoration:
+                              (imageFile2 != null && snapshot.data != null)
+                                  ? BoxDecoration(
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: FileImage(snapshot.data),
+                                      ),
+                                    )
+                                  : BoxDecoration(),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 10.0,
+                          ),
+                          width: double.infinity,
+                          height: 400.0,
+                          color: Colors.transparent,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: FlatButton.icon(
+                              onPressed: () {
+                                _showModalSheet2(context);
+                              },
+                              icon: Icon(Icons.edit),
+                              label: Text(
+                                'Change Image',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )
+              : Stack(
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: 400.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
-                    )
-                        : BoxDecoration(),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 10.0,
+                      child: Image.network(
+                        productImagesURL + currentUser.photoLocation.toString(),
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    width: double.infinity,
-                    height: 400.0,
-                    color: Colors.transparent,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: FlatButton.icon(
-                        onPressed: () {
-                          _showModalSheet1(context);
-                        },
-                        icon: Icon(Icons.edit),
-                        label: Text(
-                          'Change Image',
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 10.0,
+                      ),
+                      width: double.infinity,
+                      height: 400.0,
+                      color: Colors.transparent,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: FlatButton.icon(
+                          onPressed: () {
+                            _showModalSheet2(context);
+                          },
+                          icon: Icon(Icons.edit),
+                          label: Text(
+                            'Change Image',
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
-          ) : Stack(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                height: 400.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5.0),
+                  ],
                 ),
-                child: Image.network(
-                  productImagesURL + currentUser.photoLocation.toString(),
-                  fit: BoxFit.contain,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 10.0,
-                ),
-                width: double.infinity,
-                height: 400.0,
-                color: Colors.transparent,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: FlatButton.icon(
-                    onPressed: () {
-                      _showModalSheet2(context);
-                    },
-                    icon: Icon(Icons.edit),
-                    label: Text(
-                      'Change Image',
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
           SizedBox(height: 10.0),
           TextFormField(
             enabled: false,
@@ -470,18 +735,18 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             valueField: "value",
           ),
           (currentUser.tradeCategory.endsWith("Boutique") ||
-              currentUser.tradeCategory.endsWith("Retailer"))
+                  currentUser.tradeCategory.endsWith("Retailer"))
               ? TextFormField(
-            initialValue: (currentUser.noOfStores != null)
-                ? currentUser.noOfStores
-                : '',
-            decoration: const InputDecoration(
-              labelText: 'Number of Stores',
-            ),
-            keyboardType: TextInputType.number,
-            validator: (value) => _validator.validateNumber(value),
-            onSaved: (String val) => currentUser.noOfStores = val,
-          )
+                  initialValue: (currentUser.noOfStores != null)
+                      ? currentUser.noOfStores
+                      : '',
+                  decoration: const InputDecoration(
+                    labelText: 'Number of Stores',
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) => _validator.validateNumber(value),
+                  onSaved: (String val) => currentUser.noOfStores = val,
+                )
               : Container(),
           SizedBox(height: 10.0),
           TextFormField(
@@ -580,108 +845,114 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
       );
 
   pickImageFromSystem1(ImageSource source) {
-    setState(() {
-      imageFile1 = ImagePicker.pickImage(
-        source: source,
-        imageQuality: 50,
-      );
-      image1Disturbed = true;
+    imageFile1 = ImagePicker.pickImage(
+      source: source,
+      imageQuality: 50,
+    );
+    imageFile1.then((value) {
+      if (value.existsSync()) {
+        setState(() {
+          image1Disturbed = true;
+        });
+      }
     });
   }
 
-  void _showModalSheet1(BuildContext context) =>
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              width: double.infinity,
-              height: 150,
-              color: Colors.blueGrey[150],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  FlatButton(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.camera),
-                        Text('Camera'),
-                      ],
-                    ),
-                    onPressed: () {
-                      pickImageFromSystem1(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  FlatButton(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.folder_open),
-                        Text('Gallery'),
-                      ],
-                    ),
-                    onPressed: () {
-                      pickImageFromSystem1(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+  void _showModalSheet1(BuildContext context) => showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          height: 150,
+          color: Colors.blueGrey[150],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              FlatButton(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.camera),
+                    Text('Camera'),
+                  ],
+                ),
+                onPressed: () {
+                  pickImageFromSystem1(ImageSource.camera);
+                  Navigator.pop(context);
+                },
               ),
-            );
-          });
+              FlatButton(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.folder_open),
+                    Text('Gallery'),
+                  ],
+                ),
+                onPressed: () {
+                  pickImageFromSystem1(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      });
 
   pickImageFromSystem2(ImageSource source) {
-    setState(() {
-      imageFile2 = ImagePicker.pickImage(
-        source: source,
-        imageQuality: 50,
-      );
-      image2Disturbed = true;
+    imageFile2 = ImagePicker.pickImage(
+      source: source,
+      imageQuality: 50,
+    );
+    imageFile2.then((value) {
+      if (value.existsSync()) {
+        setState(() {
+          image2Disturbed = true;
+        });
+      }
     });
   }
 
-  void _showModalSheet2(BuildContext context) =>
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              width: double.infinity,
-              height: 150,
-              color: Colors.blueGrey[150],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  FlatButton(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.camera),
-                        Text('Camera'),
-                      ],
-                    ),
-                    onPressed: () {
-                      pickImageFromSystem2(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  FlatButton(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.folder_open),
-                        Text('Gallery'),
-                      ],
-                    ),
-                    onPressed: () {
-                      pickImageFromSystem2(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+  void _showModalSheet2(BuildContext context) => showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          height: 150,
+          color: Colors.blueGrey[150],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              FlatButton(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.camera),
+                    Text('Camera'),
+                  ],
+                ),
+                onPressed: () {
+                  pickImageFromSystem2(ImageSource.camera);
+                  Navigator.pop(context);
+                },
               ),
-            );
-          });
+              FlatButton(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.folder_open),
+                    Text('Gallery'),
+                  ],
+                ),
+                onPressed: () {
+                  pickImageFromSystem2(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      });
 
   void _validateInput(User currentUser) {
     print(currentUser.noOfStores + currentUser.city + currentUser.state);
