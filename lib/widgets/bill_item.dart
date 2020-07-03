@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../models/bill.dart';
 import '../models/order.dart';
 import '../screens/download_screen.dart';
-import '../credentials.dart';
 
 class BillItem extends StatelessWidget {
   final Bill bill;
@@ -74,7 +72,7 @@ class BillItem extends StatelessWidget {
                 final response = await Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (context) => FileDownloader(
-                            '$billDownloadUrl/${bill.id}?api_token=$token')));
+                            'https://developers.thegraphe.com/flexy/billdwnld/${bill.id}?api_token=$token')));
 
                 if (response)
                   scaffoldKey.currentState.showSnackBar(SnackBar(

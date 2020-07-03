@@ -1,11 +1,8 @@
 import 'dart:io';
-
-import 'package:flexy/credentials.dart';
 import 'package:flexy/utils/form_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../models/user.dart';
 import '../HTTP_handler.dart';
 
@@ -131,7 +128,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
               borderRadius: BorderRadius.circular(5.0),
             ),
             child: Image.network(
-              photoLocationURL + '${currentUser.photoIdType}-${currentUser.id}',
+              'https://developers.thegraphe.com/flexy/storage/app/photo_id/${currentUser.photoIdType}-${currentUser.id}',
               fit: BoxFit.contain,
             ),
           ),
@@ -146,7 +143,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
               borderRadius: BorderRadius.circular(5.0),
             ),
             child: Image.network(
-              visitingCardLocationURL + 'VisitingCard-${currentUser.id}',
+              'https://developers.thegraphe.com/flexy/storage/app/visiting_card/VisitingCard-${currentUser.id}',
               fit: BoxFit.contain,
             ),
           ),
@@ -443,7 +440,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                       child: Image.network(
-                        productImagesURL + currentUser.photoLocation.toString(),
+                        'https://developers.thegraphe.com/flexy/storage/app/product_images/${currentUser.photoLocation.toString()}',
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -530,7 +527,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                       child: Image.network(
-                        productImagesURL + currentUser.photoLocation.toString(),
+                        'https://developers.thegraphe.com/flexy/storage/app/product_images/${currentUser.visitingCardLocation.toString()}',
                         fit: BoxFit.contain,
                       ),
                     ),

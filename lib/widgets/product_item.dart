@@ -1,12 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
-import '../credentials.dart';
 import '../models/product_color.dart';
 import '../models/product_size.dart';
 
@@ -95,7 +92,7 @@ class _ProductItemState extends State<ProductItem> {
             ],
           ),
           child: Image.network(
-            productImagesURL + widget.product.productImages[0],
+            'https://developers.thegraphe.com/flexy/storage/app/product_images/${widget.product.productImages[0]}',
             fit: BoxFit.contain,
           ),
         ),

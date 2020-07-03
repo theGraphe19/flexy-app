@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
 import './orders_screen.dart';
-import '../credentials.dart';
 import '../widgets/loading_body.dart';
 import '../widgets/product_item.dart';
 import '../utils/cart_bottom_sheet.dart';
@@ -23,7 +21,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   String token;
   int categoryId;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final scrollController  = ScrollController();
+  final scrollController = ScrollController();
 
   bool productsController = false;
 
@@ -79,8 +77,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         child: Center(
                           child: (product.productImages.length > 0)
                               ? imagePageView()
-                              : Image.network(productImagesURL +
-                                  product.productImages[currentActiveIndex]),
+                              : Image.network('https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
                         ),
                       ),
                       orderButton(),
@@ -144,7 +141,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 30.0,),
+                      SizedBox(
+                        height: 30.0,
+                      ),
                       Container(
                         padding: EdgeInsets.only(left: 16.0),
                         width: double.infinity,
@@ -161,24 +160,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       SizedBox(height: 10.0),
                       Container(
                           child: GridView.builder(
-                            primary: false,
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(10.0),
-                            itemCount: productDetails.relatedProducts.length,
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 3 / 2,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                            ),
-                            itemBuilder: (BuildContext context, int index) =>
-                                ProductItem(
-                                  productDetails.relatedProducts[index],
-                                  token,
-                                  categoryId,
-                                  scaffoldKey,
-                                ),
-                          )),
+                        primary: false,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(10.0),
+                        itemCount: productDetails.relatedProducts.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 3 / 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemBuilder: (BuildContext context, int index) =>
+                            ProductItem(
+                          productDetails.relatedProducts[index],
+                          token,
+                          categoryId,
+                          scaffoldKey,
+                        ),
+                      )),
                     ],
                   ),
                 ),
@@ -223,7 +222,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             color: Colors.white,
             child: Center(
               child: Image.network(
-                  productImagesURL + product.productImages[currentActiveIndex]),
+                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
               //child: Text(product.productImages[currentActiveIndex]),
             ),
           );
@@ -266,7 +265,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 for (ProductSize productSize in product.productSizes) {
                   var temp1 = new List<String>();
                   var temp2 = new List<int>();
-                  var ttp = 0;
                   for (ProductColor productColor in productSize.colors) {
                     if (!temp1.contains(productColor.color)) {
                       temp1.add(productColor.color);
@@ -276,8 +274,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   colorList.add(temp1);
                   qtyList.add(temp2);
                 }
-                CartBottomSheet().showBottomSheet(
-                    context, product, scaffoldKey, colorList, qtyList, token, false);
+                CartBottomSheet().showBottomSheet(context, product, scaffoldKey,
+                    colorList, qtyList, token, false);
               },
               child: Text(
                 'Add To Cart',
