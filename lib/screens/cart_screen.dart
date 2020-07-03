@@ -16,6 +16,8 @@ class CartScreen extends StatefulWidget {
 class CartScreenState extends State<CartScreen> {
   List<Cart> items;
   bool itemsHandler = false;
+  String token;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<String> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -32,8 +34,14 @@ class CartScreenState extends State<CartScreen> {
           setState(() {});
         });
       });
-    }
+    };
+    _getToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Cart'),
       ),
@@ -46,9 +54,43 @@ class CartScreenState extends State<CartScreen> {
               child: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (BuildContext context, int index) =>
-                    CartItem(items[index], this, index),
+                    CartItem(items[index], this, index, token, scaffoldKey),
               ),
             ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          setState(() {
+            itemsHandler = false;
+            _getToken().then((value) {
+              HTTPHandler().placeOrderFromCart(value).then((value) {
+                if (value) {
+                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text('Order Placed'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 3),
+                  ));
+                  setState(() {
+                    itemsHandler = false;
+                    items = null;
+                  });
+                } else {
+                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text('Failed to Place Order'),
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
+                  ));
+                  setState(() {
+                    itemsHandler = false;
+                    items = null;
+                  });
+                }
+              });
+            });
+          });
+        },
+        label: Text('CheckOut From Cart'),
+        icon: Icon(Icons.payment),
+      ),
     );
   }
 }

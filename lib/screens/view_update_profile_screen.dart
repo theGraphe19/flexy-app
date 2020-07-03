@@ -105,68 +105,22 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 10.0),
-          DropDownFormField(
-            titleText: 'Designation',
-            autovalidate: false,
-            value: currentUser.designation,
-            dataSource: [
-              {
-                "display": "Director",
-                "value": "Director",
-              },
-              {
-                "display": "Partner",
-                "value": "Partner",
-              },
-              {
-                "display": "Proprietor",
-                "value": "Proprietor",
-              },
-              {
-                "display": "Salesman",
-                "value": "Salesman",
-              },
-              {
-                "display": "Purchaser",
-                "value": "Purchaser",
-              },
-              {
-                "display": "Branch Head",
-                "value": "Branch Head",
-              },
-              {
-                "display": "Others",
-                "value": "Others",
-              },
-            ],
-            textField: "display",
-            valueField: "value",
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.designation,
+            decoration: const InputDecoration(
+              labelText: 'Designation',
+            ),
+            keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 10.0),
-          DropDownFormField(
-            titleText: 'Photo Id',
-            autovalidate: false,
-            value: currentUser.photoIdType,
-            dataSource: [
-              {
-                "display": "Pan Card",
-                "value": "Pan Card",
-              },
-              {
-                "display": "Aadhar Card",
-                "value": "Aadhar Card",
-              },
-              {
-                "display": "Voter Card",
-                "value": "Voter Card",
-              },
-              {
-                "display": "Passport",
-                "value": "Passport",
-              },
-            ],
-            textField: "display",
-            valueField: "value",
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.photoIdType,
+            decoration: const InputDecoration(
+              labelText: 'Photo ID Type',
+            ),
+            keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 10.0),
           Container(
@@ -206,62 +160,22 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             keyboardType: TextInputType.text,
           ),
           SizedBox(height: 10.0),
-          DropDownFormField(
-            titleText: 'Firm Nomenclature',
-            autovalidate: false,
-            hintText: 'Please select any one',
-            value: currentUser.firmNomenclature,
-            dataSource: [
-              {
-                "display": "Partnership",
-                "value": "Partnership",
-              },
-              {
-                "display": "Proprietorship",
-                "value": "Proprietorship",
-              },
-              {
-                "display": "Pvt. Ltd",
-                "value": "Pvt. Ltd",
-              },
-              {
-                "display": "LLP",
-                "value": "LLP",
-              },
-              {
-                "display": "Ltd.",
-                "value": "Ltd.",
-              },
-            ],
-            textField: "display",
-            valueField: "value",
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.firmNomenclature,
+            decoration: const InputDecoration(
+              labelText: 'Firm Nomenclature',
+            ),
+            keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 10.0),
-          DropDownFormField(
-            titleText: 'Trade Category',
-            autovalidate: false,
-            hintText: 'Please select any one',
-            value: currentUser.tradeCategory,
-            dataSource: [
-              {
-                "display": "Boutique",
-                "value": "Boutique",
-              },
-              {
-                "display": "Retailer",
-                "value": "Retailer",
-              },
-              {
-                "display": "Wholesaler",
-                "value": "Wholesaler",
-              },
-              {
-                "display": "Distributor",
-                "value": "Distributor",
-              },
-            ],
-            textField: "display",
-            valueField: "value",
+          TextFormField(
+            enabled: false,
+            initialValue: currentUser.tradeCategory,
+            decoration: const InputDecoration(
+              labelText: 'Trade Category',
+            ),
+            keyboardType: TextInputType.emailAddress,
           ),
           (currentUser.tradeCategory.endsWith("Boutique") ||
                   currentUser.tradeCategory.endsWith("Retailer"))

@@ -131,6 +131,7 @@ class _ProductItemState extends State<ProductItem> {
                     colorList,
                     qtyList,
                     widget.token,
+                    false
                   );
                 },
               ),

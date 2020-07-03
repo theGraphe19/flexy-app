@@ -1,3 +1,7 @@
+import 'package:flexy/models/product_color.dart';
+import 'package:flexy/models/product_details.dart';
+import 'package:flexy/models/product_size.dart';
+import 'package:flexy/utils/cart_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,8 +13,11 @@ class CartItem extends StatelessWidget {
   Cart item;
   CartScreenState _parent;
   int index;
-
-  CartItem(this.item, this._parent, this.index);
+  String token;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  ProductDetails productDetails;
+  CartItem(this.item, this._parent, this.index, this.token, this
+  .scaffoldKey);
 
   Future<String> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -25,8 +32,7 @@ class CartItem extends StatelessWidget {
           onTap: () {
             print("Tap - In Cart");
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: <Widget>[
               Container(
                   child: Row(children: [
@@ -42,24 +48,66 @@ class CartItem extends StatelessWidget {
                           fontFamily: 'Montserrat',
                           fontSize: 17.0,
                           fontWeight: FontWeight.bold)),
-                  Text("x${item.quantity}        Size : ${item.productSize}",
+                  Text("x${item.quantity}        Size : ${item.productSize}      ID : ${item.id} + ${item.productId}",
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontSize: 15.0,
                           color: Colors.grey))
                 ])
               ])),
-              IconButton(
-                  icon: Icon(Icons.delete),
-                  color: Colors.black,
-                  onPressed: () {
-                    _parent.setState(() {
-                      _parent.items.removeAt(index);
-                      _getToken().then((value) {
-                        HTTPHandler().removeFromCart(value, item.id.toString());
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.update),
+                    color: Colors.black,
+                    onPressed: () {
+                      print("Update Order");
+                      print(item.id);
+                      HTTPHandler().getProductDetails(item.productId, token).then((value) {
+                        productDetails = value;
+                        print(productDetails.product.name);
+                        var colorList = new List<List<String>>();
+                        var qtyList = new List<List<int>>();
+                        for (ProductSize productSize in productDetails.product.productSizes) {
+                          var temp1 = new List<String>();
+                          var temp2 = new List<int>();
+                          for (ProductColor productColor in productSize.colors) {
+                            if (!temp1.contains(productColor.color)) {
+                              temp1.add(productColor.color);
+                              temp2.add(productColor.quantity);
+                            }
+                          }
+                          colorList.add(temp1);
+                          qtyList.add(temp2);
+                        }
+                        CartBottomSheet().showBottomSheet(
+                            context,
+                            productDetails.product,
+                            scaffoldKey,
+                            colorList,
+                            qtyList,
+                            token,
+                            true
+                        );
                       });
-                    });
-                  })
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    color: Colors.black,
+                    onPressed: () {
+                      _parent.setState(() {
+                        _parent.items.removeAt(index);
+                        _getToken().then((value) {
+                          HTTPHandler().removeFromCart(value, item.id.toString());
+                        });
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Divider(),
             ],
           )),
     );

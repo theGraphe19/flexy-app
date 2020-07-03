@@ -262,12 +262,48 @@ class HTTPHandler {
       return false;
   }
 
+  Future<bool> updateCart(
+      String token,
+      String productId,
+      String size,
+      int qty,
+      String color,
+      ) async {
+    FormData formData = FormData.fromMap({
+      'size': size,
+      'quantity': qty,
+      'color': color,
+    });
+
+    Response response = await _dio.post(
+      '$baseURL/updateCart/$productId?api_token=$token',
+      data: formData,
+    );
+
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
   Future<bool> removeFromCart(
       String token,
       String id,
       ) async {
     Response response = await _dio.get(
       '$baseURL/remcartitem/$id?api_token=$token',
+    );
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> placeOrderFromCart(
+      String token,
+      ) async {
+    Response response = await _dio.get(
+      '$baseURL/cartorder?api_token=$token',
     );
     if (response.statusCode == 200)
       return true;

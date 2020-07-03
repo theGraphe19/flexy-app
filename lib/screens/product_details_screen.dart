@@ -277,7 +277,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   qtyList.add(temp2);
                 }
                 CartBottomSheet().showBottomSheet(
-                    context, product, scaffoldKey, colorList, qtyList, token);
+                    context, product, scaffoldKey, colorList, qtyList, token, false);
               },
               child: Text(
                 'Add To Cart',
