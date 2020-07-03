@@ -59,8 +59,8 @@ class User {
     this.token = map['api_token'];
     this.designation = map['designation'];
     this.photoIdType = map['photoIdType'];
-    //this.photoLocation = map['photoLocation'];
-    //this.visitingCardLocation = map['visitingCardLocation'];
+    this.photoLocation = map['photoLocation'];
+    this.visitingCardLocation = map['visitingCardLocation'];
     this.firmName = map['firmName'];
     this.firmNomenclature = map['firmNomenclature'];
     this.tradeCategory = map['tradeCategory'];

@@ -1,7 +1,3 @@
-import 'package:flexy/models/product_color.dart';
-import 'package:flexy/models/product_size.dart';
-import 'package:flexy/utils/cart_bottom_sheet.dart';
-import 'package:flexy/widgets/product_item.dart';
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
@@ -10,6 +6,10 @@ import '../HTTP_handler.dart';
 import './orders_screen.dart';
 import '../credentials.dart';
 import '../widgets/loading_body.dart';
+import '../widgets/product_item.dart';
+import '../utils/cart_bottom_sheet.dart';
+import '../models/product_size.dart';
+import '../models/product_color.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';

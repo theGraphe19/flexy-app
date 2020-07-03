@@ -1,9 +1,9 @@
-import 'package:flexy/HTTP_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_size.dart';
+import '../HTTP_handler.dart';
 
 class CartBottomSheet {
   void showBottomSheet(
