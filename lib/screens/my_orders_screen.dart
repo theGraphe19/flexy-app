@@ -13,7 +13,7 @@ class MyOrdersScreen extends StatefulWidget {
 
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
   List<Order> myOrders = [];
-
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   var orderController = false;
 
   String token;
@@ -34,6 +34,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     if (orderController == false) _getMyOrders();
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.grey[350],
       appBar: AppBar(
         title: Text('My Orders'),
@@ -51,7 +52,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                 padding: const EdgeInsets.all(10.0),
                 itemCount: myOrders.length,
                 itemBuilder: (BuildContext context, int index) =>
-                    MyOrderItem(myOrders[index]),
+                    MyOrderItem(myOrders[index], scaffoldKey, token),
               )
             : Center(
                 child: Text(

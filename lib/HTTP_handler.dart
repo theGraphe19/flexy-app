@@ -221,7 +221,7 @@ class HTTPHandler {
   }
 
   Future<bool> addRemarks(
-    int productId,
+    String productId,
     String token,
     String remarks,
   ) async {

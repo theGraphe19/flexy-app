@@ -1,12 +1,16 @@
+import 'package:flexy/HTTP_handler.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 import '../models/order.dart';
 import '../screens/bill_screen.dart';
 
 class MyOrderItem extends StatelessWidget {
   Order order = Order();
+  GlobalKey<ScaffoldState> scaffoldKey;
+  String token;
 
-  MyOrderItem(this.order);
+  MyOrderItem(this.order, this.scaffoldKey, this.token);
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +73,103 @@ class MyOrderItem extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10.0),
-              Padding(
+              order.status==3 ? GestureDetector(
+                onTap: () {
+                  print("Add Remark");
+                  final remark = new TextEditingController();
+                  PersistentBottomSheetController _controllerSub;
+                  _controllerSub = scaffoldKey.currentState
+                      .showBottomSheet((newContext) {
+                    return Container(
+                      padding: EdgeInsets.all(16.0),
+                      height: 300.0,
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 40.0,
+                            width: MediaQuery.of(newContext).size.width,
+                            color: Colors.green,
+                            child: Center(child: Text("Order Placed Successfully"),),
+                          ),
+                          SizedBox(height: 40.0),
+                          TextField(
+                            controller: remark,
+                            textAlign: TextAlign.left,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w400),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Remark',
+                            ),
+                          ),
+                          SizedBox(height: 40.0),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                if (remark.text.isNotEmpty) {
+                                  HTTPHandler().addRemarks(order.productId, token, remark.text).then((value) {
+                                    Navigator.of(newContext).pop();
+                                    if (value) {
+                                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text('Remark Added!'),
+                                        backgroundColor: Colors.green,
+                                        duration: Duration(seconds: 3),
+                                      ));
+                                    } else {
+                                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text('Failed to Add Remark!'),
+                                        backgroundColor: Colors.red,
+                                        duration: Duration(seconds: 3),
+                                      ));
+                                    }
+                                  });
+                                } else {
+                                  Toast.show('Enter a Valid Remark', newContext);
+                                }
+                              },
+                              child: Container(
+                                height: 50.0,
+                                child: Center(
+                                  child: Text(
+                                    "Add Remark",
+                                    style: TextStyle(
+                                        color: Color(0xff252427),
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.circular(10),
+                                  border: Border.all(
+                                      width: 2.0,
+                                      color: Color(0xff252427)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    'Add Remark',
+                    style: TextStyle(
+                      color: Colors.blue[900],
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ) : Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: orderStatus(order.status),
               ),
