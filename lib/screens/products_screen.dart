@@ -106,12 +106,35 @@ class _ProductsScreenState extends State<ProductsScreen> {
         drawer: SideDrawer(_currentUser, scaffoldKey).drawer(context),
         body: Column(
           children: <Widget>[
+            Divider(),
+            (productList == null)
+                ? LoadingBody()
+                : Expanded(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.all(10.0),
+                      itemCount: productList.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 3 / 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemBuilder: (BuildContext context, int index) =>
+                          ProductItem(
+                        productList[index],
+                        _currentUser.token,
+                        categoryId,
+                        scaffoldKey,
+                      ),
+                    ),
+                  ),
+            Divider(),
             if (!_onlyFavourites)
               Container(
                 padding: const EdgeInsets.only(
                   left: 10.0,
                   right: 10.0,
-                  top: 15.0,
+                  bottom: 20.0,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -144,28 +167,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   ],
                 ),
               ),
-            Divider(),
-            (productList == null)
-                ? LoadingBody()
-                : Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.all(10.0),
-                      itemCount: productList.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 3 / 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (BuildContext context, int index) =>
-                          ProductItem(
-                        productList[index],
-                        _currentUser.token,
-                        categoryId,
-                        scaffoldKey,
-                      ),
-                    ),
-                  ),
           ],
         ));
   }
