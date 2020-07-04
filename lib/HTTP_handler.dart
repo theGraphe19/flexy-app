@@ -276,7 +276,7 @@ class HTTPHandler {
     });
 
     Response response = await _dio.post(
-      '$baseURL/updateCart/$productId?api_token=$token',
+      '$baseURL/editorder/$productId?api_token=$token',
       data: formData,
     );
 
