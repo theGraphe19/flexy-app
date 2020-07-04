@@ -1,4 +1,3 @@
-import 'package:flexy/utils/order_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
@@ -9,6 +8,7 @@ import '../widgets/product_item.dart';
 import '../utils/cart_bottom_sheet.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
+import '../utils/order_bottom_sheet.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
@@ -98,9 +98,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             Divider(),
                             Text(product.description),
-                            SizedBox(
-                              height: 20.0,
-                            ),
+                            SizedBox(height: 20.0),
                             Text(
                               "Product Tags",
                               style: TextStyle(
@@ -108,9 +106,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             Divider(),
                             Text(product.productTags),
-                            SizedBox(
-                              height: 20.0,
-                            ),
+                            SizedBox(height: 20.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
@@ -124,9 +120,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 30.0,
-                      ),
+                      SizedBox(height: 30.0),
                       Container(
                         padding: EdgeInsets.only(left: 16.0),
                         width: double.infinity,
@@ -219,13 +213,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             SizedBox(width: 30.0),
             GestureDetector(
               onTap: () {
-                // Navigator.of(context).pushNamed(
-                //   OrdersScreen.routeName,
-                //   arguments: <dynamic>[
-                //     productDetails,
-                //     token,
-                //   ],
-                // );
                 for (Product prodt in productDetails.relatedProducts) {
                   print(prodt.name + prodt.id);
                 }
@@ -243,8 +230,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   colorList.add(temp1);
                   qtyList.add(temp2);
                 }
-                OrderBottomSheet().showBottomSheet(context, product, scaffoldKey,
-                    colorList, qtyList, token);
+                OrderBottomSheet().showBottomSheet(
+                    context, product, scaffoldKey, colorList, qtyList, token);
               },
               child: Text(
                 'ORDER NOW',

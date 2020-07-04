@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
-import './start_screen.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
 import '../providers/product_provider.dart';
@@ -106,24 +105,67 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ],
         ),
         drawer: SideDrawer(_currentUser, scaffoldKey).drawer(context),
-        body: (productList == null)
-            ? LoadingBody()
-            : GridView.builder(
-                padding: const EdgeInsets.all(10.0),
-                itemCount: productList.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemBuilder: (BuildContext context, int index) => ProductItem(
-                  productList[index],
-                  _currentUser.token,
-                  categoryId,
-                  scaffoldKey,
-                ),
-              ));
+        body: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10.0,
+                top: 15.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      print('sort products');
+                    },
+                    child: Text(
+                      'Sort',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.black12,
+                    height: 25,
+                    width: 2,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print('filter pressed');
+                    },
+                    child: Text(
+                      'Filter',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Divider(),
+            (productList == null)
+                ? LoadingBody()
+                : Expanded(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.all(10.0),
+                      itemCount: productList.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 3 / 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemBuilder: (BuildContext context, int index) =>
+                          ProductItem(
+                        productList[index],
+                        _currentUser.token,
+                        categoryId,
+                        scaffoldKey,
+                      ),
+                    ),
+                  ),
+          ],
+        ));
   }
 
   void handleClick(String value) {
