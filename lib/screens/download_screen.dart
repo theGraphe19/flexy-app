@@ -22,7 +22,9 @@ class _FileDownloaderState extends State<FileDownloader> {
   var progress = "";
   var path = "No Data";
   var platformVersion = "Unknown";
+  /*
   Permission permission1 = Permission.storage;
+  */
   var _onPressed;
   static final Random random = Random();
   Directory externalDir;
@@ -42,7 +44,7 @@ class _FileDownloaderState extends State<FileDownloader> {
     //   await permission1.request();
     //   checkPermission1 = await SimplePermissions.checkPermission(permission1);
     // }
-    if (await Permission.storage.request().isGranted) {
+    if (/*await Permission.storage.request().isGranted*/true) {
       String dirloc = "";
       if (Platform.isAndroid) {
         dirloc = "/sdcard/download/";

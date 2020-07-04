@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../screens/orders_screen.dart';
 import '../screens/cart_screen.dart';
+import '../screens/view_update_profile_screen.dart';
+import '../models/user.dart';
 
 class SideDrawer {
+  User user;
+  SideDrawer(this.user);
   Widget drawer(BuildContext context) => Drawer(
         child: Column(
           children: <Widget>[
@@ -46,13 +50,17 @@ class SideDrawer {
             ),
             _drawerTile('View/Update Profile', () {
               print('view or update profile');
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(ViewUpdateProfile.routeName, arguments: user);
             }),
             _drawerTile('View Cart', () {
               print('view cart');
+              Navigator.pop(context);
               Navigator.of(context).pushNamed(CartScreen.routeName);
             }),
             _drawerTile('View Orders', () {
               print('view orders');
+              Navigator.pop(context);
               //  ADD ARGUMENTS AS EXPECTED IN ORDERS SCREEN
               Navigator.of(context).pushNamed(OrdersScreen.routeName);
             }),

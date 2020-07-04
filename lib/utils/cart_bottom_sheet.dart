@@ -1,9 +1,9 @@
-import 'package:flexy/HTTP_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_size.dart';
+import '../HTTP_handler.dart';
 
 class CartBottomSheet {
   void showBottomSheet(
@@ -12,7 +12,8 @@ class CartBottomSheet {
       GlobalKey<ScaffoldState> scaffoldKey,
       List<List<String>> colorList,
       List<List<int>> qtyList,
-      String token) async {
+      String token,
+      bool isAnUpdate) async {
     final sizeList = product.productSizes;
     final qtyNumber = new TextEditingController();
     PersistentBottomSheetController _controller;
@@ -35,7 +36,8 @@ class CartBottomSheet {
                   product.name,
                   style: TextStyle(
                     color: Colors.black87,
-                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 23.0,
                   ),
                 ),
                 IconButton(
@@ -74,7 +76,7 @@ class CartBottomSheet {
                   sizeList.map<DropdownMenuItem<String>>((ProductSize value) {
                 return DropdownMenuItem<String>(
                   value: value.size,
-                  child: Text(value.size),
+                  child: Text(value.size, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
                 );
               }).toList(),
             ),
@@ -99,22 +101,38 @@ class CartBottomSheet {
               items: someList.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      color: Color(int.parse(value.substring(1, 7), radix: 16) +
-                          0xFF000000),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        value,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                        height: 20.0,
+                        width: 40.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          border: Border.all(color: Colors.black),
+                          color: Color(int.parse(value.substring(1, 7), radix: 16) + 0xFF000000)
+                        ),
+                      ),
+                    ],
+                  )
                 );
               }).toList(),
             ),
             SizedBox(height: 40.0),
             TextField(
               controller: qtyNumber,
+              textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration.collapsed(
+              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
                 hintText: 'Enter Quantity',
               ),
             ),
@@ -124,39 +142,91 @@ class CartBottomSheet {
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  if (qtyNumber.text.isNotEmpty) {
-                    if (int.parse(qtyNumber.text) <=
-                        qtyList[someInt1][someInt2]) {
-                      print(
-                          '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
-                      HTTPHandler()
-                          .addToCart(
-                        token,
-                        product.productId.toString(),
-                        sizeSelected,
-                        int.parse(qtyNumber.text),
-                        colorSelected,
-                      )
-                          .then((value) {
-                        if (value == true) {
-                          Toast.show('Added to Cart', newContext);
+                  if(isAnUpdate==false) {
+                    if (qtyNumber.text.isNotEmpty) {
+                      if (int.parse(qtyNumber.text) <=
+                          qtyList[someInt1][someInt2]) {
+                        print(
+                            '$token => ${product
+                                .productId} => $sizeSelected => ${qtyNumber
+                                .text} => $colorSelected');
+                        HTTPHandler()
+                            .addToCart(
+                          token,
+                          product.productId.toString(),
+                          sizeSelected,
+                          int.parse(qtyNumber.text),
+                          colorSelected,
+                        )
+                            .then((value) {
                           Navigator.of(newContext).pop();
-                        } else {
-                          Toast.show('Some Error Occurred', newContext);
-                        }
-                      });
+                          if (value == true) {
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text('Product Added to Your Cart'),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                            ));
+                          } else {
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                  'Failed to Add the Product to the Cart'),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 3),
+                            ));
+                          }
+                        });
+                      } else {
+                        Toast.show('Qty Not Available', newContext);
+                      }
                     } else {
-                      Toast.show('Qty Not Available', newContext);
+                      Toast.show('Enter Valid Qty', newContext);
                     }
                   } else {
-                    Toast.show('Enter Valid Qty', newContext);
+                    if (qtyNumber.text.isNotEmpty) {
+                      if (int.parse(qtyNumber.text) <=
+                          qtyList[someInt1][someInt2]) {
+                        print(
+                            '$token => ${product
+                                .productId} => $sizeSelected => ${qtyNumber
+                                .text} => $colorSelected');
+                        HTTPHandler()
+                            .updateCart(
+                          token,
+                          product.productId.toString(),
+                          sizeSelected,
+                          int.parse(qtyNumber.text),
+                          colorSelected,
+                        )
+                            .then((value) {
+                          Navigator.of(newContext).pop();
+                          if (value == true) {
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text('Cart Updated'),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                            ));
+                          } else {
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                  'Failed to Update Cart'),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 3),
+                            ));
+                          }
+                        });
+                      } else {
+                        Toast.show('Qty Not Available', newContext);
+                      }
+                    } else {
+                      Toast.show('Enter Valid Qty', newContext);
+                    }
                   }
                 },
                 child: Container(
                   height: 50.0,
                   child: Center(
                     child: Text(
-                      "Submit",
+                      isAnUpdate ? "Update Cart" : "Add to Cart",
                       style: TextStyle(
                           color: Color(0xff252427),
                           fontSize: 24.0,

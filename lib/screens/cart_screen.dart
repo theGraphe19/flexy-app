@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 import '../HTTP_handler.dart';
 import '../widgets/cart_item.dart';
@@ -10,12 +11,14 @@ class CartScreen extends StatefulWidget {
   static const routeName = '/cart-screen';
 
   @override
-  _CartScreenState createState() => _CartScreenState();
+  CartScreenState createState() => CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class CartScreenState extends State<CartScreen> {
   List<Cart> items;
   bool itemsHandler = false;
+  String token;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<String> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,7 +36,14 @@ class _CartScreenState extends State<CartScreen> {
         });
       });
     }
+    ;
+    _getToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Cart'),
       ),
@@ -46,9 +56,52 @@ class _CartScreenState extends State<CartScreen> {
               child: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (BuildContext context, int index) =>
-                    CartItem(items[index]),
+                    CartItem(items[index], this, index, token, scaffoldKey),
               ),
             ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          if (items.isEmpty) {
+            Toast.show(
+              "Please add items to cart first!",
+              context,
+              duration: Toast.LENGTH_SHORT,
+              gravity: Toast.CENTER,
+            );
+          } else {
+            setState(() {
+              itemsHandler = false;
+              _getToken().then((value) {
+                HTTPHandler().placeOrderFromCart(value).then((value) {
+                  if (value) {
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Order Placed'),
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 3),
+                    ));
+                    setState(() {
+                      itemsHandler = false;
+                      items = null;
+                    });
+                  } else {
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('Failed to Place Order'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 3),
+                    ));
+                    setState(() {
+                      itemsHandler = false;
+                      items = null;
+                    });
+                  }
+                });
+              });
+            });
+          }
+        },
+        label: Text('CheckOut From Cart'),
+        icon: Icon(Icons.payment),
+      ),
     );
   }
 }

@@ -38,12 +38,17 @@ class Product {
       productSizes.add(ProductSize.mapToProductSize(map['product_sizes'][i]));
   }
 
-  // void mapToDetails(Map<dynamic, dynamic> map) {
-  //   this.id = map['id'];
-  //   this.name = map['name'];
-  //   this.productType = map['prod_type'];
-  //   this.description = map['description'];
-  //   this.category = map['category'];
-  //   this.timeStamp = map['created_at'];
-  // }
+  Product.mapToDetails(Map<dynamic, dynamic> map) {
+    this.id = map['uniq_id'];
+    this.productId = map['id'];
+    this.name = map['name'];
+    this.description = map['description'];
+    this.category = map['category'].toString();
+    this.subCategory = map['subcategory'].toString();
+    this.productTags = map['product_tags'].toString();
+    this.productImages = map['product_images'];
+    this.productSizes = [];
+    for (var i = 0; i < map['product_sizes'].length; i++)
+      productSizes.add(ProductSize.mapToProductSize(map['product_sizes'][i]));
+  }
 }

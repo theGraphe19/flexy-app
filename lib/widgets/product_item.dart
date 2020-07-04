@@ -1,13 +1,11 @@
 import 'dart:convert';
-
-import 'package:flexy/models/product_color.dart';
-import 'package:flexy/models/product_size.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
+import '../models/product_color.dart';
+import '../models/product_size.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
@@ -90,14 +88,13 @@ class _ProductItemState extends State<ProductItem> {
             arguments: <dynamic>[
               widget.product,
               widget.token,
+              widget.categoryId
             ],
           ),
-          child:
-              Center(child: Text(widget.product.subCategory)), //CHANGE TO IMAGE
-          // child: Image.network(
-          //   productImagesURL + product.productImages[0],
-          //   fit: BoxFit.cover,
-          // ),
+          child: Image.network(
+            'https://developers.thegraphe.com/flexy/storage/app/product_images/${widget.product.productImages[0]}',
+            fit: BoxFit.contain,
+          ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,
@@ -115,7 +112,6 @@ class _ProductItemState extends State<ProductItem> {
                   for (ProductSize productSize in widget.product.productSizes) {
                     var temp1 = new List<String>();
                     var temp2 = new List<int>();
-                    var ttp = 0;
                     for (ProductColor productColor in productSize.colors) {
                       if (!temp1.contains(productColor.color)) {
                         temp1.add(productColor.color);
@@ -132,6 +128,7 @@ class _ProductItemState extends State<ProductItem> {
                     colorList,
                     qtyList,
                     widget.token,
+                    false
                   );
                 },
               ),

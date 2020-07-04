@@ -23,7 +23,8 @@ class HTTPHandler {
   Future<List<String>> getMobiles() async {
     try {
       List<String> mobiles = [];
-      Response response = await _dio.get(getMobilesUrl);
+      Response response =
+          await _dio.get("https://developers.thegraphe.com/flexy/getmobiles");
 
       for (var i = 0; i < response.data.length; i++)
         mobiles.add(response.data[i]['mobile']);
@@ -68,7 +69,7 @@ class HTTPHandler {
       });
 
       Response response = await _dio.post(
-        registerUrl,
+        "$baseURL/reg",
         data: formData,
       );
 
@@ -94,7 +95,7 @@ class HTTPHandler {
       });
 
       Response response = await _dio.post(
-        loginUrl,
+        "$baseURL/login",
         data: formData,
       );
 
@@ -111,8 +112,7 @@ class HTTPHandler {
   }
 
   Future<bool> logOut(String token) async {
-    Response response = await _dio.get(logOutUrl + token);
-
+    Response response = await _dio.get("$baseURL/logout?api_token=$token");
     print(response.data);
     if (response.data['status'].contains('success')) {
       return true;
@@ -128,7 +128,7 @@ class HTTPHandler {
     print(int.parse(mobileNo));
 
     Response response = await _dio.post(
-      sendOTPUrl,
+      "$baseURL/sendOTP",
       data: formData,
     );
 
@@ -188,11 +188,11 @@ class HTTPHandler {
   }
 
   Future<ProductDetails> getProductDetails(int productId, String token) async {
-    ProductDetails details = ProductDetails();
     Response response =
-        await _dio.get(getProductDetailsUrl + '$productId?api_token=$token');
+        await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
 
-    details.mapToProductDetails(response.data);
+    print(response.data);
+    ProductDetails details = ProductDetails.mapToProductDetails(response.data);
 
     return details;
   }
@@ -211,7 +211,7 @@ class HTTPHandler {
     FormData formData = FormData.fromMap(orderData);
 
     Response response = await _dio.post(
-      '$placeorderUrl/$productId?api_token=$token',
+      "$baseURL/placeorder/$productId?api_token=$token",
       data: formData,
     );
 
@@ -228,7 +228,7 @@ class HTTPHandler {
     });
 
     Response response = await _dio.post(
-      '$addRemarkUrl/$productId?api_token=$token',
+      "$baseURL/addremarks/$productId?api_token=$token",
       data: formData,
     );
 
@@ -262,6 +262,102 @@ class HTTPHandler {
       return false;
   }
 
+  Future<bool> updateCart(
+    String token,
+    String productId,
+    String size,
+    int qty,
+    String color,
+  ) async {
+    FormData formData = FormData.fromMap({
+      'size': size,
+      'quantity': qty,
+      'color': color,
+    });
+
+    Response response = await _dio.post(
+      '$baseURL/editorder/$productId?api_token=$token',
+      data: formData,
+    );
+
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> removeFromCart(
+    String token,
+    String id,
+  ) async {
+    Response response = await _dio.get(
+      '$baseURL/remcartitem/$id?api_token=$token',
+    );
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> placeOrderFromCart(
+    String token,
+  ) async {
+    Response response = await _dio.get(
+      '$baseURL/cartorder?api_token=$token',
+    );
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> notifyAdmin(
+    String token,
+  ) async {
+    Response response = await _dio.get(
+      '$baseURL/notify?api_token=$token',
+    );
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> updateProfile(User user) async {
+    FormData formData = FormData.fromMap({
+      'designation': user.designation,
+      'photoIdType': user.photoIdType,
+      'photoLocation': user.photoLocation,
+      'visitingCardLocation': user.visitingCardLocation,
+      'photo_id': await MultipartFile.fromFile(user.photoLocation,
+          filename: '${user.photoIdType}-${user.id}'),
+      'visiting_card': await MultipartFile.fromFile(user.visitingCardLocation,
+          filename: 'VisitingCard-${user.id}'),
+      'firmName': user.firmName,
+      'firmNomenclature': user.firmNomenclature,
+      'tradeCategory': user.tradeCategory,
+      'noOfStores': user.noOfStores,
+      'landlineNo': user.landlineNo,
+      'gstNo': user.gstNo,
+      'companyAddress': user.companyAddress,
+      'city': user.city,
+      'state': user.state,
+      'pincode': user.pincode,
+      'agentName': user.agentName,
+      'purchasePerson': user.purchasePerson,
+    });
+
+    Response response = await _dio.post(
+      '$baseURL/updateuser?api_token=${user.token}',
+      data: formData,
+    );
+
+    if (response.statusCode == 200)
+      return true;
+    else
+      return false;
+  }
+
   Future<List<Cart>> getCartItems(String token) async {
     List<Cart> cartItems = [];
 
@@ -276,7 +372,7 @@ class HTTPHandler {
 
   Future<List<Order>> getMyOrders(String token) async {
     List<Order> orderedItems = [];
-    Response response = await _dio.get(getMyOrdersUrl + token);
+    Response response = await _dio.get("$baseURL/myorders?api_token=$token");
 
     for (var i = 0; i < response.data.length; i++) {
       Order order = Order();
@@ -289,7 +385,8 @@ class HTTPHandler {
 
   Future<List<Bill>> getBills(String token, String orderId) async {
     List<Bill> bills = [];
-    Response response = await _dio.get('$billUrl/$orderId?api_token=$token');
+    Response response =
+        await _dio.get('$baseURL/showbill/$orderId?api_token=$token');
 
     //print(response.data);
     for (var i = 0; i < response.data['bills'].length; i++)
@@ -304,7 +401,7 @@ class HTTPHandler {
     });
 
     Response response = await _dio.post(
-      forgetPwdOTP,
+      '$baseURL/frgtpassOTP',
       data: formData,
     );
 
@@ -323,7 +420,7 @@ class HTTPHandler {
     });
 
     Response response = await _dio.post(
-      '$changePwdUrl?id=$uid',
+      '$baseURL/changepassword?id=$uid',
       data: formData,
     );
 
