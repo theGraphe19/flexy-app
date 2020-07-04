@@ -31,7 +31,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   List<Product> productList;
   ProductProvider _productProvider;
 
-  var _radioValue = 0;
+  var _radioValue = 1;
+  var _radioValue1 = 0;
 
   getList() async {
     _onlyFavourites = false;
@@ -105,42 +106,44 @@ class _ProductsScreenState extends State<ProductsScreen> {
         drawer: SideDrawer(_currentUser, scaffoldKey).drawer(context),
         body: Column(
           children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(
-                left: 10.0,
-                right: 10.0,
-                top: 15.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      print('sort products');
-                      _sortOptions(context);
-                    },
-                    child: Text(
-                      'Sort',
-                      style: TextStyle(color: Colors.black),
+            if (!_onlyFavourites)
+              Container(
+                padding: const EdgeInsets.only(
+                  left: 10.0,
+                  right: 10.0,
+                  top: 15.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        print('sort products');
+                        _sortOptions(context);
+                      },
+                      child: Text(
+                        'Sort',
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
-                  Container(
-                    color: Colors.black12,
-                    height: 25,
-                    width: 2,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print('filter pressed');
-                    },
-                    child: Text(
-                      'Filter',
-                      style: TextStyle(color: Colors.black),
+                    Container(
+                      color: Colors.black12,
+                      height: 25,
+                      width: 2,
                     ),
-                  )
-                ],
+                    GestureDetector(
+                      onTap: () {
+                        print('filter pressed');
+                        _filterOptions(context);
+                      },
+                      child: Text(
+                        'Filter',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
             Divider(),
             (productList == null)
                 ? LoadingBody()
@@ -186,6 +189,98 @@ class _ProductsScreenState extends State<ProductsScreen> {
       Navigator.of(context).pop();
     });
   }
+
+  void _handleRadioValueChange2(int value) {
+    List<Product> newList = [];
+    productList = _productProvider.productsList;
+    if (value != 0) {
+      print('old length' + newList.length.toString());
+      for (var i = 0; i < productList.length; i++) {
+        if (value == 1) {
+          if (productList[i].productSizes[0].price <= 500) {
+            newList.add(productList[i]);
+          }
+        } else if (value == 2) {
+          if (productList[i].productSizes[0].price <= 1000 &&
+              productList[i].productSizes[0].price > 500) {
+            newList.add(productList[i]);
+          }
+        } else {
+          if (productList[i].productSizes[0].price > 1000) {
+            newList.add(productList[i]);
+          }
+        }
+      }
+      print('new length' + newList.length.toString());
+      productList = newList;
+    }
+    setState(() {
+      _radioValue1 = value;
+      Navigator.of(context).pop();
+    });
+  }
+
+  void _filterOptions(BuildContext context) => showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          height: 250.0,
+          margin: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('FILTER BY'),
+              Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('All products'),
+                  Radio<int>(
+                    value: 0,
+                    groupValue: _radioValue1,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Below 500'),
+                  Radio<int>(
+                    value: 1,
+                    groupValue: _radioValue1,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('501 - 1000'),
+                  Radio<int>(
+                    value: 2,
+                    groupValue: _radioValue1,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Above 1000'),
+                  Radio<int>(
+                    value: 3,
+                    groupValue: _radioValue1,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      });
 
   void _sortOptions(BuildContext context) => showModalBottomSheet(
       context: context,
