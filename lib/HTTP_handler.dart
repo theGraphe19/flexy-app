@@ -206,7 +206,9 @@ class HTTPHandler {
     for (var i = 0; i < ordersList.length; i++) {
       orderData['orders[$i][size]'] = ordersList[i]['size'];
       orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
+      orderData['orders[$i][color]'] = ordersList[i]['color'];
     }
+    print("------>this<-------");
     print(orderData);
     FormData formData = FormData.fromMap(orderData);
 
@@ -276,7 +278,7 @@ class HTTPHandler {
     });
 
     Response response = await _dio.post(
-      '$baseURL/updateCart/$productId?api_token=$token',
+      '$baseURL/editorder/$productId?api_token=$token',
       data: formData,
     );
 
