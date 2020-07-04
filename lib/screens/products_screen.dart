@@ -46,7 +46,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   getWishlist() async {
     _onlyFavourites = true;
-    _productProvider = Provider.of<ProductProvider>(context);
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String favs = _prefs.getString('favourites-$categoryId');
     List<dynamic> favouriteList;
@@ -71,6 +70,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     print(_currentUser.token);
     categoryId = data['category_id'];
     print(categoryId);
+    _productProvider = Provider.of<ProductProvider>(context);
 
     if (!prodListCounterCalled && !_onlyFavourites) getList();
 
@@ -168,6 +168,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   void _handleRadioValueChange1(int value) {
+    if (value == 1) {
+      print(productList[0].name);
+      productList.sort((p1, p2) =>
+          p1.productSizes[0].price.compareTo(p2.productSizes[0].price));
+      print(productList[0].name);
+    }
+    if (value == 2) {
+      print(productList[0].name);
+      productList.sort((p1, p2) =>
+          p1.productSizes[0].price.compareTo(p2.productSizes[0].price));
+      productList = productList.reversed.toList();
+      print(productList[0].name);
+    }
     setState(() {
       _radioValue = value;
       Navigator.of(context).pop();
@@ -179,7 +192,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: 300.0,
+          height: 200.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -187,17 +200,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
             children: <Widget>[
               Text('SORT BY'),
               Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Relevance'),
-                  Radio<int>(
-                    value: 0,
-                    groupValue: _radioValue,
-                    onChanged: _handleRadioValueChange1,
-                  ),
-                ],
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
