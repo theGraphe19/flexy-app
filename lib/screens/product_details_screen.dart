@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
+
 import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
@@ -77,7 +79,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         child: Center(
                           child: (product.productImages.length > 0)
                               ? imagePageView()
-                              : Image.network('https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+                              : Image.network(
+                                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
                         ),
                       ),
                       orderButton(),
@@ -236,13 +239,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             SizedBox(width: 30.0),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(
-                  OrdersScreen.routeName,
-                  arguments: <dynamic>[
-                    productDetails,
-                    token,
-                  ],
-                );
+                Toast.show('Under development', context);
+                // Navigator.of(context).pushNamed(
+                //   OrdersScreen.routeName,
+                //   arguments: <dynamic>[
+                //     productDetails,
+                //     token,
+                //   ],
+                // );
               },
               child: Text(
                 'ORDER NOW',

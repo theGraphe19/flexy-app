@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
-import './my_orders_screen.dart';
 import './start_screen.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
@@ -96,8 +95,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
               itemBuilder: (BuildContext context) {
                 return {
                   (_onlyFavourites) ? 'All Products' : 'My Wishlist',
-                  'My Orders',
-                  'LogOut',
                 }.map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
@@ -108,7 +105,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           ],
         ),
-        drawer: SideDrawer(_currentUser).drawer(context),
+        drawer: SideDrawer(_currentUser, scaffoldKey).drawer(context),
         body: (productList == null)
             ? LoadingBody()
             : GridView.builder(
@@ -137,28 +134,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
       case 'My Wishlist':
         getWishlist();
-        break;
-
-      case 'My Orders':
-        Navigator.of(context).pushNamed(
-          MyOrdersScreen.routeName,
-          arguments: _currentUser.token,
-        );
-        break;
-
-      case 'LogOut':
-        _handler.logOut(_currentUser.token).then((loggedOut) {
-          if (loggedOut)
-            Navigator.of(context).popAndPushNamed(
-              StartScreen.routeName,
-            );
-          else
-            scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text('LogOut failed'),
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 3),
-            ));
-        });
         break;
     }
   }
