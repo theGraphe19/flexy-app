@@ -12,8 +12,7 @@ class OrderBottomSheet {
       GlobalKey<ScaffoldState> scaffoldKey,
       List<List<String>> colorList,
       List<List<int>> qtyList,
-      String token,
-      bool isAnUpdate) async {
+      String token) async {
     final sizeList = product.productSizes;
     final qtyNumber = new TextEditingController();
     PersistentBottomSheetController _controller;
@@ -147,7 +146,7 @@ class OrderBottomSheet {
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  if (qtyNumber.text.isNotEmpty) {
+                  if (qtyNumber.text.isNotEmpty && int.parse(qtyNumber.text)>0) {
                     if (int.parse(qtyNumber.text) <=
                         qtyList[someInt1][someInt2]) {
                       print(
@@ -160,7 +159,7 @@ class OrderBottomSheet {
                         }
                       ]).then((value) {
                         Navigator.of(newContext).pop();
-                        if (value == true) {
+                        if (value['status']=='success') {
                           final remark = new TextEditingController();
                           PersistentBottomSheetController _controllerSub;
                           _controllerSub = scaffoldKey.currentState
@@ -172,8 +171,9 @@ class OrderBottomSheet {
                                 children: [
                                   Container(
                                     height: 40.0,
+                                    width: MediaQuery.of(newContext).size.width,
                                     color: Colors.green,
-                                    child: Text("Order Placed Successfully"),
+                                    child: Center(child: Text("Order Placed Successfully"),),
                                   ),
                                   SizedBox(height: 40.0),
                                   TextField(
@@ -242,7 +242,7 @@ class OrderBottomSheet {
                           });
                         } else {
                           scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text('Failed to Update Cart'),
+                            content: Text('${value['messege']}'),
                             backgroundColor: Colors.red,
                             duration: Duration(seconds: 3),
                           ));

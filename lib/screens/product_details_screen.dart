@@ -1,3 +1,4 @@
+import 'package:flexy/utils/order_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -236,13 +237,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             SizedBox(width: 30.0),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(
-                  OrdersScreen.routeName,
-                  arguments: <dynamic>[
-                    productDetails,
-                    token,
-                  ],
-                );
+                for (Product prodt in productDetails.relatedProducts) {
+                  print(prodt.name + prodt.id);
+                }
+                var colorList = new List<List<String>>();
+                var qtyList = new List<List<int>>();
+                for (ProductSize productSize in product.productSizes) {
+                  var temp1 = new List<String>();
+                  var temp2 = new List<int>();
+                  for (ProductColor productColor in productSize.colors) {
+                    if (!temp1.contains(productColor.color)) {
+                      temp1.add(productColor.color);
+                      temp2.add(productColor.quantity);
+                    }
+                  }
+                  colorList.add(temp1);
+                  qtyList.add(temp2);
+                }
+                OrderBottomSheet().showBottomSheet(context, product, scaffoldKey,
+                    colorList, qtyList, token);
               },
               child: Text(
                 'ORDER NOW',
