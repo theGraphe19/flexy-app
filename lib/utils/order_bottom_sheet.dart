@@ -3,16 +3,19 @@ import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_size.dart';
-import '../HTTP_handler.dart';
+import './dialog_utils.dart';
+import '../models/product_details.dart';
 
 class OrderBottomSheet {
   void showBottomSheet(
-      BuildContext newContext,
-      Product product,
-      GlobalKey<ScaffoldState> scaffoldKey,
-      List<List<String>> colorList,
-      List<List<int>> qtyList,
-      String token) async {
+    BuildContext newContext,
+    Product product,
+    GlobalKey<ScaffoldState> scaffoldKey,
+    List<List<String>> colorList,
+    List<List<int>> qtyList,
+    String token,
+    ProductDetails productDetails,
+  ) async {
     final sizeList = product.productSizes;
     final qtyNumber = new TextEditingController();
     PersistentBottomSheetController _controller;
@@ -44,9 +47,7 @@ class OrderBottomSheet {
                 )
               ],
             ),
-            SizedBox(
-              height: 15.0
-            ),
+            SizedBox(height: 15.0),
             DropdownButton<String>(
               value: sizeSelected,
               icon: Icon(Icons.arrow_drop_down),
@@ -76,8 +77,7 @@ class OrderBottomSheet {
                   value: value.size,
                   child: Text(
                     value.size,
-                    style:
-                        TextStyle(fontSize: 15.0),
+                    style: TextStyle(fontSize: 15.0),
                   ),
                 );
               }).toList(),
@@ -132,7 +132,9 @@ class OrderBottomSheet {
               controller: qtyNumber,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 20.0,),
+              style: TextStyle(
+                fontSize: 20.0,
+              ),
               decoration: InputDecoration(
                 hintText: 'Enter Quantity',
               ),
@@ -143,33 +145,32 @@ class OrderBottomSheet {
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  if (qtyNumber.text.isNotEmpty && int.parse(qtyNumber.text)>0) {
+                  if (qtyNumber.text.isNotEmpty &&
+                      int.parse(qtyNumber.text) > 0) {
                     if (int.parse(qtyNumber.text) <=
                         qtyList[someInt1][someInt2]) {
-                      print(
-                          '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
-                      HTTPHandler().placeOrder(product.productId, token, [
-                        {
-                          'size': sizeSelected,
-                          'quantity': int.parse(qtyNumber.text),
-                          'color': colorSelected,
+                      int prize = 0;
+                      for (var i = 0; i < product.productSizes.length; i++) {
+                        if (product.productSizes[i].size
+                                .contains(sizeSelected) &&
+                            sizeSelected
+                                .contains(product.productSizes[i].size)) {
+                          prize = product.productSizes[i].price;
+                          break;
                         }
-                      ]).then((value) {
-                        Navigator.of(newContext).pop();
-                        if (value['status']=='success') {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text('Order Placed Successfully!'),
-                            backgroundColor: Colors.green,
-                            duration: Duration(seconds: 3),
-                          ));
-                        } else {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text('${value['messege']}'),
-                            backgroundColor: Colors.red,
-                            duration: Duration(seconds: 3),
-                          ));
-                        }
-                      });
+                      }
+                      DialogUtils().showCustomDialog(
+                        newContext,
+                        title: 'Confirm Order Details',
+                        productDetails: productDetails,
+                        product: product,
+                        size: sizeSelected,
+                        quantity: qtyNumber.text,
+                        color: colorSelected,
+                        price: prize,
+                        token: token,
+                        scaffoldKey: scaffoldKey,
+                      );
                     } else {
                       Toast.show('Qty Not Available', newContext);
                     }
