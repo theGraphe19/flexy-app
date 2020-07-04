@@ -1,11 +1,9 @@
 import 'package:flexy/utils/order_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
-import './orders_screen.dart';
 import '../widgets/loading_body.dart';
 import '../widgets/product_item.dart';
 import '../utils/cart_bottom_sheet.dart';
@@ -53,7 +51,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       key: scaffoldKey,
       appBar: AppBar(
         title: Text(
-          'Flexy - ${product.name.toUpperCase()}',
+          '${product.name}',
         ),
       ),
       body: (productDetails == null)
@@ -92,15 +90,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              product.name.toUpperCase(),
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 15.0),
                             //DESCRIPTION
                             Text(
                               "Description",
@@ -109,16 +98,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             Divider(),
                             Text(product.description),
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                            Text(
-                              "Sub Category",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 16.0),
-                            ),
-                            Divider(),
-                            Text(product.subCategory),
                             SizedBox(
                               height: 20.0,
                             ),

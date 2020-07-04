@@ -35,8 +35,7 @@ class OrderBottomSheet {
                   product.name,
                   style: TextStyle(
                     color: Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 23.0,
+                    fontSize: 20.0,
                   ),
                 ),
                 IconButton(
@@ -46,7 +45,7 @@ class OrderBottomSheet {
               ],
             ),
             SizedBox(
-              height: 30.0,
+              height: 15.0
             ),
             DropdownButton<String>(
               value: sizeSelected,
@@ -78,7 +77,7 @@ class OrderBottomSheet {
                   child: Text(
                     value.size,
                     style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 15.0),
                   ),
                 );
               }).toList(),
@@ -110,8 +109,7 @@ class OrderBottomSheet {
                           value,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 15.0,
                           ),
                         ),
                         Spacer(),
@@ -121,7 +119,6 @@ class OrderBottomSheet {
                           decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.0)),
-                              border: Border.all(color: Colors.black),
                               color: Color(
                                   int.parse(value.substring(1, 7), radix: 16) +
                                       0xFF000000)),
@@ -135,7 +132,7 @@ class OrderBottomSheet {
               controller: qtyNumber,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 20.0,),
               decoration: InputDecoration(
                 hintText: 'Enter Quantity',
               ),
@@ -187,14 +184,14 @@ class OrderBottomSheet {
                       "OrderNow",
                       style: TextStyle(
                           color: Color(0xff252427),
-                          fontSize: 24.0,
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 2.0, color: Color(0xff252427)),
+                    border: Border.all(width: 1.0, color: Color(0xff252427)),
                   ),
                 ),
               ),
