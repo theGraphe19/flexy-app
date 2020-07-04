@@ -31,6 +31,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   List<Product> productList;
   ProductProvider _productProvider;
 
+  var _radioValue = 0;
+
   getList() async {
     _onlyFavourites = false;
     prodListCounterCalled = true;
@@ -71,10 +73,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     print(categoryId);
 
     if (!prodListCounterCalled && !_onlyFavourites) getList();
-    // if (_onlyFavourites) {
-    //   print('get that list');
-    //   getWishlist();
-    // }
 
     return Scaffold(
         key: scaffoldKey,
@@ -119,6 +117,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   GestureDetector(
                     onTap: () {
                       print('sort products');
+                      _sortOptions(context);
                     },
                     child: Text(
                       'Sort',
@@ -167,6 +166,64 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ],
         ));
   }
+
+  void _handleRadioValueChange1(int value) {
+    setState(() {
+      _radioValue = value;
+      Navigator.of(context).pop();
+    });
+  }
+
+  void _sortOptions(BuildContext context) => showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          height: 300.0,
+          margin: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('SORT BY'),
+              Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Relevance'),
+                  Radio<int>(
+                    value: 0,
+                    groupValue: _radioValue,
+                    onChanged: _handleRadioValueChange1,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Price - Low to High'),
+                  Radio<int>(
+                    value: 1,
+                    groupValue: _radioValue,
+                    onChanged: _handleRadioValueChange1,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Price - High to Low'),
+                  Radio<int>(
+                    value: 2,
+                    groupValue: _radioValue,
+                    onChanged: _handleRadioValueChange1,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      });
 
   void handleClick(String value) {
     switch (value) {
