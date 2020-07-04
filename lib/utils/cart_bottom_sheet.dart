@@ -36,8 +36,7 @@ class CartBottomSheet {
                   product.name,
                   style: TextStyle(
                     color: Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 23.0,
+                    fontSize: 20.0,
                   ),
                 ),
                 IconButton(
@@ -46,9 +45,7 @@ class CartBottomSheet {
                 )
               ],
             ),
-            SizedBox(
-              height: 30.0,
-            ),
+            SizedBox(height: 15.0),
             DropdownButton<String>(
               value: sizeSelected,
               icon: Icon(Icons.arrow_drop_down),
@@ -76,7 +73,10 @@ class CartBottomSheet {
                   sizeList.map<DropdownMenuItem<String>>((ProductSize value) {
                 return DropdownMenuItem<String>(
                   value: value.size,
-                  child: Text(value.size, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                  child: Text(
+                    value.size,
+                    style: TextStyle(fontSize: 15.0),
+                  ),
                 );
               }).toList(),
             ),
@@ -100,30 +100,30 @@ class CartBottomSheet {
               },
               items: someList.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
-                  value: value,
-                  child: Row(
-                    children: [
-                      Text(
-                        value,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w500,
+                    value: value,
+                    child: Row(
+                      children: [
+                        Text(
+                          value,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      Container(
-                        height: 20.0,
-                        width: 40.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          border: Border.all(color: Colors.black),
-                          color: Color(int.parse(value.substring(1, 7), radix: 16) + 0xFF000000)
+                        Spacer(),
+                        Container(
+                          height: 20.0,
+                          width: 40.0,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              color: Color(
+                                  int.parse(value.substring(1, 7), radix: 16) +
+                                      0xFF000000)),
                         ),
-                      ),
-                    ],
-                  )
-                );
+                      ],
+                    ));
               }).toList(),
             ),
             SizedBox(height: 40.0),
@@ -131,10 +131,8 @@ class CartBottomSheet {
               controller: qtyNumber,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w500),
-              decoration: InputDecoration(
-                hintText: 'Enter Quantity',
-              ),
+              style: TextStyle(fontSize: 20.0),
+              decoration: InputDecoration(hintText: 'Enter Quantity'),
             ),
             SizedBox(height: 40.0),
             Material(
@@ -142,14 +140,12 @@ class CartBottomSheet {
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  if(isAnUpdate==false) {
+                  if (isAnUpdate == false) {
                     if (qtyNumber.text.isNotEmpty) {
                       if (int.parse(qtyNumber.text) <=
                           qtyList[someInt1][someInt2]) {
                         print(
-                            '$token => ${product
-                                .productId} => $sizeSelected => ${qtyNumber
-                                .text} => $colorSelected');
+                            '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
                         HTTPHandler()
                             .addToCart(
                           token,
@@ -168,8 +164,8 @@ class CartBottomSheet {
                             ));
                           } else {
                             scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                  'Failed to Add the Product to the Cart'),
+                              content:
+                                  Text('Failed to Add the Product to the Cart'),
                               backgroundColor: Colors.red,
                               duration: Duration(seconds: 3),
                             ));
@@ -186,9 +182,7 @@ class CartBottomSheet {
                       if (int.parse(qtyNumber.text) <=
                           qtyList[someInt1][someInt2]) {
                         print(
-                            '$token => ${product
-                                .productId} => $sizeSelected => ${qtyNumber
-                                .text} => $colorSelected');
+                            '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
                         HTTPHandler()
                             .updateCart(
                           token,
@@ -207,8 +201,7 @@ class CartBottomSheet {
                             ));
                           } else {
                             scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                  'Failed to Update Cart'),
+                              content: Text('Failed to Update Cart'),
                               backgroundColor: Colors.red,
                               duration: Duration(seconds: 3),
                             ));
@@ -229,14 +222,14 @@ class CartBottomSheet {
                       isAnUpdate ? "Update Cart" : "Add to Cart",
                       style: TextStyle(
                           color: Color(0xff252427),
-                          fontSize: 24.0,
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 2.0, color: Color(0xff252427)),
+                    border: Border.all(width: 1.0, color: Color(0xff252427)),
                   ),
                 ),
               ),

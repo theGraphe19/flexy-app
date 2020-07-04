@@ -220,24 +220,33 @@ class HTTPHandler {
     return response.data;
   }
 
-  Future<bool> addRemarks(
+  Future<int> addRemarks(
     String productId,
     String token,
     String remarks,
   ) async {
-    FormData formData = FormData.fromMap({
-      'remarks': remarks,
-    });
+    try {
+      FormData formData = FormData.fromMap({
+        'remarks': remarks,
+      });
 
-    Response response = await _dio.post(
-      "$baseURL/addremarks/$productId?api_token=$token",
-      data: formData,
-    );
+      Response response = await _dio.post(
+        "$baseURL/addremarks/$productId?api_token=$token",
+        data: formData,
+      );
 
-    if (response.data['remarks'].isNotEmpty)
-      return true;
-    else
-      return false;
+      print(response.data);
+
+      if (response.data['status'].contains('error')) {
+        return -1;
+      } else if (response.data['status'].isNotEmpty)
+        return 1;
+      else
+        return 0;
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
   }
 
   Future<bool> addToCart(
