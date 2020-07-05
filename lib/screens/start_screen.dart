@@ -8,6 +8,7 @@ class StartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('FLEXY'),
       ),
@@ -17,13 +18,14 @@ class StartScreen extends StatelessWidget {
           children: <Widget>[
             Image.asset(
               'assets/icon/icon.png',
+              width: MediaQuery.of(context).size.width*0.6,
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
                   Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: child,
               ),
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 80.0),
             GestureDetector(
               onTap: () => Navigator.of(context)
                   .popAndPushNamed(RegistrationFormPag1.routeName),

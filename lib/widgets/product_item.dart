@@ -79,7 +79,91 @@ class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     if (!retreiveDataHandler) retreiveDataFromPrefs();
-    return ClipRRect(
+    return InkWell(
+      onTap: () => Navigator.of(context).pushNamed(
+        ProductDetailsScreen.routeName,
+        arguments: <dynamic>[widget.product, widget.token, widget.categoryId],
+      ),
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${widget.product.productImages[0]}',
+                  fit: BoxFit.cover,
+                  height: 250.0,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 8.0, right: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(widget.product.name),
+                  Text("Price"),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    var colorList = new List<List<String>>();
+                    var qtyList = new List<List<int>>();
+                    for (ProductSize productSize
+                        in widget.product.productSizes) {
+                      var temp1 = new List<String>();
+                      var temp2 = new List<int>();
+                      for (ProductColor productColor in productSize.colors) {
+                        if (!temp1.contains(productColor.color)) {
+                          temp1.add(productColor.color);
+                          temp2.add(productColor.quantity);
+                        }
+                      }
+                      colorList.add(temp1);
+                      qtyList.add(temp2);
+                    }
+                    CartBottomSheet().showBottomSheet(
+                        context,
+                        widget.product,
+                        widget.scaffoldKey,
+                        colorList,
+                        qtyList,
+                        widget.token,
+                        false);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: (_isFavourite) ? Colors.red : Colors.grey,
+                  ),
+                  onPressed: () {
+                    print('pressed');
+                    addDataToPrefs();
+                  },
+                ),
+              ],
+            ),
+            Divider(),
+          ],
+        ),
+      ),
+    );
+
+/*ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
         child: GestureDetector(
@@ -146,6 +230,6 @@ class _ProductItemState extends State<ProductItem> {
           ),
         ),
       ),
-    );
+    );*/
   }
 }
