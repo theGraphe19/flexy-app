@@ -10,9 +10,6 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('FLEXY'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +55,7 @@ class StartScreen extends StatelessWidget {
               onTap: () =>
                   Navigator.of(context).pushNamed(LoginScreen.routeName),
               child: Container(
-                width: MediaQuery.of(context).size.width*0.8,
+                width: MediaQuery.of(context).size.width * 0.8,
                 padding: const EdgeInsets.symmetric(
                   vertical: 20.0,
                   horizontal: 65.0,

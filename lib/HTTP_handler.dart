@@ -209,13 +209,19 @@ class HTTPHandler {
   }
 
   Future<ProductDetails> getProductDetails(int productId, String token) async {
-    Response response =
-        await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
+    try {
+      Response response =
+          await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
 
-    print(response.data);
-    ProductDetails details = ProductDetails.mapToProductDetails(response.data);
+      print(response.data);
+      ProductDetails details =
+          ProductDetails.mapToProductDetails(response.data);
 
-    return details;
+      return details;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<Map> placeOrder(

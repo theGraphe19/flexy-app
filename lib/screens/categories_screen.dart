@@ -70,7 +70,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       if (_currentUser.status == 1)
         HTTPHandler().getCategoriesList(_currentUser.token).then((cat) {
           categoriesList = cat;
-          setState(() {});
+          setState(() {
+            _showAbout(context);
+          });
         }).catchError((e) {
           _scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text('Network error!'),
@@ -79,8 +81,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           ));
         });
     }
-
-    _showAbout(context);
 
     return Scaffold(
       key: _scaffoldKey,

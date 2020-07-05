@@ -36,6 +36,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       productDetails = value;
       print(productDetails.product.name);
       setState(() {});
+    }).catchError((e) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Network error!'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+      ));
     });
   }
 
@@ -69,18 +75,62 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       //IMAGE
                       Container(
                         padding: const EdgeInsets.all(10.0),
                         width: double.infinity,
-                        height: 400.0,
+                        height: MediaQuery.of(context).size.height * 0.6,
                         color: Colors.white,
-                        child: Center(
-                          child: (product.productImages.length > 0)
-                              ? imagePageView()
-                              : Image.network(
-                                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+                        child: Stack(
+                          children: <Widget>[
+                            Center(
+                              child: (product.productImages.length > 0)
+                                  ? imagePageView()
+                                  : Image.network(
+                                      'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    for (var i = 0;
+                                        i < product.productImages.length;
+                                        i++)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 5.0,
+                                          vertical: 10.0,
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Colors.black54),
+                                              color: (currentActiveIndex == i)
+                                                  ? Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                  : Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  offset:
+                                                      const Offset(3.0, 3.0),
+                                                  blurRadius: 5.0,
+                                                  spreadRadius: 0.1,
+                                                ),
+                                              ]),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       orderButton(),
@@ -113,9 +163,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               children: <Widget>[
                                 //CATEGORY
                                 titleValue('Category', product.category),
-                                SizedBox(width: 10.0),
-                                //PRODUCT TYPE
-                                //titleValue('TYPE', product.productType),
                               ],
                             ),
                           ],
@@ -137,25 +184,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                       SizedBox(height: 10.0),
                       Container(
-                          child: GridView.builder(
-                        primary: false,
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.all(10.0),
-                        itemCount: productDetails.relatedProducts.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 2/3.91,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                        ),
-                        itemBuilder: (BuildContext context, int index) =>
-                            ProductItem(
-                          productDetails.relatedProducts[index],
-                          token,
-                          categoryId,
-                          scaffoldKey,
-                        ),
-                      )),
+                          height: 400.0,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            primary: false,
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.all(10.0),
+                            itemCount: productDetails.relatedProducts.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: ProductItem(
+                                productDetails.relatedProducts[index],
+                                token,
+                                categoryId,
+                                scaffoldKey,
+                              ),
+                            ),
+                          )),
                     ],
                   ),
                 ),
@@ -201,7 +248,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             child: Center(
               child: Image.network(
                   'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
-              //child: Text(product.productImages[currentActiveIndex]),
             ),
           );
         },

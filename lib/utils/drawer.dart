@@ -33,9 +33,12 @@ class SideDrawer {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      height: 50.0,
-                      width: 50.0,
-                      child: Icon(Icons.person),
+                      height: 70.0,
+                      width: 70.0,
+                      child: Image.asset(
+                        'assets/images/user1.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     Container(
                       height: 50.0,
@@ -71,6 +74,7 @@ class SideDrawer {
               },
               'assets/images/user.png',
             ),
+            Divider(),
             SizedBox(height: 5.0),
             _drawerTile(
               'View Cart',
@@ -81,6 +85,7 @@ class SideDrawer {
               },
               'assets/images/cart.png',
             ),
+            Divider(),
             SizedBox(height: 5.0),
             _drawerTile(
               'View Orders',
@@ -93,6 +98,7 @@ class SideDrawer {
               },
               'assets/images/order.png',
             ),
+            Divider(),
             SizedBox(height: 5.0),
             _drawerTile(
               'LogOut',
