@@ -60,13 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
     await prefs.setString('loggedInPassword', password);
     await prefs.setString('token', token);
     print('data stored');
-    // await prefs.clear().then((isCleared) async {
-    //   await prefs.setBool('loggedIn', loggedIn);
-    //   await prefs.setString('loggedInEmail', email);
-    //   await prefs.setString('loggedInPassword', password);
-    //   await prefs.setString('token', token);
-    //   print('data stored');
-    // });
     print(prefs.getBool('loggedIn'));
     print(prefs.getString('token'));
   }
@@ -231,7 +224,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
-                    // go for kill
                     _handler
                         .changePassword(_uid, _newPasswordController.text)
                         .then((bool passwordUpdated) {
@@ -254,6 +246,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         status = ForgotPassword.notForgot;
                         setState(() {});
                       }
+                    }).catchError((e) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Network error! Try again later.'),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 5),
+                      ));
+                      status = ForgotPassword.notForgot;
+                      setState(() {});
                     });
                   }
                 },
@@ -278,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
@@ -309,6 +309,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           duration: Duration(seconds: 5),
                         ));
                       }
+                    }).catchError((e) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Network error! Try again later.'),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 5),
+                      ));
+                      status = ForgotPassword.notForgot;
+                      setState(() {});
                     });
                   }
                 },
@@ -333,7 +341,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
@@ -364,6 +372,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         status = ForgotPassword.waitingForOTP;
                         setState(() {});
                       }
+                    }).catchError((e) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Network error! Try again later.'),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 5),
+                      ));
+                      status = ForgotPassword.notForgot;
+                      setState(() {});
                     });
                   }
                 },
@@ -416,6 +432,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _checkedValue = newValue;
               });
             },
+            activeColor: Theme.of(context).primaryColor,
             controlAffinity: ListTileControlAffinity.leading,
           ),
           SizedBox(height: 20.0),

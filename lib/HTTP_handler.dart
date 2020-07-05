@@ -23,8 +23,7 @@ class HTTPHandler {
   Future<List<String>> getMobiles() async {
     try {
       List<String> mobiles = [];
-      Response response =
-          await _dio.get("https://developers.thegraphe.com/flexy/getmobiles");
+      Response response = await _dio.get("$baseURL/getmobiles");
 
       for (var i = 0; i < response.data.length; i++)
         mobiles.add(response.data[i]['mobile']);
@@ -107,6 +106,7 @@ class HTTPHandler {
 
       return user;
     } catch (e) {
+      print(e);
       throw e;
     }
   }
@@ -143,15 +143,20 @@ class HTTPHandler {
 
   Future<bool> verifyOTP(String mobileNo, String otp) async {
     print(mobileNo + ' => ' + otp);
-    Response response =
-        await _dio.post('$verifyOTPUrl&mobile=$mobileNo&otp=$otp');
+    try {
+      Response response =
+          await _dio.post('$verifyOTPUrl&mobile=$mobileNo&otp=$otp');
 
-    print(response);
+      print(response);
 
-    if (json.decode(response.data)['type'].contains('success')) {
-      return true;
-    } else {
-      return false;
+      if (json.decode(response.data)['type'].contains('success')) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      throw e;
     }
   }
 
@@ -407,40 +412,50 @@ class HTTPHandler {
   }
 
   Future<int> requestPwdChangeOTP(String mobileNo) async {
-    FormData formData = FormData.fromMap({
-      'mobileNo': mobileNo,
-    });
+    try {
+      FormData formData = FormData.fromMap({
+        'mobileNo': mobileNo,
+      });
 
-    Response response = await _dio.post(
-      '$baseURL/frgtpassOTP',
-      data: formData,
-    );
+      Response response = await _dio.post(
+        '$baseURL/frgtpassOTP',
+        data: formData,
+      );
 
-    print((response.data)['uid']);
+      print((response.data)['uid']);
 
-    if ((response.data).containsKey('uid')) {
-      return (response.data)['uid'];
-    } else {
-      return null;
+      if ((response.data).containsKey('uid')) {
+        return (response.data)['uid'];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      throw e;
     }
   }
 
   Future<bool> changePassword(int uid, String password) async {
-    FormData formData = FormData.fromMap({
-      'password': password,
-    });
+    try {
+      FormData formData = FormData.fromMap({
+        'password': password,
+      });
 
-    Response response = await _dio.post(
-      '$baseURL/changepassword?id=$uid',
-      data: formData,
-    );
+      Response response = await _dio.post(
+        '$baseURL/changepassword?id=$uid',
+        data: formData,
+      );
 
-    print(response.data);
+      print(response.data);
 
-    if ((response.data)['status'].contains('success')) {
-      return true;
-    } else {
-      return false;
+      if ((response.data)['status'].contains('success')) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      throw e;
     }
   }
 }
