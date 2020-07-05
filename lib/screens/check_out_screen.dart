@@ -1,10 +1,7 @@
 import 'package:flexy/widgets/check_out_item.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
-
 import '../HTTP_handler.dart';
-import '../widgets/cart_item.dart';
 import '../models/cart.dart';
 import '../widgets/loading_body.dart';
 
@@ -20,6 +17,7 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
   bool itemsHandler = false;
   String token;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  int grandTotal = 0;
 
   Future<String> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,11 +31,14 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
       _getToken().then((String token) {
         HTTPHandler().getCartItems(token).then((value) {
           items = value;
-          setState(() {});
+          setState(() {
+            for (Cart cart in items) {
+              grandTotal += cart.productPrice;
+            }
+          });
         });
       });
     }
-    ;
     _getToken().then((value) {
       setState(() {
         token = value;
@@ -62,7 +63,7 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {},
-        label: Text('Confirm Order'),
+        label: Text('Confirm Order for : Rs. $grandTotal'),
         icon: Icon(Icons.done),
       ),
     );
