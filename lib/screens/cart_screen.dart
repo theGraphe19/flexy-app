@@ -1,3 +1,4 @@
+import 'package:flexy/models/user.dart';
 import 'package:flexy/screens/check_out_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +18,7 @@ class CartScreen extends StatefulWidget {
 
 class CartScreenState extends State<CartScreen> {
   List<Cart> items;
+  User _currentUser;
   bool itemsHandler = false;
   String token;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -29,6 +31,7 @@ class CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     if (!itemsHandler) {
+      _currentUser = ModalRoute.of(context).settings.arguments as User;
       itemsHandler = true;
       _getToken().then((String token) {
         HTTPHandler().getCartItems(token).then((value) {
@@ -71,34 +74,10 @@ class CartScreenState extends State<CartScreen> {
             );
           } else {
             setState(() {
-              Navigator.of(context)
-                  .popAndPushNamed(CheckOutFromCart.routeName);
-/*              itemsHandler = false;
-              _getToken().then((value) {
-                HTTPHandler().placeOrderFromCart(value).then((value) {
-                  if (value) {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Order Placed'),
-                      backgroundColor: Colors.green,
-                      duration: Duration(seconds: 3),
-                    ));
-                    setState(() {
-                      itemsHandler = false;
-                      items = null;
-                    });
-                  } else {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Failed to Place Order'),
-                      backgroundColor: Colors.red,
-                      duration: Duration(seconds: 3),
-                    ));
-                    setState(() {
-                      itemsHandler = false;
-                      items = null;
-                    });
-                  }
-                });
-              });*/
+              Navigator.of(context).pushNamed(
+                CheckOutFromCart.routeName,
+                arguments: _currentUser,
+              );
             });
           }
         },

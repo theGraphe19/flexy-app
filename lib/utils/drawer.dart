@@ -81,7 +81,7 @@ class SideDrawer {
               () {
                 print('view cart');
                 Navigator.pop(context);
-                Navigator.of(context).pushNamed(CartScreen.routeName);
+                Navigator.of(context).pushNamed(CartScreen.routeName, arguments: user,);
               },
               'assets/images/cart.png',
             ),
