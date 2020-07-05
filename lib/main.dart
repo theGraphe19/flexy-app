@@ -78,6 +78,7 @@ class _MyAppState extends State<MyApp> {
           primaryColor: Color(0xffbf1e2e),
           primaryColorDark: Color(0xff343a40),
           primaryColorLight: Color(0xff6c757d),
+          accentColor: Color(0xff343a40),
           colorScheme: ColorScheme(
             primary: Color(0xffbf1e2e),
             onPrimary: Color(0xff343a40),
