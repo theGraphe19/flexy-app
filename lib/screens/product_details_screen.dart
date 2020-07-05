@@ -279,91 +279,108 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             Container(
                               height: 50.0,
                               margin: const EdgeInsets.only(bottom: 5.0),
-                              child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: product
-                                      .productSizes[selectedSize].colors
-                                      .map(
-                                        (ProductColor productColor) =>
-                                            GestureDetector(
-                                          onTap: () {
-                                            colorSelected = product
-                                                .productSizes[selectedSize]
-                                                .colors
-                                                .indexOf(productColor, 0);
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                            width: 50.0,
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 10.0),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: Colors.grey,
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: product
+                                            .productSizes[selectedSize].colors
+                                            .map(
+                                              (ProductColor productColor) =>
+                                                  GestureDetector(
+                                                onTap: () {
+                                                  colorSelected = product
+                                                      .productSizes[
+                                                          selectedSize]
+                                                      .colors
+                                                      .indexOf(productColor, 0);
+                                                  setState(() {});
+                                                },
+                                                child: Container(
+                                                  width: 50.0,
+                                                  margin: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 10.0),
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                      color: Colors.grey,
+                                                    ),
+                                                    color: Color(int.parse(
+                                                            product
+                                                                .productSizes[
+                                                                    selectedSize]
+                                                                .colors[product
+                                                                    .productSizes[
+                                                                        selectedSize]
+                                                                    .colors
+                                                                    .indexOf(
+                                                                        productColor)]
+                                                                .color
+                                                                .substring(
+                                                                    1, 7),
+                                                            radix: 16) +
+                                                        0xFF000000),
+                                                  ),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.done,
+                                                      color: (colorSelected ==
+                                                              product
+                                                                  .productSizes[
+                                                                      selectedSize]
+                                                                  .colors
+                                                                  .indexOf(
+                                                                      productColor,
+                                                                      0))
+                                                          ? Colors.white
+                                                          : Colors.transparent,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                              color: Color(int.parse(
-                                                      product
-                                                          .productSizes[
-                                                              selectedSize]
-                                                          .colors[product
-                                                              .productSizes[
-                                                                  selectedSize]
-                                                              .colors
-                                                              .indexOf(
-                                                                  productColor)]
-                                                          .color
-                                                          .substring(1, 7),
-                                                      radix: 16) +
-                                                  0xFF000000),
-                                            ),
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.done,
-                                                color: (colorSelected ==
-                                                        product
-                                                            .productSizes[
-                                                                selectedSize]
-                                                            .colors
-                                                            .indexOf(
-                                                                productColor,
-                                                                0))
-                                                    ? Colors.white
-                                                    : Colors.transparent,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList()),
+                                            )
+                                            .toList()),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10.0),
+                                    child: Text(
+                                      '${product.productSizes[selectedSize].colors[colorSelected].quantity} available',
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             )
                           ],
                         ),
                       ),
                       Divider(),
-                      orderButton(),
-                      SizedBox(height: 10.0),
-                      //NAME
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.0),
+                      Container(
+                        width: double.infinity,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //DESCRIPTION
-                            Text(
-                              "Description",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 16.0),
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Text(
+                                'Product Details : ',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                            Divider(),
-                            Text(product.description),
-                            SizedBox(height: 20.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                //CATEGORY
-                                titleValue('Category', product.category),
-                              ],
+                            SizedBox(height: 10.0),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Text(product.description),
                             ),
                           ],
                         ),
@@ -384,25 +401,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                       SizedBox(height: 10.0),
                       Container(
-                          height: 400.0,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            primary: false,
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(10.0),
-                            itemCount: productDetails.relatedProducts.length,
-                            itemBuilder: (BuildContext context, int index) =>
-                                Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: ProductItem(
-                                productDetails.relatedProducts[index],
-                                token,
-                                categoryId,
-                                scaffoldKey,
-                              ),
+                        height: 400.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          primary: false,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.all(10.0),
+                          itemCount: productDetails.relatedProducts.length,
+                          itemBuilder: (BuildContext context, int index) =>
+                              Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: ProductItem(
+                              productDetails.relatedProducts[index],
+                              token,
+                              categoryId,
+                              scaffoldKey,
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -457,7 +475,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         backgroundColor: Colors.white,
         title: Row(
           children: [
-            SizedBox(width: 30.0),
             GestureDetector(
               onTap: () {
                 for (Product prodt in productDetails.relatedProducts) {
