@@ -25,7 +25,10 @@ class OrderBottomSheet {
     int someInt1 = 0, someInt2 = 0;
     _controller = scaffoldKey.currentState.showBottomSheet((newContext) {
       return Container(
-        color: Colors.blueAccent.withOpacity(0.2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
+          color: Theme.of(newContext).primaryColorLight.withOpacity(0.2),
+        ),
         height: 400.0,
         padding: const EdgeInsets.all(15.0),
         child: Column(

@@ -78,7 +78,26 @@ class _MyAppState extends State<MyApp> {
           primaryColor: Color(0xffbf1e2e),
           primaryColorDark: Color(0xff343a40),
           primaryColorLight: Color(0xff6c757d),
-          accentColor: Color(0xffc96b74),
+          colorScheme: ColorScheme(
+            primary: Color(0xffbf1e2e),
+            onPrimary: Color(0xff343a40),
+            primaryVariant: Color(0xff6c757d),
+
+            background: Colors.white,
+            onBackground: Colors.black,
+
+            secondary: Color(0xffc96b74),
+            onSecondary: Colors.black,
+            secondaryVariant: Color(0xffe4b2be),
+
+            error: Colors.red,
+            onError: Colors.white,
+
+            surface: Colors.white,
+            onSurface: Colors.black,
+
+            brightness: Brightness.light,
+          ),
           backgroundColor: Colors.white
         ),
         routes: {

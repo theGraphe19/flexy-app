@@ -48,7 +48,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     print('Token : $token');
     if (!productsController) getProductDetails();
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorLight,
+      backgroundColor: Colors.white,
       key: scaffoldKey,
       appBar: AppBar(
         title: Text(
@@ -60,7 +60,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           : Container(
               margin: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorLight,
+                color: Colors.white,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(20.0),
               ),
@@ -75,7 +75,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         padding: const EdgeInsets.all(10.0),
                         width: double.infinity,
                         height: 400.0,
-                        color: Theme.of(context).primaryColorLight,
+                        color: Colors.white,
                         child: Center(
                           child: (product.productImages.length > 0)
                               ? imagePageView()
@@ -208,7 +208,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       );
 
   Widget orderButton() => GridTileBar(
-        backgroundColor: Theme.of(context).primaryColorLight,
+        backgroundColor: Colors.white,
         title: Row(
           children: [
             SizedBox(width: 30.0),
@@ -245,7 +245,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 'ORDER NOW',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColorDark,
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                 ),
@@ -278,7 +278,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 'Add To Cart',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.yellow,
+                  color: Theme.of(context).colorScheme.secondary,
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                 ),
