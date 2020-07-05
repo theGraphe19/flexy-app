@@ -5,6 +5,7 @@ import './login_screen.dart';
 
 class StartScreen extends StatelessWidget {
   static const routeName = '/start-screen';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +19,7 @@ class StartScreen extends StatelessWidget {
           children: <Widget>[
             Image.asset(
               'assets/icon/icon.png',
-              width: MediaQuery.of(context).size.width*0.6,
+              width: MediaQuery.of(context).size.width * 0.6,
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
                   Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -30,21 +31,24 @@ class StartScreen extends StatelessWidget {
               onTap: () => Navigator.of(context)
                   .popAndPushNamed(RegistrationFormPag1.routeName),
               child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
                 padding: const EdgeInsets.symmetric(
                   vertical: 20.0,
                   horizontal: 50.0,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.black,
                   shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(35.0),
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                child: Text(
-                  'Register',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: Text(
+                    'Register',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -54,21 +58,24 @@ class StartScreen extends StatelessWidget {
               onTap: () =>
                   Navigator.of(context).pushNamed(LoginScreen.routeName),
               child: Container(
+                width: MediaQuery.of(context).size.width*0.8,
                 padding: const EdgeInsets.symmetric(
                   vertical: 20.0,
                   horizontal: 65.0,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.black,
                   shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(35.0),
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

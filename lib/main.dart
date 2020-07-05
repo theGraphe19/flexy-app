@@ -1,5 +1,6 @@
 import 'package:flexy/HTTP_handler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot_callback/screenshot_callback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,13 @@ import './screens/view_update_profile_screen.dart';
 
 import './providers/product_provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.black, // navigation bar color
+    statusBarColor: Colors.black, // status bar color
+  ));
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -67,6 +74,11 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: StartScreen(),
+        theme: ThemeData(
+          primaryColor: Colors.black,
+          accentColor: Colors.black,
+          backgroundColor: Colors.white
+        ),
         routes: {
           StartScreen.routeName: (ctx) => StartScreen(),
           RegistrationFormPag1.routeName: (ctx) => RegistrationFormPag1(),
