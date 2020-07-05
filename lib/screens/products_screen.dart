@@ -82,99 +82,97 @@ class _ProductsScreenState extends State<ProductsScreen> {
     if (!prodListCounterCalled && !_onlyFavourites) getList();
 
     return Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              print('more pressed');
-              scaffoldKey.currentState.openDrawer();
+      key: scaffoldKey,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            print('more pressed');
+            scaffoldKey.currentState.openDrawer();
+          },
+        ),
+        title: Text('Products'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert),
+            onSelected: handleClick,
+            itemBuilder: (BuildContext context) {
+              return {
+                (_onlyFavourites) ? 'All Products' : 'My Wishlist',
+              }.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
             },
           ),
-          title: Text('Products'),
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert),
-              onSelected: handleClick,
-              itemBuilder: (BuildContext context) {
-                return {
-                  (_onlyFavourites) ? 'All Products' : 'My Wishlist',
-                }.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-            ),
-          ],
-        ),
-        drawer: SideDrawer(_currentUser, scaffoldKey).drawer(context),
-        body: Column(
-          children: <Widget>[
-            Divider(),
-            (productList == null)
-                ? LoadingBody()
-                : Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.all(10.0),
-                      itemCount: productList.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 2 / 3.8,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (BuildContext context, int index) =>
-                          ProductItem(
-                        productList[index],
-                        _currentUser.token,
-                        categoryId,
-                        scaffoldKey,
-                      ),
+        ],
+      ),
+      drawer: SideDrawer(_currentUser, scaffoldKey).drawer(context),
+      body: Column(
+        children: <Widget>[
+          Divider(),
+          (productList == null)
+              ? LoadingBody()
+              : Expanded(
+                  child: GridView.builder(
+                    itemCount: productList.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.6,
+                    ),
+                    itemBuilder: (BuildContext context, int index) =>
+                        ProductItem(
+                      productList[index],
+                      _currentUser.token,
+                      categoryId,
+                      scaffoldKey,
                     ),
                   ),
-            Divider(),
-            if (!_onlyFavourites)
-              Container(
-                padding: const EdgeInsets.only(
-                  left: 10.0,
-                  right: 10.0,
-                  bottom: 20.0,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        print('sort products');
-                        _sortOptions(context);
-                      },
-                      child: Text(
-                        'Sort',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    Container(
-                      color: Colors.black12,
-                      height: 25,
-                      width: 2,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        print('filter pressed');
-                        _filterOptions(context);
-                      },
-                      child: Text(
-                        'Filter',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    )
-                  ],
-                ),
+          Divider(),
+          if (!_onlyFavourites)
+            Container(
+              padding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10.0,
+                bottom: 20.0,
               ),
-          ],
-        ));
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      print('sort products');
+                      _sortOptions(context);
+                    },
+                    child: Text(
+                      'Sort',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.black12,
+                    height: 25,
+                    width: 2,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print('filter pressed');
+                      _filterOptions(context);
+                    },
+                    child: Text(
+                      'Filter',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   void _handleRadioValueChange1(int value) {
