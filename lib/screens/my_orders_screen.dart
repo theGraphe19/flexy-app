@@ -40,12 +40,9 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         title: Text('My Orders'),
       ),
       body: Container(
-        margin: const EdgeInsets.all(15.0),
-        padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
         ),
         child: (myOrders.isNotEmpty)
             ? ListView.builder(
