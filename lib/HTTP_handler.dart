@@ -112,12 +112,17 @@ class HTTPHandler {
   }
 
   Future<bool> logOut(String token) async {
-    Response response = await _dio.get("$baseURL/logout?api_token=$token");
-    print(response.data);
-    if (response.data['status'].contains('success')) {
-      return true;
-    } else {
-      return false;
+    try {
+      Response response = await _dio.get("$baseURL/logout?api_token=$token");
+      print(response.data);
+      if (response.data['status'].contains('success')) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      throw (e);
     }
   }
 

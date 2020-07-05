@@ -67,6 +67,10 @@ flutter:
   assets:
     - assets/icon/icon.png
     - assets/images/kurti.jpg
+    - assets/images/cart.png
+    - assets/images/user.png
+    - assets/images/order.png
+    - assets/images/exit.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

@@ -8,6 +8,13 @@ import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../screens/start_screen.dart';
 
+/* 
+<a target="_blank" href="https://icons8.com/icons/set/add-shopping-cart">Add Shopping Cart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/gender-neutral-user">Customer icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/purchase-order">Purchase Order icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/exit">Exit icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+*/
+
 class SideDrawer {
   User user;
   var scaffoldKey = GlobalKey<ScaffoldState>();
@@ -54,45 +61,70 @@ class SideDrawer {
                 ),
               ),
             ),
-            _drawerTile('View/Update Profile', () {
-              print('view or update profile');
-              Navigator.pop(context);
-              Navigator.of(context)
-                  .pushNamed(ViewUpdateProfile.routeName, arguments: user);
-            }),
-            _drawerTile('View Cart', () {
-              print('view cart');
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed(CartScreen.routeName);
-            }),
-            _drawerTile('View Orders', () async {
-              print('view orders');
-              Navigator.pop(context);
-              //  ADD ARGUMENTS AS EXPECTED IN ORDERS SCREEN
-              Navigator.of(context)
-                  .pushNamed(MyOrdersScreen.routeName, arguments: user.token);
-            }),
-            _drawerTile('LogOut', () {
-              print('Log out');
-              HTTPHandler().logOut(user.token).then((loggedOut) async {
-                if (loggedOut) {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.remove('loggedIn');
-                  await prefs.remove('loggedInEmail');
-                  await prefs.remove('token');
-                  await prefs.remove('loggedInPassword');
-                  Navigator.of(context).popAndPushNamed(
-                    StartScreen.routeName,
-                  );
-                } else
+            _drawerTile(
+              'View/Update Profile',
+              () {
+                print('view or update profile');
+                Navigator.pop(context);
+                Navigator.of(context)
+                    .pushNamed(ViewUpdateProfile.routeName, arguments: user);
+              },
+              'assets/images/user.png',
+            ),
+            SizedBox(height: 5.0),
+            _drawerTile(
+              'View Cart',
+              () {
+                print('view cart');
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+              'assets/images/cart.png',
+            ),
+            SizedBox(height: 5.0),
+            _drawerTile(
+              'View Orders',
+              () {
+                print('view orders');
+                Navigator.pop(context);
+                //  ADD ARGUMENTS AS EXPECTED IN ORDERS SCREEN
+                Navigator.of(context)
+                    .pushNamed(MyOrdersScreen.routeName, arguments: user.token);
+              },
+              'assets/images/order.png',
+            ),
+            SizedBox(height: 5.0),
+            _drawerTile(
+              'LogOut',
+              () {
+                print('Log out');
+                HTTPHandler().logOut(user.token).then((loggedOut) async {
+                  if (loggedOut) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.remove('loggedIn');
+                    await prefs.remove('loggedInEmail');
+                    await prefs.remove('token');
+                    await prefs.remove('loggedInPassword');
+                    Navigator.of(context).popAndPushNamed(
+                      StartScreen.routeName,
+                    );
+                  } else
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('LogOut failed'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 3),
+                    ));
+                }).catchError((e) {
                   scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text('LogOut failed'),
+                    content: Text('Network error!'),
                     backgroundColor: Colors.red,
                     duration: Duration(seconds: 3),
                   ));
-              });
-            }),
+                });
+              },
+              'assets/images/exit.png',
+            ),
           ],
         ),
       );
@@ -100,17 +132,17 @@ class SideDrawer {
   Widget _drawerTile(
     String text,
     Function f,
+    String icon,
   ) =>
       ListTile(
-        // leading: Container(
-        //   height: 30.0,
-        //   width: 30.0,
-        //   child: SvgPicture.asset(
-        //     imagePath,
-        //     color: Colors.yellow[800],
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
+        leading: Container(
+          height: 60.0,
+          width: 60.0,
+          child: Image.asset(
+            icon,
+            fit: BoxFit.cover,
+          ),
+        ),
         title: Text(text),
         onTap: f,
       );

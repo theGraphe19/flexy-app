@@ -42,6 +42,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
         .then((value) {
       productList = value;
       setState(() {});
+    }).catchError((e) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Network error!'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+      ));
     });
   }
 
@@ -115,7 +121,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       itemCount: productList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 2/3.8,
+                        childAspectRatio: 2 / 3.8,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                       ),
