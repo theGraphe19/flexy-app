@@ -13,6 +13,7 @@ import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
 import './models/cart.dart';
+import './models/remark.dart';
 
 class HTTPHandler {
   User currentUser = User();
@@ -475,6 +476,23 @@ class HTTPHandler {
       } else {
         return false;
       }
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<Remark>> remarkOfProduct(String token, int productId) async {
+    try {
+      Response response =
+          await _dio.get('$baseURL/remperprod/$productId?api_token=$token');
+
+      List<Remark> remarksList = [];
+      for (var i = 0; i < response.data.length; i++) {
+        remarksList.add(Remark.fromMap(response.data[i]));
+      }
+      print(remarksList.toString());
+      return remarksList;
     } catch (e) {
       print(e);
       throw e;
