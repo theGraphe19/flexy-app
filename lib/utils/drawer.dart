@@ -36,7 +36,7 @@ class SideDrawer {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Text(
-                            'Name',
+                            user.name,
                             style: TextStyle(
                               color: Colors.yellow[800],
                               fontWeight: FontWeight.bold,
@@ -44,7 +44,7 @@ class SideDrawer {
                             ),
                           ),
                           Text(
-                            'Email',
+                            user.email,
                             textAlign: TextAlign.start,
                           ),
                         ],
