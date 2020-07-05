@@ -37,7 +37,7 @@ class StartScreen extends StatelessWidget {
                   horizontal: 50.0,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Theme.of(context).primaryColor,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
@@ -64,7 +64,7 @@ class StartScreen extends StatelessWidget {
                   horizontal: 65.0,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Theme.of(context).primaryColor,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(15.0),
                 ),

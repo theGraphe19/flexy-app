@@ -86,33 +86,35 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         child: ListView.builder(
                           itemCount: categoriesList.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.black, width: 0.5)),
-                                    height: 120.0,
-                                    child: Center(
-                                      child: ListTile(
-                                        title: Text(categoriesList[index].name),
-                                        trailing: Icon(Icons.chevron_right),
-                                        onTap: () {
-                                          Navigator.of(context).pushNamed(
-                                            ProductsScreen.routeName,
-                                            arguments: <String, dynamic>{
-                                              'user': _currentUser,
-                                              'category_id':
-                                                  categoriesList[index].id,
-                                            },
-                                          );
-                                        },
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  ProductsScreen.routeName,
+                                  arguments: <String, dynamic>{
+                                    'user': _currentUser,
+                                    'category_id': categoriesList[index].id,
+                                  },
+                                );
+                              },
+                              child: Container(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.black, width: 0.5)),
+                                      height: 120.0,
+                                      child: Center(
+                                        child: ListTile(
+                                          title:
+                                              Text(categoriesList[index].name),
+                                          trailing: Icon(Icons.chevron_right),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 5.0),
-                                ],
+                                    SizedBox(height: 5.0),
+                                  ],
+                                ),
                               ),
                             );
                             /*ListTile(

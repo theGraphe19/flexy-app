@@ -58,6 +58,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
             FloatingActionButton.extended(
               onPressed: _validateInput,
               label: Text('Submit'),
+              backgroundColor: Theme.of(context).primaryColorDark,
               icon: Icon(Icons.done),
             ),
           ],
@@ -76,7 +77,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
               percent: 1.0,
               center: Text("3 / 3"),
               linearStrokeCap: LinearStrokeCap.roundAll,
-              progressColor: Colors.blue,
+              progressColor: Theme.of(context).primaryColorDark,
             ),
           ),
           TextFormField(

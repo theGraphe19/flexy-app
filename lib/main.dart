@@ -24,8 +24,8 @@ import './providers/product_provider.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.black, // navigation bar color
-    statusBarColor: Colors.black, // status bar color
+    systemNavigationBarColor: Color(0xffbf1e2e), // navigation bar color
+    statusBarColor: Color(0xffbf1e2e), // status bar color
   ));
   runApp(MyApp());
 }
@@ -75,8 +75,10 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         home: StartScreen(),
         theme: ThemeData(
-          primaryColor: Colors.black,
-          accentColor: Colors.black,
+          primaryColor: Color(0xffbf1e2e),
+          primaryColorDark: Color(0xff343a40),
+          primaryColorLight: Color(0xff6c757d),
+          accentColor: Color(0xffc96b74),
           backgroundColor: Colors.white
         ),
         routes: {

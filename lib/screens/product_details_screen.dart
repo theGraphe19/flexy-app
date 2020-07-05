@@ -48,6 +48,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     print('Token : $token');
     if (!productsController) getProductDetails();
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       key: scaffoldKey,
       appBar: AppBar(
         title: Text(
@@ -59,7 +60,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           : Container(
               margin: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
-                color: Colors.grey[350],
+                color: Theme.of(context).primaryColorLight,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(20.0),
               ),
@@ -74,7 +75,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         padding: const EdgeInsets.all(10.0),
                         width: double.infinity,
                         height: 400.0,
-                        color: Colors.grey[350],
+                        color: Theme.of(context).primaryColorLight,
                         child: Center(
                           child: (product.productImages.length > 0)
                               ? imagePageView()
@@ -207,7 +208,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       );
 
   Widget orderButton() => GridTileBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColorLight,
         title: Row(
           children: [
             SizedBox(width: 30.0),

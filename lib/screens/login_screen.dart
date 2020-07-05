@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
@@ -402,7 +402,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Forgot Password?',
                 textAlign: TextAlign.end,
                 style: TextStyle(
-                  color: Colors.blue[800],
+                  color: Theme.of(context).primaryColorDark,
                   decoration: TextDecoration.underline,
                 ),
               ),
@@ -425,7 +425,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
