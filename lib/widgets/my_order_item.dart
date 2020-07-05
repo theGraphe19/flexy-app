@@ -205,7 +205,7 @@ class MyOrderItem extends StatelessWidget {
             Positioned(
               bottom: 8,
               right: 8,
-              child: Text("Status"),
+              child: orderStatus(order.status),
             ),
           ],
         ));
