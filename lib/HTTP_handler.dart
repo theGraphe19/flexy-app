@@ -161,14 +161,20 @@ class HTTPHandler {
   }
 
   Future<List<Category>> getCategoriesList(String token) async {
-    Response response = await _dio.get('$baseURL/categories?api_token=$token');
+    try {
+      Response response =
+          await _dio.get('$baseURL/categories?api_token=$token');
 
-    List<Category> categories = [];
-    for (var i = 0; i < (response.data).length; i++)
-      categories.add(Category.frommap((response.data)[i]));
+      List<Category> categories = [];
+      for (var i = 0; i < (response.data).length; i++)
+        categories.add(Category.frommap((response.data)[i]));
 
-    print(categories);
-    return categories;
+      print(categories);
+      return categories;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<List<Product>> getProductsList(

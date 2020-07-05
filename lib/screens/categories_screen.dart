@@ -19,6 +19,48 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   List<Category> categoriesList;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  void _showAbout(BuildContext context) {
+    Future.delayed(Duration(seconds: 3), () {
+      print('now');
+      _scaffoldKey.currentState.showBottomSheet(
+        (context) => Container(
+          height: 250,
+          margin: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'About Us : ',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ),
+              Divider(),
+              SizedBox(height: 10.0),
+              Text(
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _currentUser = ModalRoute.of(context).settings.arguments as User;
@@ -29,8 +71,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         HTTPHandler().getCategoriesList(_currentUser.token).then((cat) {
           categoriesList = cat;
           setState(() {});
+        }).catchError((e) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text('Network error!'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ));
         });
     }
+
+    _showAbout(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -48,37 +99,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Text(
-                'About Flexy : ',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-            ),
-            SizedBox(height: 10.0),
-            Divider(),
-            Container(
-              width: double.infinity,
-              child: Text(
-                'Categories : ',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 10.0),
             (_currentUser.status == 1)
                 ? (categoriesList == null)
                     ? CircularProgressIndicator()
@@ -97,18 +117,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 );
                               },
                               child: Container(
+                                height: MediaQuery.of(context).size.height / 3,
+                                width: double.infinity,
                                 child: Column(
                                   children: [
                                     Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                                  3 -
+                                              5.0,
                                       decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.black, width: 0.5)),
-                                      height: 120.0,
-                                      child: Center(
-                                        child: ListTile(
-                                          title:
-                                              Text(categoriesList[index].name),
-                                          trailing: Icon(Icons.chevron_right),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/images/kurti.jpg'),
+                                          fit: BoxFit.fitHeight,
                                         ),
                                       ),
                                     ),
@@ -117,19 +139,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 ),
                               ),
                             );
-                            /*ListTile(
-                              title: Text(categoriesList[index].name),
-                              trailing: Icon(Icons.chevron_right),
-                              onTap: () {
-                                Navigator.of(context).pushNamed(
-                                  ProductsScreen.routeName,
-                                  arguments: <String, dynamic>{
-                                    'user': _currentUser,
-                                    'category_id': categoriesList[index].id,
-                                  },
-                                );
-                              },
-                            );*/
                           },
                         ),
                       )
