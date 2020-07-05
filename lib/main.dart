@@ -1,4 +1,5 @@
 import 'package:flexy/HTTP_handler.dart';
+import 'package:flexy/screens/check_out_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -116,6 +117,7 @@ class _MyAppState extends State<MyApp> {
           BillScreen.routeName: (ctx) => BillScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           ViewUpdateProfile.routeName: (ctx) => ViewUpdateProfile(),
+          CheckOutFromCart.routeName: (ctx) => CheckOutFromCart(),
         },
       ),
     );

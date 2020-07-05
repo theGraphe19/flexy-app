@@ -1,6 +1,7 @@
 import 'package:flexy/models/product_color.dart';
 import 'package:flexy/models/product_details.dart';
 import 'package:flexy/models/product_size.dart';
+import 'package:flexy/screens/check_out_screen.dart';
 import 'package:flexy/utils/cart_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,15 +10,15 @@ import '../models/cart.dart';
 import '../screens/cart_screen.dart';
 import '../HTTP_handler.dart';
 
-class CartItem extends StatelessWidget {
+class CheckOutItem extends StatelessWidget {
   Cart item;
-  CartScreenState _parent;
+  CheckOutFromCartState _parent;
   int index;
   String token;
   final GlobalKey<ScaffoldState> scaffoldKey;
   ProductDetails productDetails;
 
-  CartItem(this.item, this._parent, this.index, this.token, this.scaffoldKey);
+  CheckOutItem(this.item, this._parent, this.index, this.token, this.scaffoldKey);
 
   Future<String> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

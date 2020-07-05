@@ -120,7 +120,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     itemCount: productList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.6,
+                      childAspectRatio: 0.59,
                     ),
                     itemBuilder: (BuildContext context, int index) =>
                         ProductItem(

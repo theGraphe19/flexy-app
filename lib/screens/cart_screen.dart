@@ -1,3 +1,4 @@
+import 'package:flexy/screens/check_out_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -70,7 +71,9 @@ class CartScreenState extends State<CartScreen> {
             );
           } else {
             setState(() {
-              itemsHandler = false;
+              Navigator.of(context)
+                  .popAndPushNamed(CheckOutFromCart.routeName);
+/*              itemsHandler = false;
               _getToken().then((value) {
                 HTTPHandler().placeOrderFromCart(value).then((value) {
                   if (value) {
@@ -95,7 +98,7 @@ class CartScreenState extends State<CartScreen> {
                     });
                   }
                 });
-              });
+              });*/
             });
           }
         },
