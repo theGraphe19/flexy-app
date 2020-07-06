@@ -128,8 +128,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                               5.0,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/kurti.jpg'),
+                                          image: NetworkImage(
+                                              'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}'),
                                           fit: BoxFit.fitHeight,
                                         ),
                                       ),
