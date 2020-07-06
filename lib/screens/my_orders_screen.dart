@@ -23,6 +23,12 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     HTTPHandler().getMyOrders(token).then((value) {
       myOrders = value;
       setState(() {});
+    }).catchError((e) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Network error!', style: TextStyle(color: Colors.white),),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
     });
   }
 

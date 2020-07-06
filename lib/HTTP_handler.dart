@@ -128,22 +128,27 @@ class HTTPHandler {
   }
 
   Future<bool> sendOTP(String mobileNo) async {
-    FormData formData = FormData.fromMap({
-      'mobileNo': int.parse(mobileNo),
-    });
-    print(int.parse(mobileNo));
+    try {
+      FormData formData = FormData.fromMap({
+        'mobileNo': int.parse(mobileNo),
+      });
+      print(int.parse(mobileNo));
 
-    Response response = await _dio.post(
-      "$baseURL/sendOTP",
-      data: formData,
-    );
+      Response response = await _dio.post(
+        "$baseURL/sendOTP",
+        data: formData,
+      );
 
-    print(response.data);
+      print(response.data);
 
-    if (json.decode(response.data)['type'].contains('success')) {
-      return true;
-    } else {
-      return false;
+      if (json.decode(response.data)['type'].contains('success')) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      throw e;
     }
   }
 
@@ -230,22 +235,27 @@ class HTTPHandler {
     String token,
     List<Map<String, dynamic>> ordersList,
   ) async {
-    Map<String, dynamic> orderData = {};
-    for (var i = 0; i < ordersList.length; i++) {
-      orderData['orders[$i][size]'] = ordersList[i]['size'];
-      orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
-      orderData['orders[$i][color]'] = ordersList[i]['color'];
+    try {
+      Map<String, dynamic> orderData = {};
+      for (var i = 0; i < ordersList.length; i++) {
+        orderData['orders[$i][size]'] = ordersList[i]['size'];
+        orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
+        orderData['orders[$i][color]'] = ordersList[i]['color'];
+      }
+      print("------>this<-------");
+      print(orderData);
+      FormData formData = FormData.fromMap(orderData);
+
+      Response response = await _dio.post(
+        "$baseURL/placeorder/$productId?api_token=$token",
+        data: formData,
+      );
+
+      return response.data;
+    } catch (e) {
+      print(e);
+      throw e;
     }
-    print("------>this<-------");
-    print(orderData);
-    FormData formData = FormData.fromMap(orderData);
-
-    Response response = await _dio.post(
-      "$baseURL/placeorder/$productId?api_token=$token",
-      data: formData,
-    );
-
-    return response.data;
   }
 
   Future<int> addRemarks(
@@ -278,10 +288,10 @@ class HTTPHandler {
   }
 
   Future<int> updateRemark(
-      String productId,
-      String token,
-      String remarks,
-      ) async {
+    String productId,
+    String token,
+    String remarks,
+  ) async {
     try {
       FormData formData = FormData.fromMap({
         'remarks': remarks,
@@ -313,21 +323,26 @@ class HTTPHandler {
     String qty,
     String color,
   ) async {
-    FormData formData = FormData.fromMap({
-      'size': size,
-      'quantity': qty,
-      'color': color,
-    });
+    try {
+      FormData formData = FormData.fromMap({
+        'size': size,
+        'quantity': qty,
+        'color': color,
+      });
 
-    Response response = await _dio.post(
-      '$baseURL/addtocart/$productId?api_token=$token',
-      data: formData,
-    );
+      Response response = await _dio.post(
+        '$baseURL/addtocart/$productId?api_token=$token',
+        data: formData,
+      );
 
-    if (response.statusCode == 200)
-      return true;
-    else
-      return false;
+      if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<bool> updateCart(
@@ -337,95 +352,129 @@ class HTTPHandler {
     String qty,
     String color,
   ) async {
-    FormData formData = FormData.fromMap({
-      'size': size,
-      'quantity': qty,
-      'color': color,
-    });
+    try {
+      FormData formData = FormData.fromMap({
+        'size': size,
+        'quantity': qty,
+        'color': color,
+      });
 
-    Response response = await _dio.post(
-      '$baseURL/editorder/$productId?api_token=$token',
-      data: formData,
-    );
+      Response response = await _dio.post(
+        '$baseURL/editorder/$productId?api_token=$token',
+        data: formData,
+      );
 
-    if (response.statusCode == 200)
-      return true;
-    else
-      return false;
+      if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<bool> removeFromCart(
     String token,
     String id,
   ) async {
-    Response response = await _dio.get(
-      '$baseURL/remcartitem/$id?api_token=$token',
-    );
-    if (response.statusCode == 200)
-      return true;
-    else
-      return false;
+    try {
+      Response response = await _dio.get(
+        '$baseURL/remcartitem/$id?api_token=$token',
+      );
+      if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<bool> placeOrderFromCart(
     String token,
   ) async {
-    Response response = await _dio.get(
-      '$baseURL/cartorder?api_token=$token',
-    );
-    if (response.statusCode == 200)
-      return true;
-    else
-      return false;
+    try {
+      Response response = await _dio.get(
+        '$baseURL/cartorder?api_token=$token',
+      );
+      if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<bool> notifyAdmin(
     String token,
   ) async {
-    Response response = await _dio.get(
-      '$baseURL/notify?api_token=$token',
-    );
-    if (response.statusCode == 200)
-      return true;
-    else
-      return false;
+    try {
+      Response response = await _dio.get(
+        '$baseURL/notify?api_token=$token',
+      );
+      if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<List<Cart>> getCartItems(String token) async {
-    List<Cart> cartItems = [];
+    try {
+      List<Cart> cartItems = [];
 
-    Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
+      Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
 
-    for (var i = 0; i < (response.data).length; i++)
-      cartItems.add(Cart.fromMap((response.data)[i]));
+      for (var i = 0; i < (response.data).length; i++)
+        cartItems.add(Cart.fromMap((response.data)[i]));
 
-    print(cartItems);
-    return cartItems;
+      print(cartItems);
+      return cartItems;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<List<Order>> getMyOrders(String token) async {
-    List<Order> orderedItems = [];
-    Response response = await _dio.get("$baseURL/myorders?api_token=$token");
+    try {
+      List<Order> orderedItems = [];
+      Response response = await _dio.get("$baseURL/myorders?api_token=$token");
 
-    for (var i = 0; i < response.data.length; i++) {
-      Order order = Order();
-      order.mapToOrder(response.data[i]);
-      orderedItems.add(order);
+      for (var i = 0; i < response.data.length; i++) {
+        Order order = Order();
+        order.mapToOrder(response.data[i]);
+        orderedItems.add(order);
+      }
+      return orderedItems;
+    } catch (e) {
+      print(e);
+      throw e;
     }
-
-    return orderedItems;
   }
 
   Future<List<Bill>> getBills(String token, String orderId) async {
-    List<Bill> bills = [];
-    Response response =
-        await _dio.get('$baseURL/showbill/$orderId?api_token=$token');
+    try {
+      List<Bill> bills = [];
+      Response response =
+          await _dio.get('$baseURL/showbill/$orderId?api_token=$token');
 
-    //print(response.data);
-    for (var i = 0; i < response.data['bills'].length; i++)
-      bills.add(Bill.mapToBill(response.data['bills'][i]));
-    print(bills.toString());
-    return bills;
+      //print(response.data);
+      for (var i = 0; i < response.data['bills'].length; i++)
+        bills.add(Bill.mapToBill(response.data['bills'][i]));
+      print(bills.toString());
+      return bills;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   Future<int> requestPwdChangeOTP(String mobileNo) async {

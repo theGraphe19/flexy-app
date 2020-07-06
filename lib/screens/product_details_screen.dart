@@ -563,47 +563,56 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                       ),
                                                     ),
                                                     Spacer(),
-                                                    user.id == _remarks[_remarks.indexOf(remark)].userId ?
-                                                    Material(
-                                                      color: Colors.transparent,
-                                                      child: InkWell(
-                                                        splashColor:
-                                                            Colors.transparent,
-                                                        onTap: ()=>updateRemark(_remarks.indexOf(remark)),
-                                                        child: Container(
-                                                          height: 25.0,
-                                                          width: 70.0,
-                                                          child: Center(
-                                                            child: Text(
-                                                              "Update",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      12.0,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                    user.id ==
+                                                            _remarks[_remarks
+                                                                    .indexOf(
+                                                                        remark)]
+                                                                .userId
+                                                        ? Material(
+                                                            color: Colors
+                                                                .transparent,
+                                                            child: InkWell(
+                                                              splashColor: Colors
+                                                                  .transparent,
+                                                              onTap: () =>
+                                                                  updateRemark(
+                                                                      _remarks.indexOf(
+                                                                          remark)),
+                                                              child: Container(
+                                                                height: 25.0,
+                                                                width: 70.0,
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    "Update",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                ),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .primaryColorLight,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  border: Border.all(
+                                                                      width:
+                                                                          1.0,
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .primaryColorLight),
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColorLight,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            border: Border.all(
-                                                                width: 1.0,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColorLight),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ) : Text(""),
+                                                          )
+                                                        : Text(""),
                                                   ],
                                                 ),
                                                 SizedBox(
@@ -654,7 +663,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         height: 180.0,
         decoration: BoxDecoration(
           /*border: Border.all(color: Colors.grey),*/
-          borderRadius: BorderRadius.only(topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
           color: Color(0xfff0f0f0),
         ),
         child: Column(
@@ -664,8 +674,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               textAlign: TextAlign.left,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.done,
-              style:
-              TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
               decoration: InputDecoration(
                 hintText: 'Enter New Remark',
               ),
@@ -678,26 +687,42 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 onTap: () {
                   if (newRemark.text.isNotEmpty) {
                     HTTPHandler()
-                          .updateRemark(product.productId.toString(), user.token, newRemark.text)
-                          .then((value) {
-                            Navigator.of(context).pop();
-                        if (value==1) {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text('Remark Updated', style: TextStyle(color: Colors.white),),
-                            backgroundColor: Color(0xff6c757d),
-                            duration: Duration(seconds: 3),
-                          ));
-                        } else {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text('Failed to Update Remark.', style: TextStyle(color: Colors.white),),
-                            backgroundColor: Color(0xff6c757d),
-                            duration: Duration(seconds: 3),
-                          ));
-                        }
-                        setState(() {
-                          productsController = false;
-                        });
+                        .updateRemark(product.productId.toString(), user.token,
+                            newRemark.text)
+                        .then((value) {
+                      Navigator.of(context).pop();
+                      if (value == 1) {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Remark Updated',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
+                      } else {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Failed to Update Remark.',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
+                      }
+                      setState(() {
+                        productsController = false;
                       });
+                    }).catchError((e) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          'Network error!',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
+                    });
                   } else {
                     Toast.show("Enter Remark!", context);
                   }
@@ -716,8 +741,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(10),
-                    border:
-                    Border.all(width: 1.0, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 1.0, color: Theme.of(context).primaryColor),
                   ),
                 ),
               ),
@@ -843,6 +868,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         duration: Duration(seconds: 3),
                       ));
                     }
+                  }).catchError((e) {
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(
+                        'Network error!',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Color(0xff6c757d),
+                      duration: Duration(seconds: 3),
+                    ));
                   });
                 } else {
                   print(token);
@@ -881,9 +915,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ));
                     }
                     _changeCartState.setState(() {});
+                  }).catchError((e) {
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(
+                        'Network error!',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Color(0xff6c757d),
+                      duration: Duration(seconds: 3),
+                    ));
                   });
                 }
-                ;
               },
               child: Text(
                 isAnUpdate ? 'Update Cart' : 'Add To Cart',

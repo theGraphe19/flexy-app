@@ -43,6 +43,12 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
               grandTotal += cart.productPrice * cart.quantity;
             }
           });
+        }).catchError((e) {
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text('Network error!', style: TextStyle(color: Colors.white),),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 3),
+          ));
         });
       });
     }
@@ -131,6 +137,12 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                                   items = null;
                                 });
                               }
+                            }).catchError((e) {
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text('Network error!', style: TextStyle(color: Colors.white),),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 3),
+                              ));
                             });
                           });
                         } else {

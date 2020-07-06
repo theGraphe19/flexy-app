@@ -38,6 +38,10 @@ class _MyOrderItemState extends State<MyOrderItem> {
         .then((value) {
       _productDetails = value;
       setState(() {});
+    }).catchError((e) {
+      Toast.show(
+          'Network error!',
+          context);
     });
   }
 
@@ -208,8 +212,13 @@ class _MyOrderItemState extends State<MyOrderItem> {
                                                             .showSnackBar(
                                                                 SnackBar(
                                                           content: Text(
-                                                              'Remark Added!', style: TextStyle(color: Colors.white),),
-                                                                  backgroundColor: Color(0xff6c757d),
+                                                            'Remark Added!',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          backgroundColor:
+                                                              Color(0xff6c757d),
                                                           duration: Duration(
                                                               seconds: 3),
                                                         ));
@@ -219,8 +228,13 @@ class _MyOrderItemState extends State<MyOrderItem> {
                                                             .showSnackBar(
                                                                 SnackBar(
                                                           content: Text(
-                                                              'Remark already added!', style: TextStyle(color: Colors.white),),
-                                                                  backgroundColor: Color(0xff6c757d),
+                                                            'Remark already added!',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          backgroundColor:
+                                                              Color(0xff6c757d),
                                                           duration: Duration(
                                                               seconds: 3),
                                                         ));
@@ -230,14 +244,21 @@ class _MyOrderItemState extends State<MyOrderItem> {
                                                             .showSnackBar(
                                                                 SnackBar(
                                                           content: Text(
-                                                              'Failed to Add Remark!', style: TextStyle(color: Colors.white),),
-                                                                  backgroundColor: Color(0xff6c757d),
+                                                            'Failed to Add Remark!',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          backgroundColor:
+                                                              Color(0xff6c757d),
                                                           duration: Duration(
                                                               seconds: 3),
                                                         ));
                                                       }
                                                     }).catchError((e) {
-                                                      print('Error => $e');
+                                                      Toast.show(
+                                                          'Network error!',
+                                                          newContext);
                                                     });
                                                   } else {
                                                     Toast.show(

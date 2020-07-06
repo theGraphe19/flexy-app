@@ -59,6 +59,12 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             content: Text('User registration failed, try again later.', style: TextStyle(color: Colors.white),),
             backgroundColor: Color(0xff6c757d),
           ));
+        }).catchError((e) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text('Network error!', style: TextStyle(color: Colors.white),),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 3),
+          ));
         });
 
         //Navigator.of(context).popAndPushNamed(ProductsScreen.routeName);

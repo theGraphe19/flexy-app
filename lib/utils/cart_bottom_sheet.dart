@@ -236,6 +236,15 @@ class CartBottomSheet {
                           duration: Duration(seconds: 3),
                         ));
                       }
+                    }).catchError((e) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          'Network error!',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
                     });
                   } else {
                     print(
@@ -269,6 +278,15 @@ class CartBottomSheet {
                           duration: Duration(seconds: 3),
                         ));
                       }
+                    }).catchError((e) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          'Network error!',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
                     });
                   }
                 },
@@ -286,7 +304,8 @@ class CartBottomSheet {
                   decoration: BoxDecoration(
                     color: Theme.of(newContext).primaryColor,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1.0, color: Theme.of(newContext).primaryColor),
+                    border: Border.all(
+                        width: 1.0, color: Theme.of(newContext).primaryColor),
                   ),
                 ),
               ),

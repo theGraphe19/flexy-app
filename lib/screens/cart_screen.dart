@@ -37,6 +37,12 @@ class CartScreenState extends State<CartScreen> {
         HTTPHandler().getCartItems(token).then((value) {
           items = value;
           setState(() {});
+        }).catchError((e) {
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text('Network error!', style: TextStyle(color: Colors.white),),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 3),
+          ));
         });
       });
     }

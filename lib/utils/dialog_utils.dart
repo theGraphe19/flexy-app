@@ -85,6 +85,15 @@ class DialogUtils {
                         duration: Duration(seconds: 3),
                       ));
                     }
+                  }).catchError((e) {
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(
+                        'Network error!',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Color(0xff6c757d),
+                      duration: Duration(seconds: 3),
+                    ));
                   });
                   Navigator.of(context).pop();
                 },

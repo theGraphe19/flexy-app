@@ -110,6 +110,15 @@ class CartItem extends StatelessWidget {
                               _parent
                             ],
                           );
+                        }).catchError((e) {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                              'Network error!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xff6c757d),
+                            duration: Duration(seconds: 3),
+                          ));
                         });
                       },
                       child: Container(
@@ -137,7 +146,16 @@ class CartItem extends StatelessWidget {
                           _parent.items.removeAt(index);
                           _getToken().then((value) {
                             HTTPHandler()
-                                .removeFromCart(value, item.id.toString());
+                                .removeFromCart(value, item.id.toString()).catchError((e) {
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  'Network error!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 3),
+                              ));
+                            });
                           });
                         });
                       },
