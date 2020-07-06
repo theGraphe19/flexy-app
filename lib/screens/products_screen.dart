@@ -22,7 +22,7 @@ class ProductsScreen extends StatefulWidget {
 class _ProductsScreenState extends State<ProductsScreen> {
   int categoryId;
   var prodListCounterCalled = false;
-  User _currentUser;
+  User currentUser;
   var _onlyFavourites = false;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -38,7 +38,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     _onlyFavourites = false;
     prodListCounterCalled = true;
     _handler
-        .getProductsList(context, _currentUser.token, categoryId.toString())
+        .getProductsList(context, currentUser.token, categoryId.toString())
         .then((value) {
       productList = value;
       setState(() {});
@@ -73,8 +73,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     var data =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
-    _currentUser = data['user'];
-    print(_currentUser.token);
+    currentUser = data['user'];
+    print(currentUser.token);
     categoryId = data['category_id'];
     print(categoryId);
     _productProvider = Provider.of<ProductProvider>(context);
@@ -110,7 +110,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ],
       ),
-      drawer: SideDrawer(_currentUser, scaffoldKey).drawer(context),
+      drawer: SideDrawer(currentUser, scaffoldKey).drawer(context),
       body: Column(
         children: <Widget>[
           Divider(),
@@ -126,7 +126,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     itemBuilder: (BuildContext context, int index) =>
                         ProductItem(
                       productList[index],
-                      _currentUser.token,
+                      currentUser,
                       categoryId,
                       scaffoldKey,
                     ),

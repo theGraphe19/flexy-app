@@ -18,7 +18,7 @@ class CartScreen extends StatefulWidget {
 
 class CartScreenState extends State<CartScreen> {
   List<Cart> items;
-  User _currentUser;
+  User currentUser;
   bool itemsHandler = false;
   String token;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -31,7 +31,7 @@ class CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     if (!itemsHandler) {
-      _currentUser = ModalRoute.of(context).settings.arguments as User;
+      currentUser = ModalRoute.of(context).settings.arguments as User;
       itemsHandler = true;
       _getToken().then((String token) {
         HTTPHandler().getCartItems(token).then((value) {
@@ -96,7 +96,7 @@ class CartScreenState extends State<CartScreen> {
             setState(() {
               Navigator.of(context).pushNamed(
                 CheckOutFromCart.routeName,
-                arguments: _currentUser,
+                arguments: currentUser,
               );
             });
           }

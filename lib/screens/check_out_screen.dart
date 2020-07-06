@@ -77,9 +77,9 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
               padding: EdgeInsets.all(16.0),
               height: 180.0,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
+                /*border: Border.all(color: Colors.grey),*/
                 borderRadius: BorderRadius.only(topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
-                color: Color(0xfff9f9f9),
+                color: Color(0xfff0f0f0),
               ),
               child: Column(
                 children: [
@@ -143,16 +143,16 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                           child: Text(
                             "Place Order",
                             style: TextStyle(
-                                color: Color(0xff252427),
+                                color: Colors.white,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).primaryColor,
                           borderRadius: BorderRadius.circular(10),
                           border:
-                              Border.all(width: 1.0, color: Color(0xff252427)),
+                              Border.all(width: 1.0, color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),

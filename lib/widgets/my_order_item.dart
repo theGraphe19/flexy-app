@@ -56,7 +56,7 @@ class _MyOrderItemState extends State<MyOrderItem> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 1.0),
+                      border: Border.all(color: Color(0xfff0f0f0), width: 1.0),
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(8.0),

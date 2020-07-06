@@ -32,7 +32,7 @@ class CheckOutItem extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey, width: 1.0),
+            /*border: Border.all(color: Colors.grey, width: 1.0),*/
           ),
           child: Padding(
             padding: EdgeInsets.all(8.0),

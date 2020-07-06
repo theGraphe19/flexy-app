@@ -30,7 +30,7 @@ class CartItem extends StatelessWidget {
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 1.0),
+          /*border: Border.all(color: Colors.grey, width: 1.0),*/
         ),
         child: Padding(
           padding: EdgeInsets.all(8.0),
@@ -105,6 +105,7 @@ class CartItem extends StatelessWidget {
                               productDetails.product,
                               token,
                               categoryId,
+                              _parent.currentUser,
                               true,
                               _parent
                             ],
@@ -125,8 +126,8 @@ class CartItem extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    height: 20.0,
-                    width: 2.0,
+                    height: 30.0,
+                    width: 1.0,
                     color: Colors.black12,
                   ),
                   Flexible(
@@ -155,6 +156,7 @@ class CartItem extends StatelessWidget {
                   ),
                 ],
               ),
+              Divider(thickness: 2.0,),
             ],
           ),
         ),

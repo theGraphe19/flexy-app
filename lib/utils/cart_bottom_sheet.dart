@@ -24,12 +24,12 @@ class CartBottomSheet {
     _controller = scaffoldKey.currentState.showBottomSheet((newContext) {
       return Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
+          /*border: Border.all(color: Colors.grey),*/
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
           ),
-          color: Color(0xfff9f9f9),
+          color: Color(0xfff0f0f0),
         ),
         height: 400.0,
         padding: const EdgeInsets.all(15.0),
@@ -62,8 +62,8 @@ class CartBottomSheet {
               dropdownColor: Colors.white,
               style: TextStyle(color: Colors.black),
               underline: Container(
-                height: 2,
-                color: Colors.black,
+                height: 1,
+                color: Colors.grey,
               ),
               onChanged: (String newValue) {
                 _controller.setState(() {
@@ -96,8 +96,8 @@ class CartBottomSheet {
               dropdownColor: Colors.white,
               style: TextStyle(color: Colors.black),
               underline: Container(
-                height: 2,
-                color: Colors.black,
+                height: 1,
+                color: Colors.grey,
               ),
               onChanged: (String newValue) {
                 _controller.setState(() {
@@ -164,6 +164,7 @@ class CartBottomSheet {
                           child: Icon(
                             Icons.indeterminate_check_box,
                             size: 40.0,
+                            color: Colors.grey,
                           ),
                         ),
                         SizedBox(
@@ -188,6 +189,7 @@ class CartBottomSheet {
                           child: Icon(
                             Icons.add_box,
                             size: 40.0,
+                            color: Colors.grey,
                           ),
                         ),
                       ],
@@ -276,15 +278,15 @@ class CartBottomSheet {
                     child: Text(
                       isAnUpdate ? "Update Cart" : "Add to Cart",
                       style: TextStyle(
-                          color: Color(0xff252427),
+                          color: Colors.white,
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(newContext).primaryColor,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1.0, color: Color(0xff252427)),
+                    border: Border.all(width: 1.0, color: Theme.of(newContext).primaryColor),
                   ),
                 ),
               ),

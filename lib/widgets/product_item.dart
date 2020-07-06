@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,13 +12,13 @@ import '../models/product_size.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
-  final String token;
+  final User user;
   final int categoryId;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   ProductItem(
     this.product,
-    this.token,
+    this.user,
     this.categoryId,
     this.scaffoldKey,
   );
@@ -84,7 +85,7 @@ class _ProductItemState extends State<ProductItem> {
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         ProductDetailsScreen.routeName,
-        arguments: <dynamic>[widget.product, widget.token, widget.categoryId],
+        arguments: <dynamic>[widget.product, widget.user.token, widget.categoryId, widget.user],
       ),
       child: Container(
         child: Column(
@@ -146,7 +147,7 @@ class _ProductItemState extends State<ProductItem> {
                         widget.scaffoldKey,
                         colorList,
                         qtyList,
-                        widget.token,
+                        widget.user.token,
                         false);
                   },
                 ),

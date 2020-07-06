@@ -1,4 +1,6 @@
+import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -22,6 +24,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Product product;
   String token;
   int categoryId;
+  User user;
   HTTPHandler _handler = HTTPHandler();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final scrollController = ScrollController();
@@ -45,14 +48,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         setState(() {});
       }).catchError((e) {
         scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('Network error!', style: TextStyle(color: Colors.white),),
+          content: Text(
+            'Network error!',
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Color(0xff6c757d),
           duration: Duration(seconds: 3),
         ));
       });
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Network error!', style: TextStyle(color: Colors.white),),
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xff6c757d),
         duration: Duration(seconds: 3),
       ));
@@ -65,7 +74,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     product = arguments[0] as Product;
     token = arguments[1] as String;
-    if (arguments.length > 3) {
+    user = arguments[3] as User;
+    if (arguments.length > 4) {
       isAnUpdate = arguments[3] as bool;
       _changeCartState = arguments[4] as CartScreenState;
     } else {
@@ -132,14 +142,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           child: Container(
                                             padding: const EdgeInsets.all(5.0),
                                             decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                color: (currentActiveIndex == i)
-                                                    ? Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary
-                                                    : Colors.white,),
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              color: (currentActiveIndex == i)
+                                                  ? Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                  : Colors.grey,
+                                            ),
                                           ),
                                         )
                                     ],
@@ -500,7 +511,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: ProductItem(
                                 productDetails.relatedProducts[index],
-                                token,
+                                user,
                                 categoryId,
                                 scaffoldKey,
                               ),
@@ -539,14 +550,61 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: <Widget>[
-                                                Text(
-                                                  _remarks[_remarks
-                                                          .indexOf(remark)]
-                                                      .userName,
-                                                  style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      _remarks[_remarks
+                                                              .indexOf(remark)]
+                                                          .userName,
+                                                      style: TextStyle(
+                                                        color: Colors.black87,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Spacer(),
+                                                    user.id == _remarks[_remarks.indexOf(remark)].userId ?
+                                                    Material(
+                                                      color: Colors.transparent,
+                                                      child: InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        onTap: ()=>updateRemark(_remarks.indexOf(remark)),
+                                                        child: Container(
+                                                          height: 25.0,
+                                                          width: 70.0,
+                                                          child: Center(
+                                                            child: Text(
+                                                              "Update",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      12.0,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColorLight,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            border: Border.all(
+                                                                width: 1.0,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryColorLight),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ) : Text(""),
+                                                  ],
                                                 ),
                                                 SizedBox(
                                                   height: 10.0,
@@ -586,6 +644,88 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
     );
+  }
+
+  void updateRemark(int remarkIndex) {
+    final newRemark = new TextEditingController();
+    scaffoldKey.currentState.showBottomSheet((newContext) {
+      return Container(
+        padding: EdgeInsets.all(16.0),
+        height: 180.0,
+        decoration: BoxDecoration(
+          /*border: Border.all(color: Colors.grey),*/
+          borderRadius: BorderRadius.only(topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
+          color: Color(0xfff0f0f0),
+        ),
+        child: Column(
+          children: [
+            TextField(
+              controller: newRemark,
+              textAlign: TextAlign.left,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.done,
+              style:
+              TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
+              decoration: InputDecoration(
+                hintText: 'Enter New Remark',
+              ),
+            ),
+            SizedBox(height: 40.0),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                splashColor: Colors.transparent,
+                onTap: () {
+                  if (newRemark.text.isNotEmpty) {
+                    HTTPHandler()
+                          .updateRemark(product.productId.toString(), user.token, newRemark.text)
+                          .then((value) {
+                            Navigator.of(context).pop();
+                        if (value==1) {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text('Remark Updated', style: TextStyle(color: Colors.white),),
+                            backgroundColor: Color(0xff6c757d),
+                            duration: Duration(seconds: 3),
+                          ));
+                        } else {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text('Failed to Update Remark.', style: TextStyle(color: Colors.white),),
+                            backgroundColor: Color(0xff6c757d),
+                            duration: Duration(seconds: 3),
+                          ));
+                        }
+                        setState(() {
+                          productsController = false;
+                        });
+                      });
+                  } else {
+                    Toast.show("Enter Remark!", context);
+                  }
+                },
+                child: Container(
+                  height: 40.0,
+                  child: Center(
+                    child: Text(
+                      "Update Remark",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border:
+                    Border.all(width: 1.0, color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget titleValue(String title, String value) => RichText(
@@ -686,13 +826,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       .then((value) {
                     if (value == true) {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Product Added to Your Cart', style: TextStyle(color: Colors.white),),
+                        content: Text(
+                          'Product Added to Your Cart',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     } else {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Failed to Add the Product to the Cart', style: TextStyle(color: Colors.white),),
+                        content: Text(
+                          'Failed to Add the Product to the Cart',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
@@ -717,13 +863,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       .then((value) {
                     if (value == true) {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Cart Updated', style: TextStyle(color: Colors.white),),
+                        content: Text(
+                          'Cart Updated',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     } else {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Failed to Update Cart', style: TextStyle(color: Colors.white),),
+                        content: Text(
+                          'Failed to Update Cart',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));

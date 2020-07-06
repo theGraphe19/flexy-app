@@ -277,6 +277,35 @@ class HTTPHandler {
     }
   }
 
+  Future<int> updateRemark(
+      String productId,
+      String token,
+      String remarks,
+      ) async {
+    try {
+      FormData formData = FormData.fromMap({
+        'remarks': remarks,
+      });
+
+      Response response = await _dio.post(
+        "$baseURL/editremarks/$productId?api_token=$token",
+        data: formData,
+      );
+
+      print(response.data);
+
+      if (response.data['status'].contains('error')) {
+        return -1;
+      } else if (response.data['status'].isNotEmpty)
+        return 1;
+      else
+        return 0;
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
+  }
+
   Future<bool> addToCart(
     String token,
     String productId,
