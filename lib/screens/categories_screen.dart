@@ -121,20 +121,39 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 width: double.infinity,
                                 child: Column(
                                   children: [
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                                  3 -
-                                              5.0,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                              'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}'),
-                                          fit: BoxFit.fitHeight,
-                                        ),
+                                    Stack(
+                                        children: <Widget>[
+                                          Image.network(
+                                              'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}', height: MediaQuery.of(context).size.height / 3 - 5, fit: BoxFit.fitHeight,),
+                                          Positioned(
+                                            bottom: 0.0,
+                                            left: 0.0,
+                                            right: 0.0,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Color.fromARGB(200, 0, 0, 0),
+                                                    Color.fromARGB(0, 0, 0, 0)
+                                                  ],
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                ),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10.0, horizontal: 20.0),
+                                              child: Text(
+                                                  categoriesList[index].name.toUpperCase(),
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20.0,
+                                                    fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    SizedBox(height: 5.0),
                                   ],
                                 ),
                               ),
