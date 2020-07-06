@@ -7,6 +7,10 @@ import '../widgets/loading_body.dart';
 import '../HTTP_handler.dart';
 import '../widgets/bill_item.dart';
 
+/*
+  <a target="_blank" href="https://icons8.com/icons/set/road-closure">Road Closure icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+ */
+
 class BillScreen extends StatefulWidget {
   static const routeName = '/bill-screen';
 
@@ -60,12 +64,23 @@ class _BillScreenState extends State<BillScreen> {
               ),
               child: (bills.isEmpty)
                   ? Center(
-                      child: Text(
-                        'Bill not uploaded yet!',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 25.0,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 70.0,
+                            width: 70.0,
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                            child: Image.asset('assets/images/wait.png'),
+                          ),
+                          Text(
+                            'Bill not uploaded yet!',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   : ListView.builder(

@@ -43,7 +43,7 @@ class _FileDownloaderState extends State<FileDownloader> {
     //   await permission1.request();
     //   checkPermission1 = await SimplePermissions.checkPermission(permission1);
     // }
-    if (/*await Permission.storage.request().isGranted*/true) {
+    if (/*await Permission.storage.request().isGranted*/ true) {
       String dirloc = "";
       if (Platform.isAndroid) {
         dirloc = "/sdcard/download/";
