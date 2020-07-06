@@ -76,8 +76,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     token = arguments[1] as String;
     user = arguments[3] as User;
     if (arguments.length > 4) {
-      isAnUpdate = arguments[3] as bool;
-      _changeCartState = arguments[4] as CartScreenState;
+      isAnUpdate = arguments[4] as bool;
+      _changeCartState = arguments[5] as CartScreenState;
     } else {
       isAnUpdate = false;
     }
@@ -89,11 +89,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
-      // appBar: AppBar(
-      //   title: Text(
-      //     '${product.name}',
-      //   ),
-      // ),
       body: (productDetails == null)
           ? LoadingBody()
           : Container(

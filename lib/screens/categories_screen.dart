@@ -22,40 +22,57 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   void _showAbout(BuildContext context) {
     Future.delayed(Duration(seconds: 3), () {
       print('now');
-      _scaffoldKey.currentState.showBottomSheet(
-        (context) => Container(
-          height: 250,
-          margin: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      return showModalBottomSheet(
+        context: context,
+        barrierColor: Colors.black.withAlpha(1),
+        backgroundColor: Colors.transparent,
+        builder: (context) => Stack(
+          children: <Widget>[
+            Opacity(
+              opacity: 0.45,
+              child: Container(
+                height: 250,
+                color: Colors.black,
+              ),
+            ),
+            Container(
+              height: 250,
+              margin: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'About Us : ',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  ),
+                  Divider(),
+                  SizedBox(height: 10.0),
                   Text(
-                    'About Us : ',
-                    textAlign: TextAlign.start,
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                     style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
                 ],
               ),
-              Divider(),
-              SizedBox(height: 10.0),
-              Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     });
@@ -75,7 +92,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           });
         }).catchError((e) {
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Network error!', style: TextStyle(color: Colors.white),),
+            content: Text(
+              'Network error!',
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Color(0xff6c757d),
             duration: Duration(seconds: 3),
           ));
@@ -121,39 +141,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 width: double.infinity,
                                 child: Column(
                                   children: [
-                                    Stack(
-                                        children: <Widget>[
-                                          Image.network(
-                                              'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}', height: MediaQuery.of(context).size.height / 3 - 5, fit: BoxFit.fitHeight,),
-                                          Positioned(
-                                            bottom: 0.0,
-                                            left: 0.0,
-                                            right: 0.0,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [
-                                                    Color.fromARGB(200, 0, 0, 0),
-                                                    Color.fromARGB(0, 0, 0, 0)
-                                                  ],
-                                                  begin: Alignment.bottomCenter,
-                                                  end: Alignment.topCenter,
-                                                ),
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10.0, horizontal: 20.0),
-                                              child: Text(
-                                                  categoriesList[index].name.toUpperCase(),
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20.0,
-                                                    fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    Image.network(
+                                      'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                                  3 -
+                                              5,
+                                      fit: BoxFit.fitHeight,
+                                    ),
                                   ],
                                 ),
                               ),

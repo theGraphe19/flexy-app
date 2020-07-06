@@ -39,9 +39,7 @@ class _MyOrderItemState extends State<MyOrderItem> {
       _productDetails = value;
       setState(() {});
     }).catchError((e) {
-      Toast.show(
-          'Network error!',
-          context);
+      Toast.show('Network error!', context);
     });
   }
 
@@ -54,6 +52,7 @@ class _MyOrderItemState extends State<MyOrderItem> {
       child: (_productDetails == null)
           ? LoadingBody()
           : Container(
+              color: Color(0xfff0f0f0),
               width: MediaQuery.of(context).size.width,
               height: 200.0,
               child: Stack(
@@ -345,35 +344,28 @@ class _MyOrderItemState extends State<MyOrderItem> {
 
   Widget orderStatus(int status) {
     String text;
-    Color color;
 
     switch (status) {
       case -1:
         text = 'REJECTED';
-        color = Colors.red;
         break;
       case 0:
         text = 'PENDING';
-        color = Colors.yellow[700];
         break;
       case 1:
         text = 'ACCEPTED';
-        color = Colors.green;
         break;
       case 2:
         text = 'DISPATCHED';
-        color = Colors.blue;
         break;
       case 3:
         text = 'COMPLETED';
-        color = Colors.grey;
         break;
     }
 
     return Text(
       text,
       style: TextStyle(
-        color: color,
         fontSize: 12.0,
         fontWeight: FontWeight.bold,
       ),

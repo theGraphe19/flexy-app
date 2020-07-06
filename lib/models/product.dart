@@ -47,6 +47,7 @@ class Product {
     this.name = map['name'];
     this.description = map['description'];
     this.category = map['category'].toString();
+    this.tagline = map['tagline'];
     this.subCategory = map['subcategory'].toString();
     this.productTags = map['product_tags'].toString();
     this.productImages = map['product_images'];

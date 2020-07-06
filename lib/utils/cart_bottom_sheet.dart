@@ -32,7 +32,7 @@ class CartBottomSheet {
           color: Color(0xfff0f0f0),
         ),
         height: 400.0,
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(13.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[

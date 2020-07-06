@@ -439,7 +439,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              margin: const EdgeInsets.only(right: 10.0),
+              margin: const EdgeInsets.only(left: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 color: Theme.of(context).primaryColorDark,
