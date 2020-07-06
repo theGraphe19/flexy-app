@@ -23,6 +23,7 @@ class RegistrationFormPag1 extends StatefulWidget {
 class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   User currentUser;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   var _autoValidate = false;
   var _validator = FormValidator();
 
@@ -59,6 +60,15 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
     HTTPHandler().getMobiles().then((List<String> serverValues) {
       print(serverValues.toString());
       mobiles = serverValues;
+    }).catchError((e) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
     });
   }
 
@@ -83,6 +93,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
         return false;
       },
       child: Scaffold(
+        key: scaffoldKey,
         appBar: AppBar(
           title: Text('Flexy - Register'),
         ),
@@ -100,6 +111,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
         floatingActionButton: FloatingActionButton.extended(
           onPressed: _validateInput,
           label: Text('Next'),
+          backgroundColor: Theme.of(context).primaryColorDark,
           icon: Icon(Icons.chevron_right),
         ),
       ),
@@ -118,7 +130,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
               percent: 0.33,
               center: Text("1 / 3"),
               linearStrokeCap: LinearStrokeCap.roundAll,
-              progressColor: Colors.blue,
+              progressColor: Theme.of(context).primaryColorDark,
             ),
           ),
           TextFormField(

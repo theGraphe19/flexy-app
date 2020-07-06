@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/bill.dart';
 import '../models/order.dart';
 import '../screens/download_screen.dart';
@@ -76,13 +77,13 @@ class BillItem extends StatelessWidget {
 
                 if (response)
                   scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text('Bill downloaded'),
-                    backgroundColor: Colors.green,
+                    content: Text('Bill downloaded', style: TextStyle(color: Colors.white),),
+                    backgroundColor: Color(0xff6c757d),
                   ));
                 else
                   scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text('Bill download failed'),
-                    backgroundColor: Colors.red,
+                    content: Text('Bill download failed', style: TextStyle(color: Colors.white),),
+                    backgroundColor: Color(0xff6c757d),
                   ));
               },
               child: Padding(

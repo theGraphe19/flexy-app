@@ -60,13 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
     await prefs.setString('loggedInPassword', password);
     await prefs.setString('token', token);
     print('data stored');
-    // await prefs.clear().then((isCleared) async {
-    //   await prefs.setBool('loggedIn', loggedIn);
-    //   await prefs.setString('loggedInEmail', email);
-    //   await prefs.setString('loggedInPassword', password);
-    //   await prefs.setString('token', token);
-    //   print('data stored');
-    // });
     print(prefs.getBool('loggedIn'));
     print(prefs.getString('token'));
   }
@@ -103,8 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {});
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           duration: Duration(seconds: 5),
-          backgroundColor: Colors.red,
-          content: Text("Error occured"),
+          content: Text("Error occured", style: TextStyle(color: Colors.white),),
+          backgroundColor: Color(0xff6c757d),
         ));
       });
     } else {
@@ -193,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
@@ -205,14 +198,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   print('ok');
                   if (_newPasswordController.text == '') {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Password field is empty!'),
-                      backgroundColor: Colors.red,
+                      content: Text('Password field is empty!', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                       duration: Duration(seconds: 5),
                     ));
                   } else if (_confirmNewPasswordController.text == '') {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Confirm Password field is empty!'),
-                      backgroundColor: Colors.red,
+                      content: Text('Confirm Password field is empty!', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                       duration: Duration(seconds: 5),
                     ));
                   } else if (!_newPasswordController.text
@@ -220,18 +213,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       !_confirmNewPasswordController.text
                           .contains(_newPasswordController.text)) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Password don\'t match!'),
-                      backgroundColor: Colors.red,
+                      content: Text('Password don\'t match!', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                       duration: Duration(seconds: 5),
                     ));
                   } else if (_newPasswordController.text.length < 8) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Password should be atleast 8 characters!'),
-                      backgroundColor: Colors.red,
+                      content: Text('Password should be atleast 8 characters!', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                       duration: Duration(seconds: 5),
                     ));
                   } else {
-                    // go for kill
                     _handler
                         .changePassword(_uid, _newPasswordController.text)
                         .then((bool passwordUpdated) {
@@ -239,21 +231,29 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (passwordUpdated) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content:
-                              Text('Password updated! Please login again.'),
-                          backgroundColor: Colors.green,
+                              Text('Password updated! Please login again.', style: TextStyle(color: Colors.white),),
+                          backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
                         status = ForgotPassword.notForgot;
                         setState(() {});
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('Network error! Try again later.'),
-                          backgroundColor: Colors.red,
+                          content: Text('Network error! Try again later.', style: TextStyle(color: Colors.white),),
+                          backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
                         status = ForgotPassword.notForgot;
                         setState(() {});
                       }
+                    }).catchError((e) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Network error! Try again later.', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 5),
+                      ));
+                      status = ForgotPassword.notForgot;
+                      setState(() {});
                     });
                   }
                 },
@@ -278,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
@@ -290,8 +290,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   print('verify otp');
                   if (_otpController.text == '') {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Enter OTP first'),
-                      backgroundColor: Colors.red,
+                      content: Text('Enter OTP first', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                       duration: Duration(seconds: 5),
                     ));
                   } else {
@@ -304,11 +304,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {});
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('Wrong OTP'),
-                          backgroundColor: Colors.red,
+                          content: Text('Wrong OTP', style: TextStyle(color: Colors.white),),
+                          backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
                       }
+                    }).catchError((e) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Network error! Try again later.', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 5),
+                      ));
+                      status = ForgotPassword.notForgot;
+                      setState(() {});
                     });
                   }
                 },
@@ -333,7 +341,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
@@ -345,8 +353,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   print('req otp');
                   if (_mobileController.text == '') {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Enter a number'),
-                      backgroundColor: Colors.red,
+                      content: Text('Enter a number', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                       duration: Duration(seconds: 5),
                     ));
                   } else {
@@ -356,14 +364,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       _uid = uid;
                       if (uid == null) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('Network error! Try again.'),
-                          backgroundColor: Colors.red,
+                          content: Text('Network error! Try again.', style: TextStyle(color: Colors.white),),
+                          backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
                       } else {
                         status = ForgotPassword.waitingForOTP;
                         setState(() {});
                       }
+                    }).catchError((e) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Network error!', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
+                      status = ForgotPassword.notForgot;
+                      setState(() {});
                     });
                   }
                 },
@@ -402,7 +418,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Forgot Password?',
                 textAlign: TextAlign.end,
                 style: TextStyle(
-                  color: Colors.blue[800],
+                  color: Theme.of(context).primaryColorDark,
                   decoration: TextDecoration.underline,
                 ),
               ),
@@ -416,16 +432,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 _checkedValue = newValue;
               });
             },
+            activeColor: Theme.of(context).primaryColor,
             controlAffinity: ListTileControlAffinity.leading,
           ),
           SizedBox(height: 20.0),
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.bottomLeft,
             child: Container(
-              margin: const EdgeInsets.only(right: 10.0),
+              margin: const EdgeInsets.only(left: 10.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: FlatButton(
@@ -438,8 +455,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       _passwordController.text.isEmpty) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       duration: Duration(seconds: 5),
-                      backgroundColor: Colors.red,
-                      content: Text("Empty Credentials"),
+                      content: Text("Empty Credentials", style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                     ));
                     return;
                   }
@@ -468,8 +485,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     await progressDialog.hide();
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       duration: Duration(seconds: 5),
-                      backgroundColor: Colors.red,
-                      content: Text("Wrong password or not registered"),
+                      content: Text("Wrong password or not registered", style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                     ));
                   });
                 },

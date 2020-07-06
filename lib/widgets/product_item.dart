@@ -1,6 +1,9 @@
 import 'dart:convert';
+
+import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
@@ -9,13 +12,13 @@ import '../models/product_size.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
-  final String token;
+  final User user;
   final int categoryId;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   ProductItem(
     this.product,
-    this.token,
+    this.user,
     this.categoryId,
     this.scaffoldKey,
   );
@@ -48,8 +51,8 @@ class _ProductItemState extends State<ProductItem> {
     }
     widget.scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
-          (_isFavourite) ? 'Removed from wishlist!' : 'Added to wishlist!'),
-      backgroundColor: (_isFavourite) ? Colors.yellow[700] : Colors.green,
+          (_isFavourite) ? 'Removed from wishlist!' : 'Added to wishlist!', style: TextStyle(color: Colors.white),),
+      backgroundColor: Color(0xff6c757d),
       duration: Duration(seconds: 2),
     ));
     setState(() {
@@ -79,71 +82,93 @@ class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     if (!retreiveDataHandler) retreiveDataFromPrefs();
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10.0),
-      child: GridTile(
-        child: GestureDetector(
-          onTap: () => Navigator.of(context).pushNamed(
-            ProductDetailsScreen.routeName,
-            arguments: <dynamic>[
-              widget.product,
-              widget.token,
-              widget.categoryId
-            ],
-          ),
-          child: Image.network(
-            'https://developers.thegraphe.com/flexy/storage/app/product_images/${widget.product.productImages[0]}',
-            fit: BoxFit.contain,
-          ),
-        ),
-        footer: GridTileBar(
-          backgroundColor: Colors.black54,
-          title: Text(widget.product.name),
-          trailing: Row(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white,
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pushNamed(
+        ProductDetailsScreen.routeName,
+        arguments: <dynamic>[widget.product, widget.user.token, widget.categoryId, widget.user],
+      ),
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                'https://developers.thegraphe.com/flexy/storage/app/product_images/${widget.product.productImages[0]}',
+                fit: BoxFit.contain,
+                height: 245.0,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 5.0),
+              child: Text(
+                widget.product.name,
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
                 ),
-                onPressed: () {
-                  var colorList = new List<List<String>>();
-                  var qtyList = new List<List<int>>();
-                  for (ProductSize productSize in widget.product.productSizes) {
-                    var temp1 = new List<String>();
-                    var temp2 = new List<int>();
-                    for (ProductColor productColor in productSize.colors) {
-                      if (!temp1.contains(productColor.color)) {
-                        temp1.add(productColor.color);
-                        temp2.add(productColor.quantity);
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                '${widget.product.tagline}',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    var colorList = new List<List<String>>();
+                    var qtyList = new List<List<int>>();
+                    for (ProductSize productSize
+                        in widget.product.productSizes) {
+                      var temp1 = new List<String>();
+                      var temp2 = new List<int>();
+                      for (ProductColor productColor in productSize.colors) {
+                        if (!temp1.contains(productColor.color)) {
+                          temp1.add(productColor.color);
+                          temp2.add(productColor.quantity);
+                        }
                       }
+                      colorList.add(temp1);
+                      qtyList.add(temp2);
                     }
-                    colorList.add(temp1);
-                    qtyList.add(temp2);
-                  }
-                  CartBottomSheet().showBottomSheet(
-                    context,
-                    widget.product,
-                    widget.scaffoldKey,
-                    colorList,
-                    qtyList,
-                    widget.token,
-                    false
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.favorite,
-                  color: (_isFavourite) ? Colors.red : Colors.white,
+                    CartBottomSheet().showBottomSheet(
+                        context,
+                        widget.product,
+                        widget.scaffoldKey,
+                        colorList,
+                        qtyList,
+                        widget.user.token,
+                        false);
+                  },
                 ),
-                onPressed: () {
-                  print('pressed');
-                  addDataToPrefs();
-                },
-              ),
-            ],
-          ),
+                Container(
+                  height: 20.0,
+                  width: 2.0,
+                  color: Colors.black12,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: (_isFavourite) ? Colors.red : Colors.grey,
+                  ),
+                  onPressed: () {
+                    print('pressed');
+                    addDataToPrefs();
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -6,6 +6,8 @@ import '../HTTP_handler.dart';
 import '../widgets/cart_item.dart';
 import '../models/cart.dart';
 import '../widgets/loading_body.dart';
+import '../screens/check_out_screen.dart';
+import '../models/user.dart';
 
 class CartScreen extends StatefulWidget {
   static const routeName = '/cart-screen';
@@ -16,6 +18,7 @@ class CartScreen extends StatefulWidget {
 
 class CartScreenState extends State<CartScreen> {
   List<Cart> items;
+  User currentUser;
   bool itemsHandler = false;
   String token;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -28,15 +31,21 @@ class CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     if (!itemsHandler) {
+      currentUser = ModalRoute.of(context).settings.arguments as User;
       itemsHandler = true;
       _getToken().then((String token) {
         HTTPHandler().getCartItems(token).then((value) {
           items = value;
           setState(() {});
+        }).catchError((e) {
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text('Network error!', style: TextStyle(color: Colors.white),),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 3),
+          ));
         });
       });
     }
-    ;
     _getToken().then((value) {
       setState(() {
         token = value;
@@ -49,16 +58,37 @@ class CartScreenState extends State<CartScreen> {
       ),
       body: (items == null)
           ? LoadingBody()
-          : Container(
-              padding: const EdgeInsets.all(10.0),
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    CartItem(items[index], this, index, token, scaffoldKey),
-              ),
-            ),
+          : (items != null && items.length != 0)
+              ? Container(
+                  padding: const EdgeInsets.all(10.0),
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (BuildContext context, int index) => CartItem(
+                        items[index], this, index, token, scaffoldKey, 1),
+                  ),
+                )
+              : Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: 70.0,
+                        width: 70.0,
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: Image.asset('assets/images/wait.png'),
+                      ),
+                      Text(
+                        'No items added!',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           if (items.isEmpty) {
@@ -70,32 +100,10 @@ class CartScreenState extends State<CartScreen> {
             );
           } else {
             setState(() {
-              itemsHandler = false;
-              _getToken().then((value) {
-                HTTPHandler().placeOrderFromCart(value).then((value) {
-                  if (value) {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Order Placed'),
-                      backgroundColor: Colors.green,
-                      duration: Duration(seconds: 3),
-                    ));
-                    setState(() {
-                      itemsHandler = false;
-                      items = null;
-                    });
-                  } else {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('Failed to Place Order'),
-                      backgroundColor: Colors.red,
-                      duration: Duration(seconds: 3),
-                    ));
-                    setState(() {
-                      itemsHandler = false;
-                      items = null;
-                    });
-                  }
-                });
-              });
+              Navigator.of(context).pushNamed(
+                CheckOutFromCart.routeName,
+                arguments: currentUser,
+              );
             });
           }
         },

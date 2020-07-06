@@ -15,7 +15,7 @@ class CartBottomSheet {
       String token,
       bool isAnUpdate) async {
     final sizeList = product.productSizes;
-    final qtyNumber = new TextEditingController();
+    int quantitySelected = 1;
     PersistentBottomSheetController _controller;
     String sizeSelected = sizeList[0].size;
     String colorSelected = colorList[0][0];
@@ -23,9 +23,16 @@ class CartBottomSheet {
     int someInt1 = 0, someInt2 = 0;
     _controller = scaffoldKey.currentState.showBottomSheet((newContext) {
       return Container(
-        color: Colors.blueAccent.withOpacity(0.2),
+        decoration: BoxDecoration(
+          /*border: Border.all(color: Colors.grey),*/
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+          color: Color(0xfff0f0f0),
+        ),
         height: 400.0,
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(13.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -36,8 +43,7 @@ class CartBottomSheet {
                   product.name,
                   style: TextStyle(
                     color: Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 23.0,
+                    fontSize: 20.0,
                   ),
                 ),
                 IconButton(
@@ -46,9 +52,7 @@ class CartBottomSheet {
                 )
               ],
             ),
-            SizedBox(
-              height: 30.0,
-            ),
+            SizedBox(height: 15.0),
             DropdownButton<String>(
               value: sizeSelected,
               icon: Icon(Icons.arrow_drop_down),
@@ -58,8 +62,8 @@ class CartBottomSheet {
               dropdownColor: Colors.white,
               style: TextStyle(color: Colors.black),
               underline: Container(
-                height: 2,
-                color: Colors.black,
+                height: 1,
+                color: Colors.grey,
               ),
               onChanged: (String newValue) {
                 _controller.setState(() {
@@ -76,7 +80,10 @@ class CartBottomSheet {
                   sizeList.map<DropdownMenuItem<String>>((ProductSize value) {
                 return DropdownMenuItem<String>(
                   value: value.size,
-                  child: Text(value.size, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                  child: Text(
+                    value.size,
+                    style: TextStyle(fontSize: 15.0),
+                  ),
                 );
               }).toList(),
             ),
@@ -89,8 +96,8 @@ class CartBottomSheet {
               dropdownColor: Colors.white,
               style: TextStyle(color: Colors.black),
               underline: Container(
-                height: 2,
-                color: Colors.black,
+                height: 1,
+                color: Colors.grey,
               ),
               onChanged: (String newValue) {
                 _controller.setState(() {
@@ -100,40 +107,95 @@ class CartBottomSheet {
               },
               items: someList.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
-                  value: value,
-                  child: Row(
-                    children: [
-                      Text(
-                        value,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w500,
+                    value: value,
+                    child: Row(
+                      children: [
+                        Text(
+                          value,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      Container(
-                        height: 20.0,
-                        width: 40.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          border: Border.all(color: Colors.black),
-                          color: Color(int.parse(value.substring(1, 7), radix: 16) + 0xFF000000)
+                        Spacer(),
+                        Container(
+                          height: 20.0,
+                          width: 40.0,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              color: Color(
+                                  int.parse(value.substring(1, 7), radix: 16) +
+                                      0xFF000000)),
                         ),
-                      ),
-                    ],
-                  )
-                );
+                      ],
+                    ));
               }).toList(),
             ),
             SizedBox(height: 40.0),
-            TextField(
-              controller: qtyNumber,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w500),
-              decoration: InputDecoration(
-                hintText: 'Enter Quantity',
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      'Select Quantity : ',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Container(
+                    height: 50.0,
+                    margin: const EdgeInsets.only(bottom: 5.0),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            _controller.setState(() {
+                              if (quantitySelected > 1) quantitySelected--;
+                            });
+                          },
+                          child: Icon(
+                            Icons.indeterminate_check_box,
+                            size: 40.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Text(
+                          quantitySelected.toString(),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _controller.setState(() {
+                              if (quantitySelected <
+                                  product
+                                      .productSizes[someInt1]
+                                      .colors[someInt2]
+                                      .quantity) quantitySelected++;
+                            });
+                          },
+                          child: Icon(
+                            Icons.add_box,
+                            size: 40.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
             SizedBox(height: 40.0),
@@ -142,84 +204,90 @@ class CartBottomSheet {
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  if(isAnUpdate==false) {
-                    if (qtyNumber.text.isNotEmpty) {
-                      if (int.parse(qtyNumber.text) <=
-                          qtyList[someInt1][someInt2]) {
-                        print(
-                            '$token => ${product
-                                .productId} => $sizeSelected => ${qtyNumber
-                                .text} => $colorSelected');
-                        HTTPHandler()
-                            .addToCart(
-                          token,
-                          product.productId.toString(),
-                          sizeSelected,
-                          int.parse(qtyNumber.text),
-                          colorSelected,
-                        )
-                            .then((value) {
-                          Navigator.of(newContext).pop();
-                          if (value == true) {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Product Added to Your Cart'),
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                            ));
-                          } else {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                  'Failed to Add the Product to the Cart'),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 3),
-                            ));
-                          }
-                        });
+                  if (isAnUpdate == false) {
+                    print(
+                        '$token => ${product.productId} => $sizeSelected => ${quantitySelected.toString()} => $colorSelected');
+                    HTTPHandler()
+                        .addToCart(
+                      token,
+                      product.productId.toString(),
+                      sizeSelected,
+                      quantitySelected.toString(),
+                      colorSelected,
+                    )
+                        .then((value) {
+                      Navigator.of(newContext).pop();
+                      if (value == true) {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Product Added to Your Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       } else {
-                        Toast.show('Qty Not Available', newContext);
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Failed to Add the Product to the Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       }
-                    } else {
-                      Toast.show('Enter Valid Qty', newContext);
-                    }
+                    }).catchError((e) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          'Network error!',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
+                    });
                   } else {
-                    if (qtyNumber.text.isNotEmpty) {
-                      if (int.parse(qtyNumber.text) <=
-                          qtyList[someInt1][someInt2]) {
-                        print(
-                            '$token => ${product
-                                .productId} => $sizeSelected => ${qtyNumber
-                                .text} => $colorSelected');
-                        HTTPHandler()
-                            .updateCart(
-                          token,
-                          product.productId.toString(),
-                          sizeSelected,
-                          int.parse(qtyNumber.text),
-                          colorSelected,
-                        )
-                            .then((value) {
-                          Navigator.of(newContext).pop();
-                          if (value == true) {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Cart Updated'),
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                            ));
-                          } else {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                  'Failed to Update Cart'),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 3),
-                            ));
-                          }
-                        });
+                    print(
+                        '$token => ${product.productId} => $sizeSelected => ${quantitySelected.toString()} => $colorSelected');
+                    HTTPHandler()
+                        .updateCart(
+                      token,
+                      product.productId.toString(),
+                      sizeSelected,
+                      quantitySelected.toString(),
+                      colorSelected,
+                    )
+                        .then((value) {
+                      Navigator.of(newContext).pop();
+                      if (value == true) {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Cart Updated',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       } else {
-                        Toast.show('Qty Not Available', newContext);
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Failed to Update Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       }
-                    } else {
-                      Toast.show('Enter Valid Qty', newContext);
-                    }
+                    }).catchError((e) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          'Network error!',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
+                    });
                   }
                 },
                 child: Container(
@@ -228,15 +296,16 @@ class CartBottomSheet {
                     child: Text(
                       isAnUpdate ? "Update Cart" : "Add to Cart",
                       style: TextStyle(
-                          color: Color(0xff252427),
-                          fontSize: 24.0,
+                          color: Colors.white,
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(newContext).primaryColor,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 2.0, color: Color(0xff252427)),
+                    border: Border.all(
+                        width: 1.0, color: Theme.of(newContext).primaryColor),
                   ),
                 ),
               ),

@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../screens/orders_screen.dart';
+import '../screens/my_orders_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/view_update_profile_screen.dart';
 import '../models/user.dart';
+import '../HTTP_handler.dart';
+import '../screens/start_screen.dart';
+
+/* 
+<a target="_blank" href="https://icons8.com/icons/set/add-shopping-cart">Add Shopping Cart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/gender-neutral-user">Customer icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/purchase-order">Purchase Order icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/exit">Exit icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+*/
 
 class SideDrawer {
   User user;
-  SideDrawer(this.user);
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+
+  SideDrawer(this.user, this.scaffoldKey);
+
   Widget drawer(BuildContext context) => Drawer(
         child: Column(
           children: <Widget>[
@@ -20,9 +33,12 @@ class SideDrawer {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      height: 50.0,
-                      width: 50.0,
-                      child: Icon(Icons.person),
+                      height: 70.0,
+                      width: 70.0,
+                      child: Image.asset(
+                        'assets/images/user1.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     Container(
                       height: 50.0,
@@ -30,7 +46,7 @@ class SideDrawer {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Text(
-                            'Name',
+                            user.name,
                             style: TextStyle(
                               color: Colors.yellow[800],
                               fontWeight: FontWeight.bold,
@@ -38,7 +54,7 @@ class SideDrawer {
                             ),
                           ),
                           Text(
-                            'Email',
+                            user.email,
                             textAlign: TextAlign.start,
                           ),
                         ],
@@ -48,22 +64,73 @@ class SideDrawer {
                 ),
               ),
             ),
-            _drawerTile('View/Update Profile', () {
-              print('view or update profile');
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed(ViewUpdateProfile.routeName, arguments: user);
-            }),
-            _drawerTile('View Cart', () {
-              print('view cart');
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed(CartScreen.routeName);
-            }),
-            _drawerTile('View Orders', () {
-              print('view orders');
-              Navigator.pop(context);
-              //  ADD ARGUMENTS AS EXPECTED IN ORDERS SCREEN
-              Navigator.of(context).pushNamed(OrdersScreen.routeName);
-            }),
+            _drawerTile(
+              'View/Update Profile',
+              () {
+                print('view or update profile');
+                Navigator.pop(context);
+                Navigator.of(context)
+                    .pushNamed(ViewUpdateProfile.routeName, arguments: user);
+              },
+              'assets/images/user.png',
+            ),
+            Divider(),
+            SizedBox(height: 5.0),
+            _drawerTile(
+              'View Cart',
+              () {
+                print('view cart');
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(CartScreen.routeName, arguments: user,);
+              },
+              'assets/images/cart.png',
+            ),
+            Divider(),
+            SizedBox(height: 5.0),
+            _drawerTile(
+              'View Orders',
+              () {
+                print('view orders');
+                Navigator.pop(context);
+                //  ADD ARGUMENTS AS EXPECTED IN ORDERS SCREEN
+                Navigator.of(context)
+                    .pushNamed(MyOrdersScreen.routeName, arguments: user.token);
+              },
+              'assets/images/order.png',
+            ),
+            Divider(),
+            SizedBox(height: 5.0),
+            _drawerTile(
+              'LogOut',
+              () {
+                print('Log out');
+                HTTPHandler().logOut(user.token).then((loggedOut) async {
+                  if (loggedOut) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.remove('loggedIn');
+                    await prefs.remove('loggedInEmail');
+                    await prefs.remove('token');
+                    await prefs.remove('loggedInPassword');
+                    Navigator.of(context).popAndPushNamed(
+                      StartScreen.routeName,
+                    );
+                  } else
+                    scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text('LogOut failed', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
+                      duration: Duration(seconds: 3),
+                    ));
+                }).catchError((e) {
+                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text('Network error!', style: TextStyle(color: Colors.white),),
+                    backgroundColor: Color(0xff6c757d),
+                    duration: Duration(seconds: 3),
+                  ));
+                });
+              },
+              'assets/images/exit.png',
+            ),
           ],
         ),
       );
@@ -71,17 +138,17 @@ class SideDrawer {
   Widget _drawerTile(
     String text,
     Function f,
+    String icon,
   ) =>
       ListTile(
-        // leading: Container(
-        //   height: 30.0,
-        //   width: 30.0,
-        //   child: SvgPicture.asset(
-        //     imagePath,
-        //     color: Colors.yellow[800],
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
+        leading: Container(
+          height: 60.0,
+          width: 60.0,
+          child: Image.asset(
+            icon,
+            fit: BoxFit.cover,
+          ),
+        ),
         title: Text(text),
         onTap: f,
       );

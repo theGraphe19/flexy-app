@@ -44,7 +44,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
   @override
   Widget build(BuildContext context) {
     currentUser = ModalRoute.of(context).settings.arguments as User;
-    print(currentUser.mobileNo);
+    print(currentUser.email);
 
     if (currentUser.firmNomenclature != null)
       _firmNomenclature = currentUser.firmNomenclature;
@@ -89,6 +89,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
           FloatingActionButton.extended(
             onPressed: _validateInput,
             label: Text('Next'),
+            backgroundColor: Theme.of(context).primaryColorDark,
             icon: Icon(Icons.chevron_right),
           ),
         ],
@@ -108,7 +109,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
               percent: 0.66,
               center: Text("2 / 3"),
               linearStrokeCap: LinearStrokeCap.roundAll,
-              progressColor: Colors.blue,
+              progressColor: Theme.of(context).primaryColorDark,
             ),
           ),
           Container(

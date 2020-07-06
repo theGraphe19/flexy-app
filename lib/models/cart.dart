@@ -7,6 +7,7 @@ class Cart {
   String productSize;
   String color;
   int quantity;
+  int productPrice;
   List<dynamic> productImages;
 
   Cart({
@@ -18,6 +19,7 @@ class Cart {
     this.productSize,
     this.color,
     this.quantity,
+    this.productPrice,
     this.productImages,
   });
 
@@ -27,9 +29,10 @@ class Cart {
     this.userName = map['user_name'];
     this.productId = int.parse(map['prod_id']);
     this.productName = map['prod_name'];
-    this.productSize = map['prod_size'];
+    this.productSize = map['size'];
     this.color = map['color'];
     this.quantity = int.parse(map['quantity']);
+    this.productPrice = int.parse(map['price']);
     this.productImages = map['product_images'];
   }
 }

@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:file_utils/file_utils.dart';
 
 class FileDownloader extends StatefulWidget {
@@ -44,7 +43,7 @@ class _FileDownloaderState extends State<FileDownloader> {
     //   await permission1.request();
     //   checkPermission1 = await SimplePermissions.checkPermission(permission1);
     // }
-    if (/*await Permission.storage.request().isGranted*/true) {
+    if (/*await Permission.storage.request().isGranted*/ true) {
       String dirloc = "";
       if (Platform.isAndroid) {
         dirloc = "/sdcard/download/";

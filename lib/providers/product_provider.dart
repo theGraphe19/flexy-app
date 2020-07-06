@@ -4,12 +4,18 @@ import '../models/product.dart';
 
 class ProductProvider with ChangeNotifier {
   Map<String, Product> _products = {};
+  List<Product> _productList = [];
 
   Map<String, Product> get products {
     return {..._products};
   }
 
+  List<Product> get productsList {
+    return [..._productList];
+  }
+
   void addItem(List<Product> productItems) {
+    this._productList = productItems;
     productItems.forEach((Product product) {
       _products.putIfAbsent(product.id.toString(), () => product);
     });
