@@ -60,7 +60,7 @@ class CartScreenState extends State<CartScreen> {
               child: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (BuildContext context, int index) =>
-                    CartItem(items[index], this, index, token, scaffoldKey),
+                    CartItem(items[index], this, index, token, scaffoldKey, 1),
               ),
             ),
       floatingActionButton: FloatingActionButton.extended(

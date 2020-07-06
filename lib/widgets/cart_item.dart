@@ -1,6 +1,7 @@
 import 'package:flexy/models/product_color.dart';
 import 'package:flexy/models/product_details.dart';
 import 'package:flexy/models/product_size.dart';
+import 'package:flexy/screens/product_details_screen.dart';
 import 'package:flexy/utils/cart_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,8 +17,9 @@ class CartItem extends StatelessWidget {
   String token;
   final GlobalKey<ScaffoldState> scaffoldKey;
   ProductDetails productDetails;
+  int categoryId;
 
-  CartItem(this.item, this._parent, this.index, this.token, this.scaffoldKey);
+  CartItem(this.item, this._parent, this.index, this.token, this.scaffoldKey, this.categoryId);
 
   Future<String> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -97,31 +99,10 @@ class CartItem extends StatelessWidget {
                             .getProductDetails(item.productId, token)
                             .then((value) {
                           productDetails = value;
-                          print(productDetails.product.name);
-                          var colorList = new List<List<String>>();
-                          var qtyList = new List<List<int>>();
-                          for (ProductSize productSize
-                          in productDetails.product.productSizes) {
-                            var temp1 = new List<String>();
-                            var temp2 = new List<int>();
-                            for (ProductColor productColor
-                            in productSize.colors) {
-                              if (!temp1.contains(productColor.color)) {
-                                temp1.add(productColor.color);
-                                temp2.add(productColor.quantity);
-                              }
-                            }
-                            colorList.add(temp1);
-                            qtyList.add(temp2);
-                          }
-                          CartBottomSheet().showBottomSheet(
-                              context,
-                              productDetails.product,
-                              scaffoldKey,
-                              colorList,
-                              qtyList,
-                              token,
-                              true);
+                          Navigator.of(context).pushNamed(
+                            ProductDetailsScreen.routeName,
+                            arguments: <dynamic>[productDetails.product, token, categoryId],
+                          );
                         });
                       },
                       child: Container(

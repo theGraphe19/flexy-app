@@ -101,12 +101,12 @@ class DialogUtils {
   }
 
   Widget orderImage() => Container(
-        height: 370.0,
+        height: 350.0,
         width: 400.0,
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(15.0),
           image: DecorationImage(
             image: NetworkImage(
               'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[0]}',

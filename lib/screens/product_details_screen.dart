@@ -1,4 +1,6 @@
+import 'package:flexy/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -31,6 +33,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int selectedSize = 0;
   int colorSelected = 0;
   List<Remark> _remarks;
+  int quantitySelected = 1;
+  bool isAnUpdate;
 
   getProductDetails() {
     productsController = true;
@@ -62,6 +66,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     product = arguments[0] as Product;
     token = arguments[1] as String;
+    isAnUpdate = arguments[2] as bool;
     print('Token : $token');
     if (!productsController) getProductDetails();
 
@@ -381,6 +386,71 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                         Divider(),
                         Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Text(
+                                  'Select Quantity : ',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10.0),
+                              Container(
+                                height: 50.0,
+                                margin: const EdgeInsets.only(bottom: 5.0),
+                                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (quantitySelected > 1)
+                                            quantitySelected--;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.indeterminate_check_box,
+                                        size: 40.0,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    Text(
+                                      quantitySelected.toString(),
+                                    ),
+                                    SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (quantitySelected <
+                                              product
+                                                  .productSizes[selectedSize]
+                                                  .colors[colorSelected]
+                                                  .quantity) quantitySelected++;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.add_box,
+                                        size: 40.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Container(
                           width: double.infinity,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,67 +511,71 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                         ),
-                        // Container(
-                        //   child: Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: <Widget>[
-                        //       Padding(
-                        //         padding: const EdgeInsets.symmetric(
-                        //             horizontal: 10.0),
-                        //         child: Text(
-                        //           'Customer Reviews : ',
-                        //           style: TextStyle(
-                        //             color: Colors.black87,
-                        //             fontWeight: FontWeight.bold,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       SizedBox(height: 10.0),
-                        //       Container(
-                        //         width: double.infinity,
-                        //         margin: const EdgeInsets.only(bottom: 5.0),
-                        //         child: SizedBox(
-                        //           height: _remarks.length * 50.0,
-                        //           child: ListView(
-                        //             scrollDirection: Axis.vertical,
-                        //             children: _remarks
-                        //                 .map(
-                        //                   (Remark remark) => Container(
-                        //                     padding: const EdgeInsets.symmetric(
-                        //                         horizontal: 10.0),
-                        //                     child: Column(
-                        //                       crossAxisAlignment:
-                        //                           CrossAxisAlignment.start,
-                        //                       children: <Widget>[
-                        //                         Text(
-                        //                           _remarks[_remarks
-                        //                                   .indexOf(remark)]
-                        //                               .userName,
-                        //                           style: TextStyle(
-                        //                             color: Colors.black87,
-                        //                             fontWeight: FontWeight.bold,
-                        //                           ),
-                        //                         ),
-                        //                         Text((_remarks[_remarks.indexOf(
-                        //                                         remark)]
-                        //                                     .remarks
-                        //                                     .length >=
-                        //                                 250)
-                        //                             ? '${_remarks[_remarks.indexOf(remark)].remarks.substring(0, 249)}...'
-                        //                             : _remarks[_remarks
-                        //                                     .indexOf(remark)]
-                        //                                 .remarks),
-                        //                       ],
-                        //                     ),
-                        //                   ),
-                        //                 )
-                        //                 .toList(),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Text(
+                                  'Customer Reviews : ',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10.0),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(bottom: 5.0),
+                                child: SizedBox(
+                                  height: _remarks.length * 50.0,
+                                  child: ListView(
+                                    primary: false,
+                                    children: _remarks
+                                        .map(
+                                          (Remark remark) => Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  _remarks[_remarks
+                                                          .indexOf(remark)]
+                                                      .userName,
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10.0,
+                                                ),
+                                                Text((_remarks[_remarks.indexOf(
+                                                                remark)]
+                                                            .remarks
+                                                            .length >=
+                                                        250)
+                                                    ? '${_remarks[_remarks.indexOf(remark)].remarks.substring(0, 249)}...'
+                                                    : _remarks[_remarks
+                                                            .indexOf(remark)]
+                                                        .remarks),
+                                                Divider(),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -566,31 +640,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                for (Product prodt in productDetails.relatedProducts) {
-                  print(prodt.name + prodt.id);
-                }
-                var colorList = new List<List<String>>();
-                var qtyList = new List<List<int>>();
-                for (ProductSize productSize in product.productSizes) {
-                  var temp1 = new List<String>();
-                  var temp2 = new List<int>();
-                  for (ProductColor productColor in productSize.colors) {
-                    if (!temp1.contains(productColor.color)) {
-                      temp1.add(productColor.color);
-                      temp2.add(productColor.quantity);
-                    }
+                int prize = 0;
+                for (var i = 0; i < product.productSizes.length; i++) {
+                  if (product.productSizes[i].size
+                          .contains(product.productSizes[selectedSize].size) &&
+                      product.productSizes[selectedSize].size
+                          .contains(product.productSizes[i].size)) {
+                    prize = product.productSizes[i].price;
+                    break;
                   }
-                  colorList.add(temp1);
-                  qtyList.add(temp2);
                 }
-                OrderBottomSheet().showBottomSheet(
+                DialogUtils().showCustomDialog(
                   context,
-                  product,
-                  scaffoldKey,
-                  colorList,
-                  qtyList,
-                  token,
-                  productDetails,
+                  title: 'Confirm Order Details',
+                  productDetails: productDetails,
+                  product: product,
+                  size: product.productSizes[selectedSize].size,
+                  quantity: quantitySelected.toString(),
+                  color: product
+                      .productSizes[selectedSize].colors[colorSelected].color,
+                  price: prize,
+                  token: token,
+                  scaffoldKey: scaffoldKey,
                 );
               },
               child: Text(
@@ -606,25 +677,58 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Spacer(),
             GestureDetector(
               onTap: () {
-                for (Product prodt in productDetails.relatedProducts) {
-                  print(prodt.name + prodt.id);
-                }
-                var colorList = new List<List<String>>();
-                var qtyList = new List<List<int>>();
-                for (ProductSize productSize in product.productSizes) {
-                  var temp1 = new List<String>();
-                  var temp2 = new List<int>();
-                  for (ProductColor productColor in productSize.colors) {
-                    if (!temp1.contains(productColor.color)) {
-                      temp1.add(productColor.color);
-                      temp2.add(productColor.quantity);
+                if (isAnUpdate == false) {
+                  HTTPHandler()
+                      .addToCart(
+                    token,
+                    product.productId.toString(),
+                    product.productSizes[selectedSize].size,
+                    int.parse(quantitySelected.toString()),
+                    product
+                        .productSizes[selectedSize].colors[colorSelected].color,
+                  )
+                      .then((value) {
+                    if (value == true) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Product Added to Your Cart'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
+                      ));
+                    } else {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Failed to Add the Product to the Cart'),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 3),
+                      ));
                     }
-                  }
-                  colorList.add(temp1);
-                  qtyList.add(temp2);
+                  });
+                } else {
+                  HTTPHandler()
+                      .updateCart(
+                    token,
+                    product.productId.toString(),
+                    product.productSizes[selectedSize].size,
+                    int.parse(quantitySelected.toString()),
+                    product
+                        .productSizes[selectedSize].colors[colorSelected].color,
+                  )
+                      .then((value) {
+                    if (value == true) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Cart Updated'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
+                      ));
+                    } else {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Failed to Update Cart'),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 3),
+                      ));
+                    }
+                  });
                 }
-                CartBottomSheet().showBottomSheet(context, product, scaffoldKey,
-                    colorList, qtyList, token, false);
+                ;
               },
               child: Text(
                 'Add To Cart',
