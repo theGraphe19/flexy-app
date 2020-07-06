@@ -52,12 +52,23 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                     MyOrderItem(myOrders[index], scaffoldKey, token),
               )
             : Center(
-                child: Text(
-                  'You have no orders',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 25.0,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      height: 70.0,
+                      width: 70.0,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: Image.asset('assets/images/wait.png'),
+                    ),
+                    Text(
+                      'You have no orders yet!',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ],
                 ),
               ),
       ),

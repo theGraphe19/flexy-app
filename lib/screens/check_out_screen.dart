@@ -71,12 +71,11 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
         onPressed: () {
           print("Enter Mb. Number");
           final mbNumber = new TextEditingController();
-          PersistentBottomSheetController _controllerSub =
-          scaffoldKey.currentState
-              .showBottomSheet((newContext) {
+          scaffoldKey.currentState.showBottomSheet((newContext) {
             return Container(
               padding: EdgeInsets.all(16.0),
-              height: 200.0,
+              height: 180.0,
+              color: Theme.of(context).colorScheme.secondaryVariant,
               child: Column(
                 children: [
                   TextField(
@@ -84,9 +83,8 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                     textAlign: TextAlign.left,
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.done,
-                    style: TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w400),
+                    style:
+                        TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
                     decoration: InputDecoration(
                       hintText: 'Enter Mobile Number',
                     ),
@@ -100,7 +98,9 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                         if (mbNumber.text == _currentUser.mobileNo) {
                           itemsHandler = false;
                           _getToken().then((value) {
-                            HTTPHandler().placeOrderFromCart(value).then((value) {
+                            HTTPHandler()
+                                .placeOrderFromCart(value)
+                                .then((value) {
                               if (value) {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
                                   content: Text('Order Placed'),
@@ -125,27 +125,25 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                             });
                           });
                         } else {
-                          Toast.show(
-                              "Mobile Numbers Don't Match!", context);
+                          Toast.show("Mobile Numbers Don't Match!", context);
                         }
                       },
                       child: Container(
-                        height: 50.0,
+                        height: 40.0,
                         child: Center(
                           child: Text(
                             "Place Order",
                             style: TextStyle(
                                 color: Color(0xff252427),
-                                fontSize: 24.0,
+                                fontSize: 20.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              width: 1.0,
-                              color: Color(0xff252427)),
+                          border:
+                              Border.all(width: 1.0, color: Color(0xff252427)),
                         ),
                       ),
                     ),

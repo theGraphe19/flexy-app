@@ -6,6 +6,7 @@ class Product {
   String name;
   String description;
   String category;
+  String tagline;
   String subCategory;
   String productTags;
   List<ProductSize> productSizes;
@@ -18,6 +19,7 @@ class Product {
     this.name,
     this.description,
     this.category,
+    this.tagline,
     this.subCategory,
     this.productTags,
     this.productSizes,
@@ -30,6 +32,7 @@ class Product {
     this.name = map['name'];
     this.description = map['description'];
     this.category = map['category'];
+    this.tagline = map['tagline'];
     this.subCategory = map['subcategory'];
     this.productTags = map['product_tags'];
     this.productImages = map['product_images'];

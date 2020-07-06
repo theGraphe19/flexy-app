@@ -44,7 +44,7 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
   @override
   Widget build(BuildContext context) {
     currentUser = ModalRoute.of(context).settings.arguments as User;
-    print(currentUser.mobileNo);
+    print(currentUser.email);
 
     if (currentUser.firmNomenclature != null)
       _firmNomenclature = currentUser.firmNomenclature;

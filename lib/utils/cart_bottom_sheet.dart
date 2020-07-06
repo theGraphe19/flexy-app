@@ -24,8 +24,11 @@ class CartBottomSheet {
     _controller = scaffoldKey.currentState.showBottomSheet((newContext) {
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
-          color: Theme.of(newContext).primaryColorLight.withOpacity(0.2),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+          color: Theme.of(newContext).colorScheme.secondaryVariant,
         ),
         height: 400.0,
         padding: const EdgeInsets.all(15.0),

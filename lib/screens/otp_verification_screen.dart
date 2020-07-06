@@ -141,7 +141,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   child: Text(
                     'Change',
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Theme.of(context).accentColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -154,7 +154,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   child: Text(
                     'OK',
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -256,7 +256,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     'VERIFY',
                     style: TextStyle(color: Colors.white),
                   ),
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
@@ -301,7 +301,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   'Proceed',
                   style: TextStyle(color: Colors.white),
                 ),
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ),

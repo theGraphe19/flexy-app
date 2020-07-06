@@ -110,7 +110,7 @@ class _ProductItemState extends State<ProductItem> {
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
               child: Text(
-                '${widget.product.description.substring(0, 20)}...',
+                '${widget.product.tagline}',
                 style: TextStyle(
                   color: Colors.black87,
                 ),
