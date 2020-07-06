@@ -134,20 +134,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 border: Border.all(
-                                                    color: Colors.black54),
+                                                    color: Colors.grey),
                                                 color: (currentActiveIndex == i)
                                                     ? Theme.of(context)
                                                         .colorScheme
                                                         .secondary
-                                                    : Colors.white,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    offset:
-                                                        const Offset(3.0, 3.0),
-                                                    blurRadius: 5.0,
-                                                    spreadRadius: 0.1,
-                                                  ),
-                                                ]),
+                                                    : Colors.white,),
                                           ),
                                         )
                                     ],

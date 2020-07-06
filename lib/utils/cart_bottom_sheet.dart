@@ -15,7 +15,7 @@ class CartBottomSheet {
       String token,
       bool isAnUpdate) async {
     final sizeList = product.productSizes;
-    final qtyNumber = new TextEditingController();
+    int quantitySelected = 1;
     PersistentBottomSheetController _controller;
     String sizeSelected = sizeList[0].size;
     String colorSelected = colorList[0][0];
@@ -134,12 +134,67 @@ class CartBottomSheet {
               }).toList(),
             ),
             SizedBox(height: 40.0),
-            TextField(
-              controller: qtyNumber,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 20.0),
-              decoration: InputDecoration(hintText: 'Enter Quantity'),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      'Select Quantity : ',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Container(
+                    height: 50.0,
+                    margin: const EdgeInsets.only(bottom: 5.0),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            _controller.setState(() {
+                              if (quantitySelected > 1) quantitySelected--;
+                            });
+                          },
+                          child: Icon(
+                            Icons.indeterminate_check_box,
+                            size: 40.0,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Text(
+                          quantitySelected.toString(),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _controller.setState(() {
+                              if (quantitySelected <
+                                  product
+                                      .productSizes[someInt1]
+                                      .colors[someInt2]
+                                      .quantity) quantitySelected++;
+                            });
+                          },
+                          child: Icon(
+                            Icons.add_box,
+                            size: 40.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(height: 40.0),
             Material(
@@ -148,78 +203,71 @@ class CartBottomSheet {
                 splashColor: Colors.transparent,
                 onTap: () {
                   if (isAnUpdate == false) {
-                    if (qtyNumber.text.isNotEmpty) {
-                      if (int.parse(qtyNumber.text) <=
-                          qtyList[someInt1][someInt2]) {
-                        print(
-                            '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
-                        HTTPHandler()
-                            .addToCart(
-                          token,
-                          product.productId.toString(),
-                          sizeSelected,
-                          qtyNumber.text,
-                          colorSelected,
-                        )
-                            .then((value) {
-                          Navigator.of(newContext).pop();
-                          if (value == true) {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Product Added to Your Cart', style: TextStyle(color: Colors.white),),
-                              backgroundColor: Color(0xff6c757d),
-                              duration: Duration(seconds: 3),
-                            ));
-                          } else {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content:
-                                  Text('Failed to Add the Product to the Cart', style: TextStyle(color: Colors.white),),
-                              backgroundColor: Color(0xff6c757d),
-                              duration: Duration(seconds: 3),
-                            ));
-                          }
-                        });
+                    print(
+                        '$token => ${product.productId} => $sizeSelected => ${quantitySelected.toString()} => $colorSelected');
+                    HTTPHandler()
+                        .addToCart(
+                      token,
+                      product.productId.toString(),
+                      sizeSelected,
+                      quantitySelected.toString(),
+                      colorSelected,
+                    )
+                        .then((value) {
+                      Navigator.of(newContext).pop();
+                      if (value == true) {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Product Added to Your Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       } else {
-                        Toast.show('Qty Not Available', newContext);
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Failed to Add the Product to the Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       }
-                    } else {
-                      Toast.show('Enter Valid Qty', newContext);
-                    }
+                    });
                   } else {
-                    if (qtyNumber.text.isNotEmpty) {
-                      if (int.parse(qtyNumber.text) <=
-                          qtyList[someInt1][someInt2]) {
-                        print(
-                            '$token => ${product.productId} => $sizeSelected => ${qtyNumber.text} => $colorSelected');
-                        HTTPHandler()
-                            .updateCart(
-                          token,
-                          product.productId.toString(),
-                          sizeSelected,
-                          qtyNumber.text,
-                          colorSelected,
-                        )
-                            .then((value) {
-                          Navigator.of(newContext).pop();
-                          if (value == true) {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Cart Updated', style: TextStyle(color: Colors.white),),
-                              backgroundColor: Color(0xff6c757d),
-                              duration: Duration(seconds: 3),
-                            ));
-                          } else {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Failed to Update Cart', style: TextStyle(color: Colors.white),),
-                              backgroundColor: Color(0xff6c757d),
-                              duration: Duration(seconds: 3),
-                            ));
-                          }
-                        });
+                    print(
+                        '$token => ${product.productId} => $sizeSelected => ${quantitySelected.toString()} => $colorSelected');
+                    HTTPHandler()
+                        .updateCart(
+                      token,
+                      product.productId.toString(),
+                      sizeSelected,
+                      quantitySelected.toString(),
+                      colorSelected,
+                    )
+                        .then((value) {
+                      Navigator.of(newContext).pop();
+                      if (value == true) {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Cart Updated',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       } else {
-                        Toast.show('Qty Not Available', newContext);
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Failed to Update Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
                       }
-                    } else {
-                      Toast.show('Enter Valid Qty', newContext);
-                    }
+                    });
                   }
                 },
                 child: Container(
