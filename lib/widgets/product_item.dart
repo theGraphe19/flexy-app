@@ -50,8 +50,8 @@ class _ProductItemState extends State<ProductItem> {
     }
     widget.scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
-          (_isFavourite) ? 'Removed from wishlist!' : 'Added to wishlist!'),
-      backgroundColor: (_isFavourite) ? Colors.yellow[700] : Colors.green,
+          (_isFavourite) ? 'Removed from wishlist!' : 'Added to wishlist!', style: TextStyle(color: Colors.white),),
+      backgroundColor: Color(0xff6c757d),
       duration: Duration(seconds: 2),
     ));
     setState(() {

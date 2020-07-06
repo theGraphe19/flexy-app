@@ -74,14 +74,14 @@ class DialogUtils {
                     Navigator.of(context).pop();
                     if (value['status'] == 'success') {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Order Placed Successfully!'),
-                        backgroundColor: Colors.green,
+                        content: Text('Order Placed Successfully!', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     } else {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('${value['messege']}'),
-                        backgroundColor: Colors.red,
+                        content: Text('${value['messege']}', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     }

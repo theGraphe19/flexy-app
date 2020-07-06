@@ -44,8 +44,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
       setState(() {});
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Network error!'),
-        backgroundColor: Colors.red,
+        content: Text('Network error!', style: TextStyle(color: Colors.white),),
+        backgroundColor: Color(0xff6c757d),
         duration: Duration(seconds: 3),
       ));
     });
@@ -82,6 +82,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     if (!prodListCounterCalled && !_onlyFavourites) getList();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       key: scaffoldKey,
       appBar: AppBar(
         leading: IconButton(

@@ -117,14 +117,14 @@ class SideDrawer {
                     );
                   } else
                     scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text('LogOut failed'),
-                      backgroundColor: Colors.red,
+                      content: Text('LogOut failed', style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                       duration: Duration(seconds: 3),
                     ));
                 }).catchError((e) {
                   scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text('Network error!'),
-                    backgroundColor: Colors.red,
+                    content: Text('Network error!', style: TextStyle(color: Colors.white),),
+                    backgroundColor: Color(0xff6c757d),
                     duration: Duration(seconds: 3),
                   ));
                 });

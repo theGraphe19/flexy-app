@@ -75,8 +75,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           });
         }).catchError((e) {
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Network error!'),
-            backgroundColor: Colors.red,
+            content: Text('Network error!', style: TextStyle(color: Colors.white),),
+            backgroundColor: Color(0xff6c757d),
             duration: Duration(seconds: 3),
           ));
         });

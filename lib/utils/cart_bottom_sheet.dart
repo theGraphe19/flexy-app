@@ -24,11 +24,12 @@ class CartBottomSheet {
     _controller = scaffoldKey.currentState.showBottomSheet((newContext) {
       return Container(
         decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
           ),
-          color: Theme.of(newContext).colorScheme.secondaryVariant,
+          color: Color(0xfff9f9f9),
         ),
         height: 400.0,
         padding: const EdgeInsets.all(15.0),
@@ -164,15 +165,15 @@ class CartBottomSheet {
                           Navigator.of(newContext).pop();
                           if (value == true) {
                             scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Product Added to Your Cart'),
-                              backgroundColor: Colors.green,
+                              content: Text('Product Added to Your Cart', style: TextStyle(color: Colors.white),),
+                              backgroundColor: Color(0xff6c757d),
                               duration: Duration(seconds: 3),
                             ));
                           } else {
                             scaffoldKey.currentState.showSnackBar(SnackBar(
                               content:
-                                  Text('Failed to Add the Product to the Cart'),
-                              backgroundColor: Colors.red,
+                                  Text('Failed to Add the Product to the Cart', style: TextStyle(color: Colors.white),),
+                              backgroundColor: Color(0xff6c757d),
                               duration: Duration(seconds: 3),
                             ));
                           }
@@ -201,14 +202,14 @@ class CartBottomSheet {
                           Navigator.of(newContext).pop();
                           if (value == true) {
                             scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Cart Updated'),
-                              backgroundColor: Colors.green,
+                              content: Text('Cart Updated', style: TextStyle(color: Colors.white),),
+                              backgroundColor: Color(0xff6c757d),
                               duration: Duration(seconds: 3),
                             ));
                           } else {
                             scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Failed to Update Cart'),
-                              backgroundColor: Colors.red,
+                              content: Text('Failed to Update Cart', style: TextStyle(color: Colors.white),),
+                              backgroundColor: Color(0xff6c757d),
                               duration: Duration(seconds: 3),
                             ));
                           }

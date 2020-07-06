@@ -76,7 +76,11 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
             return Container(
               padding: EdgeInsets.all(16.0),
               height: 180.0,
-              color: Theme.of(context).colorScheme.secondaryVariant,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.only(topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
+                color: Color(0xfff9f9f9),
+              ),
               child: Column(
                 children: [
                   TextField(
@@ -104,8 +108,8 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                                 .then((value) {
                               if (value) {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text('Order Placed'),
-                                  backgroundColor: Colors.green,
+                                  content: Text('Order Placed', style: TextStyle(color: Colors.white),),
+                                  backgroundColor: Color(0xff6c757d),
                                   duration: Duration(seconds: 3),
                                 ));
                                 Navigator.of(context).popAndPushNamed(
@@ -118,8 +122,8 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                                 // });
                               } else {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text('Failed to Place Order'),
-                                  backgroundColor: Colors.red,
+                                  content: Text('Failed to Place Order', style: TextStyle(color: Colors.white),),
+                                  backgroundColor: Color(0xff6c757d),
                                   duration: Duration(seconds: 3),
                                 ));
                                 setState(() {

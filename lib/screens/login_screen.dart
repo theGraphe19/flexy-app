@@ -437,7 +437,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           SizedBox(height: 20.0),
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.bottomLeft,
             child: Container(
               margin: const EdgeInsets.only(right: 10.0),
               decoration: BoxDecoration(
@@ -455,8 +455,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       _passwordController.text.isEmpty) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       duration: Duration(seconds: 5),
-                      backgroundColor: Colors.red,
-                      content: Text("Empty Credentials"),
+                      content: Text("Empty Credentials", style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                     ));
                     return;
                   }
@@ -485,8 +485,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     await progressDialog.hide();
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       duration: Duration(seconds: 5),
-                      backgroundColor: Colors.red,
-                      content: Text("Wrong password or not registered"),
+                      content: Text("Wrong password or not registered", style: TextStyle(color: Colors.white),),
+                      backgroundColor: Color(0xff6c757d),
                     ));
                   });
                 },

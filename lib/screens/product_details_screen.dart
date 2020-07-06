@@ -45,15 +45,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         setState(() {});
       }).catchError((e) {
         scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('Network error!'),
-          backgroundColor: Colors.red,
+          content: Text('Network error!', style: TextStyle(color: Colors.white),),
+          backgroundColor: Color(0xff6c757d),
           duration: Duration(seconds: 3),
         ));
       });
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Network error!'),
-        backgroundColor: Colors.red,
+        content: Text('Network error!', style: TextStyle(color: Colors.white),),
+        backgroundColor: Color(0xff6c757d),
         duration: Duration(seconds: 3),
       ));
     });
@@ -694,14 +694,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       .then((value) {
                     if (value == true) {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Product Added to Your Cart'),
-                        backgroundColor: Colors.green,
+                        content: Text('Product Added to Your Cart', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     } else {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Failed to Add the Product to the Cart'),
-                        backgroundColor: Colors.red,
+                        content: Text('Failed to Add the Product to the Cart', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     }
@@ -725,14 +725,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       .then((value) {
                     if (value == true) {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Cart Updated'),
-                        backgroundColor: Colors.green,
+                        content: Text('Cart Updated', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     } else {
                       scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Failed to Update Cart'),
-                        backgroundColor: Colors.red,
+                        content: Text('Failed to Update Cart', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
                     }

@@ -208,9 +208,8 @@ class _MyOrderItemState extends State<MyOrderItem> {
                                                             .showSnackBar(
                                                                 SnackBar(
                                                           content: Text(
-                                                              'Remark Added!'),
-                                                          backgroundColor:
-                                                              Colors.green,
+                                                              'Remark Added!', style: TextStyle(color: Colors.white),),
+                                                                  backgroundColor: Color(0xff6c757d),
                                                           duration: Duration(
                                                               seconds: 3),
                                                         ));
@@ -220,9 +219,8 @@ class _MyOrderItemState extends State<MyOrderItem> {
                                                             .showSnackBar(
                                                                 SnackBar(
                                                           content: Text(
-                                                              'Remark already added!'),
-                                                          backgroundColor:
-                                                              Colors.red,
+                                                              'Remark already added!', style: TextStyle(color: Colors.white),),
+                                                                  backgroundColor: Color(0xff6c757d),
                                                           duration: Duration(
                                                               seconds: 3),
                                                         ));
@@ -232,9 +230,8 @@ class _MyOrderItemState extends State<MyOrderItem> {
                                                             .showSnackBar(
                                                                 SnackBar(
                                                           content: Text(
-                                                              'Failed to Add Remark!'),
-                                                          backgroundColor:
-                                                              Colors.red,
+                                                              'Failed to Add Remark!', style: TextStyle(color: Colors.white),),
+                                                                  backgroundColor: Color(0xff6c757d),
                                                           duration: Duration(
                                                               seconds: 3),
                                                         ));

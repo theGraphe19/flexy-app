@@ -37,8 +37,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     if (_passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Please enter value in both text fields.'),
-        backgroundColor: Colors.red,
+        content: Text('Please enter value in both text fields.', style: TextStyle(color: Colors.white),),
+        backgroundColor: Color(0xff6c757d),
       ));
     } else {
       if (_passwordController.text.contains(_confirmPasswordController.text) &&
@@ -56,16 +56,16 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           } else
             await progressDialog.hide();
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('User registration failed, try again later.'),
-            backgroundColor: Colors.red,
+            content: Text('User registration failed, try again later.', style: TextStyle(color: Colors.white),),
+            backgroundColor: Color(0xff6c757d),
           ));
         });
 
         //Navigator.of(context).popAndPushNamed(ProductsScreen.routeName);
       } else {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('Please enter same value in both text fields.'),
-          backgroundColor: Colors.red,
+          content: Text('Please enter same value in both text fields.', style: TextStyle(color: Colors.white),),
+          backgroundColor: Color(0xff6c757d),
         ));
       }
     }
@@ -169,8 +169,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         setState(() {});
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('Unable to send OTP!'),
-                          backgroundColor: Colors.red,
+                          content: Text('Unable to send OTP!', style: TextStyle(color: Colors.white),),
+                          backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
                       }
@@ -228,8 +228,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   onPressed: () async {
                     if (_otpController.text.length != 6) {
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Enter 6-digit OTP'),
-                        backgroundColor: Colors.red,
+                        content: Text('Enter 6-digit OTP', style: TextStyle(color: Colors.white),),
+                        backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 5),
                       ));
                       return;
@@ -245,8 +245,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         setState(() {});
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('OPT verification failed'),
-                          backgroundColor: Colors.red,
+                          content: Text('OPT verification failed', style: TextStyle(color: Colors.white),),
+                          backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
                       }
