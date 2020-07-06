@@ -77,7 +77,9 @@ class _MyOrderItemState extends State<MyOrderItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Name : ${widget.order.productName}",
+                                        (widget.order.productName.length > 15)
+                                            ? "Name : ${widget.order.productName.substring(0, 17)}..."
+                                            : "Name : ${widget.order.productName}",
                                         style: TextStyle(
                                             fontFamily: 'Montserrat',
                                             fontSize: 17.0,

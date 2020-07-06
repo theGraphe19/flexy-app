@@ -7,6 +7,7 @@ import '../models/cart.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
 import '../widgets/check_out_item.dart';
+import './my_orders_screen.dart';
 
 class CheckOutFromCart extends StatefulWidget {
   static const routeName = '/check-out-screen';
@@ -107,10 +108,14 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                                   backgroundColor: Colors.green,
                                   duration: Duration(seconds: 3),
                                 ));
-                                setState(() {
-                                  itemsHandler = false;
-                                  items = null;
-                                });
+                                Navigator.of(context).popAndPushNamed(
+                                  MyOrdersScreen.routeName,
+                                  arguments: token,
+                                );
+                                // setState(() {
+                                //   itemsHandler = false;
+                                //   items = null;
+                                // });
                               } else {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
                                   content: Text('Failed to Place Order'),

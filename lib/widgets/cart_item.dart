@@ -48,7 +48,9 @@ class CartItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Name : ${item.productName}",
+                        (item.productName.length > 15)
+                            ? "Name : ${item.productName.substring(0, 15)}..."
+                            : "Name : ${item.productName}",
                         style: TextStyle(
                             fontFamily: 'Montserrat',
                             fontSize: 17.0,
