@@ -1,5 +1,3 @@
-import 'package:flexy/models/user.dart';
-import 'package:flexy/screens/check_out_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -8,6 +6,8 @@ import '../HTTP_handler.dart';
 import '../widgets/cart_item.dart';
 import '../models/cart.dart';
 import '../widgets/loading_body.dart';
+import '../screens/check_out_screen.dart';
+import '../models/user.dart';
 
 class CartScreen extends StatefulWidget {
   static const routeName = '/cart-screen';

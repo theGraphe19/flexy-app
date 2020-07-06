@@ -1,10 +1,10 @@
-import 'package:flexy/models/category.dart';
 import 'package:flutter/material.dart';
 
 import './products_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../utils/drawer.dart';
+import '../models/category.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';

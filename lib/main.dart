@@ -15,7 +15,6 @@ import './screens/login_screen.dart';
 import './screens/categories_screen.dart';
 import './screens/products_screen.dart';
 import './screens/product_details_screen.dart';
-import './screens/orders_screen.dart';
 import './screens/my_orders_screen.dart';
 import './screens/bill_screen.dart';
 import './screens/cart_screen.dart';
@@ -112,7 +111,6 @@ class _MyAppState extends State<MyApp> {
           CategoriesScreen.routeName: (ctx) => CategoriesScreen(),
           ProductsScreen.routeName: (ctx) => ProductsScreen(),
           ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
           MyOrdersScreen.routeName: (ctx) => MyOrdersScreen(),
           BillScreen.routeName: (ctx) => BillScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),

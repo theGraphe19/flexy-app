@@ -1,10 +1,6 @@
-import 'package:flexy/models/cart.dart';
-import 'package:flexy/widgets/cart_item.dart';
 import 'package:flutter/material.dart';
 
-import '../models/product_details.dart';
-import '../models/product.dart';
-import '../HTTP_handler.dart';
+import '../models/cart.dart';
 
 class DialogCartUtils {
   static DialogCartUtils _instance = new DialogCartUtils.internal();

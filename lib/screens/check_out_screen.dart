@@ -1,11 +1,12 @@
-import 'package:flexy/models/user.dart';
-import 'package:flexy/widgets/check_out_item.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+
 import '../HTTP_handler.dart';
 import '../models/cart.dart';
 import '../widgets/loading_body.dart';
+import '../models/user.dart';
+import '../widgets/check_out_item.dart';
 
 class CheckOutFromCart extends StatefulWidget {
   static const routeName = '/check-out-screen';

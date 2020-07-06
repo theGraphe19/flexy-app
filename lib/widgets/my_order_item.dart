@@ -1,9 +1,9 @@
-import 'package:flexy/HTTP_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
 import '../models/order.dart';
 import '../screens/bill_screen.dart';
+import '../HTTP_handler.dart';
 
 /* 
   <a target="_blank" href="https://icons8.com/icons/set/in-transit">In Transit icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
