@@ -1,18 +1,15 @@
-import 'package:flexy/screens/cart_screen.dart';
-import 'package:flexy/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
 import '../widgets/loading_body.dart';
 import '../widgets/product_item.dart';
-import '../utils/cart_bottom_sheet.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
-import '../utils/order_bottom_sheet.dart';
 import '../models/remark.dart';
+import '../utils/dialog_utils.dart';
+import '../screens/cart_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';

@@ -5,6 +5,13 @@ import 'package:toast/toast.dart';
 import '../models/order.dart';
 import '../screens/bill_screen.dart';
 
+/* 
+  <a target="_blank" href="https://icons8.com/icons/set/in-transit">In Transit icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+  <a target="_blank" href="https://icons8.com/icons/set/hourglass">Hourglass icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+  <a target="_blank" href="https://icons8.com/icons/set/inspection">Inspection icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+  <a target="_blank" href="https://icons8.com/icons/set/download">Download icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+*/
+
 class MyOrderItem extends StatelessWidget {
   Order order = Order();
   GlobalKey<ScaffoldState> scaffoldKey;
