@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
 import '../models/order.dart';
+import '../models/product_details.dart';
 import '../screens/bill_screen.dart';
 import '../HTTP_handler.dart';
+import './loading_body.dart';
 
 /* 
   <a target="_blank" href="https://icons8.com/icons/set/in-transit">In Transit icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -12,7 +14,7 @@ import '../HTTP_handler.dart';
   <a target="_blank" href="https://icons8.com/icons/set/download">Download icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 */
 
-class MyOrderItem extends StatelessWidget {
+class MyOrderItem extends StatefulWidget {
   Order order = Order();
   GlobalKey<ScaffoldState> scaffoldKey;
   String token;
@@ -20,194 +22,282 @@ class MyOrderItem extends StatelessWidget {
   MyOrderItem(this.order, this.scaffoldKey, this.token);
 
   @override
+  _MyOrderItemState createState() => _MyOrderItemState();
+}
+
+class _MyOrderItemState extends State<MyOrderItem> {
+  HTTPHandler _handler = HTTPHandler();
+
+  ProductDetails _productDetails;
+  bool productsHandler = false;
+
+  getProductDetails() {
+    productsHandler = true;
+    _handler
+        .getProductDetails(int.parse(widget.order.productId), widget.token)
+        .then((value) {
+      _productDetails = value;
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!productsHandler) getProductDetails();
+
     return Padding(
       padding: EdgeInsets.only(bottom: 10.0),
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1.0),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  Row(children: [
-                    Image.asset(
-                      "assets/images/user.png",
-                      height: 120.0,
-                      width: 90.0,
+      child: (_productDetails == null)
+          ? LoadingBody()
+          : Container(
+              width: MediaQuery.of(context).size.width,
+              height: 200.0,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 1.0),
                     ),
-                    /*
-                      Image.network(
-                          'https://developers.thegraphe.com/flexy/storage/app/product_images/${order.productImages[0]}',
-                          fit: BoxFit.fill,
-                          height: 120.0,
-                          width: 90.0),*/
-                    SizedBox(width: 10.0),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Name : ${order.productName}",
-                            style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 17.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "Quantity : x${order.quantity}",
-                            style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 15.0,
-                                color: Colors.grey),
-                          ),
-                          Text(
-                            "Rate : ${order.pricePerPc}",
-                            style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 15.0,
-                                color: Colors.grey),
-                          ),
-                          Text(
-                            "Net Amount : Rs. ${order.amount} (${order.pricePerPc} * ${order.quantity})",
-                            style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 15.0,
-                                color: Colors.grey),
-                          ),
-                        ]),
-                  ]),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: GestureDetector(
-              onTap: () {
-                print('tapped : ${order.id}');
-                Navigator.of(context).pushNamed(
-                  BillScreen.routeName,
-                  arguments: order,
-                );
-              },
-              child: CircleAvatar(
-                radius: 18.0,
-                child: Image.asset("assets/images/download.png"),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 25,
-            right: 10,
-            child: GestureDetector(
-              onTap: () {
-                if (order.status == 3) {
-                  print("Add Remark");
-                  final remark = new TextEditingController();
-                  PersistentBottomSheetController _controllerSub =
-                      scaffoldKey.currentState.showBottomSheet((newContext) {
-                    return Container(
-                      padding: EdgeInsets.all(16.0),
-                      height: 200.0,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Column(
-                        children: [
-                          TextField(
-                            controller: remark,
-                            textAlign: TextAlign.left,
-                            keyboardType: TextInputType.text,
-                            style: TextStyle(
-                                fontSize: 15.0, fontWeight: FontWeight.w400),
-                            decoration: InputDecoration(
-                              hintText: 'Enter Remark',
-                            ),
-                          ),
-                          SizedBox(height: 40.0),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                if (remark.text.isNotEmpty) {
-                                  HTTPHandler()
-                                      .addRemarks(
-                                          order.productId, token, remark.text)
-                                      .then((value) {
-                                    print(value);
-                                    Navigator.of(context).pop();
-                                    if (value == 1) {
-                                      scaffoldKey.currentState
-                                          .showSnackBar(SnackBar(
-                                        content: Text('Remark Added!'),
-                                        backgroundColor: Colors.green,
-                                        duration: Duration(seconds: 3),
-                                      ));
-                                    } else if (value == -1) {
-                                      scaffoldKey.currentState
-                                          .showSnackBar(SnackBar(
-                                        content: Text('Remark already added!'),
-                                        backgroundColor: Colors.red,
-                                        duration: Duration(seconds: 3),
-                                      ));
-                                    } else {
-                                      scaffoldKey.currentState
-                                          .showSnackBar(SnackBar(
-                                        content: Text('Failed to Add Remark!'),
-                                        backgroundColor: Colors.red,
-                                        duration: Duration(seconds: 3),
-                                      ));
-                                    }
-                                  }).catchError((e) {
-                                    print('Error => $e');
-                                  });
-                                } else {
-                                  Toast.show(
-                                      'Enter a Valid Remark', newContext);
-                                }
-                              },
-                              child: Container(
-                                height: 50.0,
-                                child: Center(
-                                  child: Text(
-                                    "Add Remark",
-                                    style: TextStyle(
-                                        color: Color(0xff252427),
-                                        fontSize: 24.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                      width: 1.0, color: Color(0xff252427)),
+                        children: <Widget>[
+                          Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.network(
+                                    'https://developers.thegraphe.com/flexy/storage/app/product_images/${_productDetails.product.productImages[0]}',
+                                    fit: BoxFit.fill,
+                                    height: 180.0,
+                                    width: 120.0),
+                                SizedBox(width: 10.0),
+                                Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Name : ${widget.order.productName}",
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "Quantity : x${widget.order.quantity}",
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontSize: 15.0,
+                                            color: Colors.grey),
+                                      ),
+                                      Text(
+                                        "Rate : ${widget.order.pricePerPc}",
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontSize: 15.0,
+                                            color: Colors.grey),
+                                      ),
+                                      Text(
+                                        "Net Amount : Rs. ${widget.order.amount} (${widget.order.pricePerPc} * ${widget.order.quantity})",
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontSize: 15.0,
+                                            color: Colors.grey),
+                                      ),
+                                    ]),
+                              ]),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 10.0,
+                      bottom: 10.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              child: GestureDetector(
+                                onTap: () {
+                                  print('tapped : ${widget.order.id}');
+                                  Navigator.of(context).pushNamed(
+                                    BillScreen.routeName,
+                                    arguments: widget.order,
+                                  );
+                                },
+                                child: Container(
+                                  height: 60.0,
+                                  width: 60.0,
+                                  decoration:
+                                      BoxDecoration(shape: BoxShape.circle),
+                                  child:
+                                      Image.asset("assets/images/download.png"),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  });
-                }
-              },
-              child: CircleAvatar(
-                radius: 18.0,
-                child: orderStatusImage(order.status),
+                            Container(
+                              child: Text(
+                                'Download',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 10.0),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (widget.order.status == 3) {
+                                    print("Add Remark");
+                                    final remark = new TextEditingController();
+                                    widget.scaffoldKey.currentState
+                                        .showBottomSheet((newContext) {
+                                      return Container(
+                                        padding: EdgeInsets.all(16.0),
+                                        height: 200.0,
+                                        child: Column(
+                                          children: [
+                                            TextField(
+                                              controller: remark,
+                                              textAlign: TextAlign.left,
+                                              keyboardType: TextInputType.text,
+                                              style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.w400),
+                                              decoration: InputDecoration(
+                                                hintText: 'Enter Remark',
+                                              ),
+                                            ),
+                                            SizedBox(height: 40.0),
+                                            Material(
+                                              color: Colors.transparent,
+                                              child: InkWell(
+                                                splashColor: Colors.transparent,
+                                                onTap: () {
+                                                  if (remark.text.isNotEmpty) {
+                                                    _handler
+                                                        .addRemarks(
+                                                            widget.order
+                                                                .productId,
+                                                            widget.token,
+                                                            remark.text)
+                                                        .then((value) {
+                                                      print(value);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      if (value == 1) {
+                                                        widget.scaffoldKey
+                                                            .currentState
+                                                            .showSnackBar(
+                                                                SnackBar(
+                                                          content: Text(
+                                                              'Remark Added!'),
+                                                          backgroundColor:
+                                                              Colors.green,
+                                                          duration: Duration(
+                                                              seconds: 3),
+                                                        ));
+                                                      } else if (value == -1) {
+                                                        widget.scaffoldKey
+                                                            .currentState
+                                                            .showSnackBar(
+                                                                SnackBar(
+                                                          content: Text(
+                                                              'Remark already added!'),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                          duration: Duration(
+                                                              seconds: 3),
+                                                        ));
+                                                      } else {
+                                                        widget.scaffoldKey
+                                                            .currentState
+                                                            .showSnackBar(
+                                                                SnackBar(
+                                                          content: Text(
+                                                              'Failed to Add Remark!'),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                          duration: Duration(
+                                                              seconds: 3),
+                                                        ));
+                                                      }
+                                                    }).catchError((e) {
+                                                      print('Error => $e');
+                                                    });
+                                                  } else {
+                                                    Toast.show(
+                                                        'Enter a Valid Remark',
+                                                        newContext);
+                                                  }
+                                                },
+                                                child: Container(
+                                                  height: 50.0,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Add Remark",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xff252427),
+                                                          fontSize: 24.0,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    border: Border.all(
+                                                        width: 1.0,
+                                                        color:
+                                                            Color(0xff252427)),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 60.0,
+                                  width: 60.0,
+                                  decoration:
+                                      BoxDecoration(shape: BoxShape.circle),
+                                  child: orderStatusImage(widget.order.status),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              child: orderStatus(widget.order.status),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          Positioned(
-            bottom: 8,
-            right: 8,
-            child: orderStatus(order.status),
-          ),
-        ],
-      ),
     );
   }
 

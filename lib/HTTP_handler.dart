@@ -362,41 +362,6 @@ class HTTPHandler {
       return false;
   }
 
-  Future<bool> updateProfile(User user) async {
-    FormData formData = FormData.fromMap({
-      'designation': user.designation,
-      'photoIdType': user.photoIdType,
-      'photoLocation': user.photoLocation,
-      'visitingCardLocation': user.visitingCardLocation,
-      'photo_id': await MultipartFile.fromFile(user.photoLocation,
-          filename: '${user.photoIdType}-${user.id}'),
-      'visiting_card': await MultipartFile.fromFile(user.visitingCardLocation,
-          filename: 'VisitingCard-${user.id}'),
-      'firmName': user.firmName,
-      'firmNomenclature': user.firmNomenclature,
-      'tradeCategory': user.tradeCategory,
-      'noOfStores': user.noOfStores,
-      'landlineNo': user.landlineNo,
-      'gstNo': user.gstNo,
-      'companyAddress': user.companyAddress,
-      'city': user.city,
-      'state': user.state,
-      'pincode': user.pincode,
-      'agentName': user.agentName,
-      'purchasePerson': user.purchasePerson,
-    });
-
-    Response response = await _dio.post(
-      '$baseURL/updateuser?api_token=${user.token}',
-      data: formData,
-    );
-
-    if (response.statusCode == 200)
-      return true;
-    else
-      return false;
-  }
-
   Future<List<Cart>> getCartItems(String token) async {
     List<Cart> cartItems = [];
 
