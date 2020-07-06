@@ -96,11 +96,8 @@ class MyOrderItem extends StatelessWidget {
                 );
               },
               child: CircleAvatar(
-                radius: 15.0,
-                child: Icon(
-                  Icons.arrow_downward,
-                  size: 15.0,
-                ),
+                radius: 18.0,
+                child: Image.asset("assets/images/download.png"),
               ),
             ),
           ),
@@ -199,11 +196,8 @@ class MyOrderItem extends StatelessWidget {
                 }
               },
               child: CircleAvatar(
-                radius: 15.0,
-                child: Icon(
-                  Icons.arrow_downward,
-                  size: 15.0,
-                ),
+                radius: 18.0,
+                child: orderStatusImage(order.status),
               ),
             ),
           ),
@@ -274,5 +268,29 @@ class MyOrderItem extends StatelessWidget {
         fontWeight: FontWeight.bold,
       ),
     );
+  }
+
+  Widget orderStatusImage(int status) {
+    String someVal = "assets/images/";
+
+    switch (status) {
+      case -1:
+        someVal += "rejected.png";
+        break;
+      case 0:
+        someVal += "pending.png";
+        break;
+      case 1:
+        someVal += "accepted.png";
+        break;
+      case 2:
+        someVal += "dispatched.png";
+        break;
+      case 3:
+        someVal += "completed.png";
+        break;
+    }
+
+    return Image.asset(someVal);
   }
 }
