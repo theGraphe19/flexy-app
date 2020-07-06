@@ -281,7 +281,7 @@ class HTTPHandler {
     String token,
     String productId,
     String size,
-    int qty,
+    String qty,
     String color,
   ) async {
     FormData formData = FormData.fromMap({
@@ -305,7 +305,7 @@ class HTTPHandler {
     String token,
     String productId,
     String size,
-    int qty,
+    String qty,
     String color,
   ) async {
     FormData formData = FormData.fromMap({

@@ -263,6 +263,7 @@ class MyOrderItem extends StatelessWidget {
       text,
       style: TextStyle(
         color: color,
+        fontSize: 12.0,
         fontWeight: FontWeight.bold,
       ),
     );

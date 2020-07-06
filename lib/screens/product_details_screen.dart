@@ -1,3 +1,4 @@
+import 'package:flexy/screens/cart_screen.dart';
 import 'package:flexy/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
@@ -35,6 +36,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   List<Remark> _remarks;
   int quantitySelected = 1;
   bool isAnUpdate;
+  CartScreenState _changeCartState;
 
   getProductDetails() {
     productsController = true;
@@ -66,7 +68,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     product = arguments[0] as Product;
     token = arguments[1] as String;
-    isAnUpdate = arguments[2] as bool;
+    if (arguments.length > 3) {
+      isAnUpdate = arguments[3] as bool;
+      _changeCartState = arguments[4] as CartScreenState;
+    } else {
+      isAnUpdate = false;
+    }
     print('Token : $token');
     if (!productsController) getProductDetails();
 
@@ -683,7 +690,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     token,
                     product.productId.toString(),
                     product.productSizes[selectedSize].size,
-                    int.parse(quantitySelected.toString()),
+                    quantitySelected.toString(),
                     product
                         .productSizes[selectedSize].colors[colorSelected].color,
                   )
@@ -703,12 +710,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     }
                   });
                 } else {
+                  print(token);
+                  print(product.productId.toString());
+                  print(product.productSizes[selectedSize].size);
+                  print(quantitySelected.toString());
+                  print(product
+                      .productSizes[selectedSize].colors[colorSelected].color);
                   HTTPHandler()
                       .updateCart(
                     token,
                     product.productId.toString(),
                     product.productSizes[selectedSize].size,
-                    int.parse(quantitySelected.toString()),
+                    quantitySelected.toString(),
                     product
                         .productSizes[selectedSize].colors[colorSelected].color,
                   )
@@ -726,12 +739,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         duration: Duration(seconds: 3),
                       ));
                     }
+                    _changeCartState.setState(() {});
                   });
                 }
                 ;
               },
               child: Text(
-                'Add To Cart',
+                isAnUpdate ? 'Update Cart' : 'Add To Cart',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,

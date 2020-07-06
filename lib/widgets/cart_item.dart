@@ -101,7 +101,7 @@ class CartItem extends StatelessWidget {
                           productDetails = value;
                           Navigator.of(context).pushNamed(
                             ProductDetailsScreen.routeName,
-                            arguments: <dynamic>[productDetails.product, token, categoryId],
+                            arguments: <dynamic>[productDetails.product, token, categoryId, true, _parent],
                           );
                         });
                       },

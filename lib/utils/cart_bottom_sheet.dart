@@ -154,7 +154,7 @@ class CartBottomSheet {
                           token,
                           product.productId.toString(),
                           sizeSelected,
-                          int.parse(qtyNumber.text),
+                          qtyNumber.text,
                           colorSelected,
                         )
                             .then((value) {
@@ -191,7 +191,7 @@ class CartBottomSheet {
                           token,
                           product.productId.toString(),
                           sizeSelected,
-                          int.parse(qtyNumber.text),
+                          qtyNumber.text,
                           colorSelected,
                         )
                             .then((value) {
