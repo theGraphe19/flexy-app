@@ -1,4 +1,3 @@
-import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
@@ -12,6 +11,7 @@ import '../models/product_color.dart';
 import '../models/remark.dart';
 import '../utils/dialog_utils.dart';
 import '../screens/cart_screen.dart';
+import '../models/user.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
@@ -526,8 +526,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               GestureDetector(
                                 onTap: () => showRemarkBottomSheet(),
                                 child: Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
                                   child: Text(
                                     'Customer Reviews ->',
                                     style: TextStyle(
@@ -569,82 +569,99 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             margin: const EdgeInsets.only(bottom: 5.0),
             child: SizedBox(
               height: _remarks.length * 50.0,
-              child: ListView(
-                primary: false,
-                children: _remarks
-                    .map(
-                      (Remark remark) => Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Text(
-                                  _remarks[_remarks.indexOf(remark)].userName,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Spacer(),
-                                user.id ==
+              child: (_remarks != null && _remarks.length > 0)
+                  ? ListView(
+                      primary: false,
+                      children: _remarks
+                          .map(
+                            (Remark remark) => Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    children: [
+                                      Text(
                                         _remarks[_remarks.indexOf(remark)]
-                                            .userId
-                                    ? Material(
-                                        color: Colors.transparent,
-                                        child: InkWell(
-                                          splashColor: Colors.transparent,
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            updateRemark(
-                                                _remarks.indexOf(remark));
-                                          },
-                                          child: Container(
-                                            height: 25.0,
-                                            width: 70.0,
-                                            child: Center(
-                                              child: Text(
-                                                "Update",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12.0,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .primaryColorLight,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              border: Border.all(
-                                                  width: 1.0,
-                                                  color: Theme.of(context)
-                                                      .primaryColorLight),
-                                            ),
-                                          ),
+                                            .userName,
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      )
-                                    : Text(""),
-                              ],
+                                      ),
+                                      Spacer(),
+                                      user.id ==
+                                              _remarks[_remarks.indexOf(remark)]
+                                                  .userId
+                                          ? Material(
+                                              color: Colors.transparent,
+                                              child: InkWell(
+                                                splashColor: Colors.transparent,
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                  updateRemark(
+                                                      _remarks.indexOf(remark));
+                                                },
+                                                child: Container(
+                                                  height: 25.0,
+                                                  width: 70.0,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Update",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12.0,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .primaryColorLight,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    border: Border.all(
+                                                        width: 1.0,
+                                                        color: Theme.of(context)
+                                                            .primaryColorLight),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Text(""),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  Text((_remarks[_remarks.indexOf(remark)]
+                                              .remarks
+                                              .length >=
+                                          250)
+                                      ? '${_remarks[_remarks.indexOf(remark)].remarks.substring(0, 249)}...'
+                                      : _remarks[_remarks.indexOf(remark)]
+                                          .remarks),
+                                  Divider(),
+                                ],
+                              ),
                             ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Text((_remarks[_remarks.indexOf(remark)]
-                                        .remarks
-                                        .length >=
-                                    250)
-                                ? '${_remarks[_remarks.indexOf(remark)].remarks.substring(0, 249)}...'
-                                : _remarks[_remarks.indexOf(remark)].remarks),
-                            Divider(),
-                          ],
-                        ),
-                      ),
+                          )
+                          .toList(),
                     )
-                    .toList(),
-              ),
+                  : Center(
+                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/images/wait.png',
+                          height: 60.0,
+                          width: 60.0,
+                        ),
+                        Text('No remarks added!'),
+                      ],
+                    )),
             ),
           );
         });
