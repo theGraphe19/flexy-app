@@ -601,11 +601,31 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           gravity: Toast.CENTER,
         );
       else {
-        _handler.updateUser(
+        _handler
+            .updateUser(
           currentUser,
           (currentUser.photoLocation == path) ? false : true,
           (currentUser.visitingCardLocation == path1) ? false : true,
-        );
+        )
+            .then((bool status) {
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+              (status) ? 'Personal information updated!' : 'Network error!',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 2),
+          ));
+        }).catchError((e) {
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+              'Network error!',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 2),
+          ));
+        });
       }
     } else {
       setState(() {
