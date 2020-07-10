@@ -16,7 +16,6 @@ import './models/cart.dart';
 import './models/remark.dart';
 
 class HTTPHandler {
-  User currentUser = User();
   Dio _dio = Dio();
   List<Product> productList = [];
   String baseURL = 'https://developers.thegraphe.com/flexy';
@@ -102,7 +101,6 @@ class HTTPHandler {
       print(response.data['status']);
       if (response.data['status'].contains('success')) {
         user.mapToUser(response.data['user']);
-        currentUser = user;
       }
 
       return user;
