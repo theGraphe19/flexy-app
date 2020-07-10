@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
 
 import '../models/user.dart';
 import '../utils/form_validator.dart';
@@ -18,11 +19,14 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var _autoValidate = false;
   var _validator = FormValidator();
+  var _state = '';
 
   @override
   Widget build(BuildContext context) {
     currentUser = ModalRoute.of(context).settings.arguments as User;
     print(currentUser.firmName);
+
+    if (currentUser.state != null) _state = currentUser.state;
 
     return Scaffold(
         appBar: AppBar(
@@ -129,15 +133,139 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
             onSaved: (String val) => currentUser.city = val,
           ),
           SizedBox(height: 10.0),
-          TextFormField(
-            initialValue: (currentUser.state != null) ? currentUser.state : '',
-            decoration: const InputDecoration(
-              labelText: 'State',
-            ),
-            onEditingComplete: _validateInput,
-            keyboardType: TextInputType.text,
-            validator: (value) => _validator.validateName('State', value),
-            onSaved: (String val) => currentUser.state = val,
+          DropDownFormField(
+            titleText: 'State',
+            autovalidate: false,
+            hintText: 'Please select any one',
+            validator: (value) => _validator.validateDropDownSelector(value),
+            value: _state,
+            onSaved: (value) {
+              setState(() {
+                _state = value;
+                currentUser.state = value as String;
+              });
+            },
+            onChanged: (value) {
+              setState(() {
+                _state = value;
+              });
+            },
+            dataSource: [
+              {
+                "display": "Andhra Pradesh",
+                "value": "Andhra Pradesh",
+              },
+              {
+                "display": "Arunachal Pradesh",
+                "value": "Arunachal Pradesh",
+              },
+              {
+                "display": "Assam",
+                "value": "Assam",
+              },
+              {
+                "display": "Bihar",
+                "value": "Bihar",
+              },
+              {
+                "display": "Chhattisgarh",
+                "value": "Chhattisgarh",
+              },
+              {
+                "display": "Goa",
+                "value": "Goa",
+              },
+              {
+                "display": "Gujarat",
+                "value": "Gujarat",
+              },
+              {
+                "display": "Haryana",
+                "value": "Haryana",
+              },
+              {
+                "display": "Himachal Pradesh",
+                "value": "Himachal Pradesh",
+              },
+              {
+                "display": "Jharkhand",
+                "value": "Jharkhand",
+              },
+              {
+                "display": "Karnataka",
+                "value": "Karnataka",
+              },
+              {
+                "display": "Kerala",
+                "value": "Kerala",
+              },
+              {
+                "display": "Madhya Pradesh",
+                "value": "Madhya Pradesh",
+              },
+              {
+                "display": "Maharashtra",
+                "value": "Maharashtra",
+              },
+              {
+                "display": "Manipur",
+                "value": "Manipur",
+              },
+              {
+                "display": "Meghalaya",
+                "value": "Meghalaya",
+              },
+              {
+                "display": "Mizoram",
+                "value": "Mizoram",
+              },
+              {
+                "display": "Nagaland",
+                "value": "Nagaland",
+              },
+              {
+                "display": "Odisha",
+                "value": "Odisha",
+              },
+              {
+                "display": "Punjab",
+                "value": "Punjab",
+              },
+              {
+                "display": "Rajasthan",
+                "value": "Rajasthan",
+              },
+              {
+                "display": "Sikkim",
+                "value": "Sikkim",
+              },
+              {
+                "display": "Tamil Nadu",
+                "value": "Tamil Nadu",
+              },
+              {
+                "display": "Telangana",
+                "value": "Telangana",
+              },
+              {
+                "display": "Tripura",
+                "value": "Tripura",
+              },
+              {
+                "display": "Uttar Pradesh",
+                "value": "Uttar Pradesh",
+              },
+              {
+                "display": "Uttarakhand",
+                "value": "Uttarakhand",
+              },
+              {
+                "display": "West Bengal",
+                "value": "West Bengal",
+              },
+            ],
+            textField: "display",
+            valueField: "value",
           ),
           SizedBox(height: 10.0),
           TextFormField(
