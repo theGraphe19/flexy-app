@@ -592,4 +592,15 @@ class HTTPHandler {
       throw e;
     }
   }
+
+  Future<Map<dynamic, dynamic>> getAdminContactDetails() async {
+    try {
+      Response response = await _dio.get('$baseURL/contactadmin');
+
+      return response.data;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
 }
