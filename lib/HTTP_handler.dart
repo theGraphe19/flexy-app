@@ -125,6 +125,59 @@ class HTTPHandler {
     }
   }
 
+  Future<bool> updateUser(User user, bool id, bool visiting) async {
+    try {
+      Map<String, dynamic> updateData = {
+        'category': 1,
+        'name': user.name,
+        'mobileNo': user.mobileNo,
+        'email': user.email,
+        'designation': user.designation,
+        'photoIdType': user.photoIdType,
+        'photoLocation': user.photoLocation,
+        'visitingCardLocation': user.visitingCardLocation,
+        'firmName': user.firmName,
+        'firmNomenclature': user.firmNomenclature,
+        'tradeCategory': user.tradeCategory,
+        'noOfStores': user.noOfStores,
+        'landlineNo': user.landlineNo,
+        'gstNo': user.gstNo,
+        'companyAddress': user.companyAddress,
+        'city': user.city,
+        'state': user.state,
+        'pincode': user.pincode,
+        'agentName': user.agentName,
+        'purchasePerson': user.purchasePerson,
+        'password': user.password,
+      };
+      if (id)
+        updateData['photo_id'] = await MultipartFile.fromFile(
+            user.photoLocation,
+            filename: '${user.photoIdType}-${user.id}');
+
+      if (visiting)
+        updateData['visiting_card'] = await MultipartFile.fromFile(
+            user.visitingCardLocation,
+            filename: 'VisitingCard-${user.id}');
+
+      FormData formData = FormData.fromMap(updateData);
+
+      Response response = await _dio.post(
+        "$baseURL/updateuser?api_token=${user.token}",
+        data: formData,
+      );
+
+      print(response.data);
+      if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   Future<bool> sendOTP(String mobileNo) async {
     try {
       FormData formData = FormData.fromMap({

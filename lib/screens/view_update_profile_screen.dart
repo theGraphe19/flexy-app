@@ -10,6 +10,7 @@ import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../widgets/loading_body.dart';
 import '../utils/form_validator.dart';
+import '../utils/state_list.dart';
 
 class ViewUpdateProfile extends StatefulWidget {
   static const routeName = '/view-update-profile';
@@ -20,6 +21,7 @@ class ViewUpdateProfile extends StatefulWidget {
 
 class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
   bool userDataController = false;
+  bool userSelectorController = false;
   HTTPHandler _handler = HTTPHandler();
   SharedPreferences prefs;
   User currentUser;
@@ -28,16 +30,10 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var _autoValidate = false;
 
-  String _designationHint;
-  String _photoIdTypeHint;
-  String _firmNomenclatureHint;
-  String _tradeCategoryHint;
-  String _stateHint;
   var _designation = '';
   var _photoIdType = '';
   var _firmNomenclature = '';
   var _tradeCategory = '';
-  var _state = '';
   String path, path1;
 
   Future<File> imageFile, imageFile1;
@@ -104,20 +100,20 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
   Widget build(BuildContext context) {
     if (!userDataController) _getUserDetails();
 
-    if (currentUser != null) {
+    if (currentUser != null && !userSelectorController) {
+      userSelectorController = true;
+
       if (currentUser.designation != null)
-        _designationHint = currentUser.designation;
+        _designation = currentUser.designation;
 
       if (currentUser.photoIdType != null)
-        _photoIdTypeHint = currentUser.photoIdType;
+        _photoIdType = currentUser.photoIdType;
 
       if (currentUser.firmNomenclature != null)
-        _firmNomenclatureHint = currentUser.firmNomenclature;
+        _firmNomenclature = currentUser.firmNomenclature;
 
       if (currentUser.tradeCategory != null)
-        _tradeCategoryHint = currentUser.tradeCategory;
-
-      if (currentUser.state != null) _stateHint = currentUser.state;
+        _tradeCategory = currentUser.tradeCategory;
 
       path = currentUser.photoLocation;
       path1 = currentUser.visitingCardLocation;
@@ -141,6 +137,15 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                 ),
               ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _validateInput,
+        label: Text(
+          'Update',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Theme.of(context).primaryColorDark,
+        icon: Icon(Icons.done),
+      ),
     );
   }
 
@@ -160,6 +165,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           ),
           SizedBox(height: 10.0),
           TextFormField(
+            enabled: false,
             initialValue: (currentUser != null && currentUser.mobileNo != null)
                 ? currentUser.mobileNo
                 : null,
@@ -188,9 +194,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           DropDownFormField(
             titleText: 'Designation',
             autovalidate: false,
-            hintText: (_designationHint == null)
-                ? 'Please select any one'
-                : _designationHint,
+            hintText: 'Please select any one',
             validator: (value) => _validator.validateDropDownSelector(value),
             value: _designation,
             onSaved: (value) {
@@ -241,9 +245,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           DropDownFormField(
             titleText: 'Photo Id',
             autovalidate: false,
-            hintText: (_photoIdTypeHint == null)
-                ? 'Please select any one'
-                : _photoIdTypeHint,
+            hintText: 'Please select any one',
             validator: (value) => _validator.validateDropDownSelector(value),
             value: _photoIdType,
             onSaved: (value) {
@@ -384,9 +386,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           DropDownFormField(
             titleText: 'Firm Nomenclature',
             autovalidate: false,
-            hintText: (_firmNomenclatureHint == null)
-                ? 'Please select any one'
-                : _firmNomenclatureHint,
+            hintText: 'Please select any one',
             validator: (value) => _validator.validateDropDownSelector(value),
             value: _firmNomenclature,
             onSaved: (value) {
@@ -429,9 +429,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           DropDownFormField(
             titleText: 'Trade Category',
             autovalidate: false,
-            hintText: (_tradeCategoryHint == null)
-                ? 'Please select any one'
-                : _tradeCategoryHint,
+            hintText: 'Please select any one',
             validator: (value) => _validator.validateDropDownSelector(value),
             value: _tradeCategory,
             onSaved: (value) {
@@ -534,139 +532,15 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             onSaved: (String val) => currentUser.city = val,
           ),
           SizedBox(height: 10.0),
-          DropDownFormField(
-            titleText: 'State',
-            autovalidate: false,
-            hintText: (_state == null) ? 'Please select any one' : _stateHint,
-            validator: (value) => _validator.validateDropDownSelector(value),
-            value: _state,
-            onSaved: (value) {
-              setState(() {
-                _state = value;
-                currentUser.state = value as String;
-              });
-            },
-            onChanged: (value) {
-              setState(() {
-                _state = value;
-              });
-            },
-            dataSource: [
-              {
-                "display": "Andhra Pradesh",
-                "value": "Andhra Pradesh",
-              },
-              {
-                "display": "Arunachal Pradesh",
-                "value": "Arunachal Pradesh",
-              },
-              {
-                "display": "Assam",
-                "value": "Assam",
-              },
-              {
-                "display": "Bihar",
-                "value": "Bihar",
-              },
-              {
-                "display": "Chhattisgarh",
-                "value": "Chhattisgarh",
-              },
-              {
-                "display": "Goa",
-                "value": "Goa",
-              },
-              {
-                "display": "Gujarat",
-                "value": "Gujarat",
-              },
-              {
-                "display": "Haryana",
-                "value": "Haryana",
-              },
-              {
-                "display": "Himachal Pradesh",
-                "value": "Himachal Pradesh",
-              },
-              {
-                "display": "Jharkhand",
-                "value": "Jharkhand",
-              },
-              {
-                "display": "Karnataka",
-                "value": "Karnataka",
-              },
-              {
-                "display": "Kerala",
-                "value": "Kerala",
-              },
-              {
-                "display": "Madhya Pradesh",
-                "value": "Madhya Pradesh",
-              },
-              {
-                "display": "Maharashtra",
-                "value": "Maharashtra",
-              },
-              {
-                "display": "Manipur",
-                "value": "Manipur",
-              },
-              {
-                "display": "Meghalaya",
-                "value": "Meghalaya",
-              },
-              {
-                "display": "Mizoram",
-                "value": "Mizoram",
-              },
-              {
-                "display": "Nagaland",
-                "value": "Nagaland",
-              },
-              {
-                "display": "Odisha",
-                "value": "Odisha",
-              },
-              {
-                "display": "Punjab",
-                "value": "Punjab",
-              },
-              {
-                "display": "Rajasthan",
-                "value": "Rajasthan",
-              },
-              {
-                "display": "Sikkim",
-                "value": "Sikkim",
-              },
-              {
-                "display": "Tamil Nadu",
-                "value": "Tamil Nadu",
-              },
-              {
-                "display": "Telangana",
-                "value": "Telangana",
-              },
-              {
-                "display": "Tripura",
-                "value": "Tripura",
-              },
-              {
-                "display": "Uttar Pradesh",
-                "value": "Uttar Pradesh",
-              },
-              {
-                "display": "Uttarakhand",
-                "value": "Uttarakhand",
-              },
-              {
-                "display": "West Bengal",
-                "value": "West Bengal",
-              },
-            ],
-            textField: "display",
-            valueField: "value",
+          TextFormField(
+            initialValue: (currentUser.state != null) ? currentUser.state : '',
+            decoration: const InputDecoration(
+              labelText: 'State',
+            ),
+            onEditingComplete: _validateInput,
+            keyboardType: TextInputType.text,
+            validator: (value) => _validator.validateName('State', value),
+            onSaved: (String val) => currentUser.state = val,
           ),
           SizedBox(height: 10.0),
           TextFormField(
@@ -726,6 +600,13 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           duration: Toast.LENGTH_SHORT,
           gravity: Toast.CENTER,
         );
+      else {
+        _handler.updateUser(
+          currentUser,
+          (currentUser.photoLocation == path) ? false : true,
+          (currentUser.visitingCardLocation == path1) ? false : true,
+        );
+      }
     } else {
       setState(() {
         _autoValidate = true;
