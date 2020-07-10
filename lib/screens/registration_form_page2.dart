@@ -233,6 +233,10 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
                 "value": "Wholesaler",
               },
               {
+                "display": "Semi-Wholesaler",
+                "value": "Semi-Wholesaler",
+              },
+              {
                 "display": "Distributor",
                 "value": "Distributor",
               },

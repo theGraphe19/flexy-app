@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
 
 import '../models/user.dart';
 import '../utils/form_validator.dart';
 import './registration_form_page2.dart';
 import './otp_verification_screen.dart';
+import '../utils/state_list.dart';
 
 class RegistrationFormPage3 extends StatefulWidget {
   static const routeName = '/registration-form-part3';
@@ -18,11 +20,14 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var _autoValidate = false;
   var _validator = FormValidator();
+  var _state = '';
 
   @override
   Widget build(BuildContext context) {
     currentUser = ModalRoute.of(context).settings.arguments as User;
     print(currentUser.firmName);
+
+    if (currentUser.state != null) _state = currentUser.state;
 
     return Scaffold(
         appBar: AppBar(
@@ -129,15 +134,26 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
             onSaved: (String val) => currentUser.city = val,
           ),
           SizedBox(height: 10.0),
-          TextFormField(
-            initialValue: (currentUser.state != null) ? currentUser.state : '',
-            decoration: const InputDecoration(
-              labelText: 'State',
-            ),
-            onEditingComplete: _validateInput,
-            keyboardType: TextInputType.text,
-            validator: (value) => _validator.validateName('State', value),
-            onSaved: (String val) => currentUser.state = val,
+          DropDownFormField(
+            titleText: 'State',
+            autovalidate: false,
+            hintText: 'Please select any one',
+            validator: (value) => _validator.validateDropDownSelector(value),
+            value: _state,
+            onSaved: (value) {
+              setState(() {
+                _state = value;
+                currentUser.state = value as String;
+              });
+            },
+            onChanged: (value) {
+              setState(() {
+                _state = value;
+              });
+            },
+            dataSource: stateList,
+            textField: "display",
+            valueField: "value",
           ),
           SizedBox(height: 10.0),
           TextFormField(

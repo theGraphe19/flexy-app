@@ -26,10 +26,11 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var _autoValidate = false;
   var _validator = FormValidator();
-
+  HTTPHandler _handler = HTTPHandler();
   var _designation = '';
   var _photoIdType = '';
   List<String> mobiles = [];
+  List<String> emails = [];
   String path;
 
   Future<File> imageFile;
@@ -54,12 +55,36 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
     return true;
   }
 
+  bool _checkEmailAvailability(String inputEmail) {
+    for (var i = 0; i < emails.length; i++) {
+      if (emails[i].contains(inputEmail) && inputEmail.contains(emails[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
-    HTTPHandler().getMobiles().then((List<String> serverValues) {
+    _handler.getMobiles().then((List<String> serverValues) {
       print(serverValues.toString());
       mobiles = serverValues;
+    }).catchError((e) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
+    });
+
+    _handler.getEmails().then((List<String> serverValues) {
+      print(serverValues.toString());
+      emails = serverValues;
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
@@ -300,6 +325,13 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
       else if (!_checkMobileAvailability(currentUser.mobileNo))
         Toast.show(
           "Mobile Number already exists!",
+          context,
+          duration: Toast.LENGTH_SHORT,
+          gravity: Toast.CENTER,
+        );
+      else if (!_checkEmailAvailability(currentUser.email))
+        Toast.show(
+          "Email already exists!",
           context,
           duration: Toast.LENGTH_SHORT,
           gravity: Toast.CENTER,

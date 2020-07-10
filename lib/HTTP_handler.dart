@@ -16,7 +16,6 @@ import './models/cart.dart';
 import './models/remark.dart';
 
 class HTTPHandler {
-  User currentUser = User();
   Dio _dio = Dio();
   List<Product> productList = [];
   String baseURL = 'https://developers.thegraphe.com/flexy';
@@ -30,6 +29,21 @@ class HTTPHandler {
         mobiles.add(response.data[i]['mobile']);
 
       return mobiles;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<String>> getEmails() async {
+    try {
+      List<String> emails = [];
+      Response response = await _dio.get("$baseURL/getemails");
+
+      for (var i = 0; i < response.data.length; i++)
+        emails.add(response.data[i]['email']);
+
+      return emails;
     } catch (e) {
       print(e);
       throw e;
@@ -102,7 +116,6 @@ class HTTPHandler {
       print(response.data['status']);
       if (response.data['status'].contains('success')) {
         user.mapToUser(response.data['user']);
-        currentUser = user;
       }
 
       return user;
@@ -124,6 +137,59 @@ class HTTPHandler {
     } catch (e) {
       print(e);
       throw (e);
+    }
+  }
+
+  Future<bool> updateUser(User user, bool id, bool visiting) async {
+    try {
+      Map<String, dynamic> updateData = {
+        'category': 1,
+        'name': user.name,
+        'mobileNo': user.mobileNo,
+        'email': user.email,
+        'designation': user.designation,
+        'photoIdType': user.photoIdType,
+        'photoLocation': user.photoLocation,
+        'visitingCardLocation': user.visitingCardLocation,
+        'firmName': user.firmName,
+        'firmNomenclature': user.firmNomenclature,
+        'tradeCategory': user.tradeCategory,
+        'noOfStores': user.noOfStores,
+        'landlineNo': user.landlineNo,
+        'gstNo': user.gstNo,
+        'companyAddress': user.companyAddress,
+        'city': user.city,
+        'state': user.state,
+        'pincode': user.pincode,
+        'agentName': user.agentName,
+        'purchasePerson': user.purchasePerson,
+        'password': user.password,
+      };
+      if (id)
+        updateData['photo_id'] = await MultipartFile.fromFile(
+            user.photoLocation,
+            filename: '${user.photoIdType}-${user.id}');
+
+      if (visiting)
+        updateData['visiting_card'] = await MultipartFile.fromFile(
+            user.visitingCardLocation,
+            filename: 'VisitingCard-${user.id}');
+
+      FormData formData = FormData.fromMap(updateData);
+
+      Response response = await _dio.post(
+        "$baseURL/updateuser?api_token=${user.token}",
+        data: formData,
+      );
+
+      print(response.data);
+      if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
     }
   }
 
@@ -536,6 +602,17 @@ class HTTPHandler {
       }
       print(remarksList.toString());
       return remarksList;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<Map<dynamic, dynamic>> getAdminContactDetails() async {
+    try {
+      Response response = await _dio.get('$baseURL/contactadmin');
+
+      return response.data;
     } catch (e) {
       print(e);
       throw e;
