@@ -35,6 +35,21 @@ class HTTPHandler {
     }
   }
 
+  Future<List<String>> getEmails() async {
+    try {
+      List<String> emails = [];
+      Response response = await _dio.get("$baseURL/getemails");
+
+      for (var i = 0; i < response.data.length; i++)
+        emails.add(response.data[i]['email']);
+
+      return emails;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   Future<String> registerUser(User user) async {
     print(user.photoLocation);
     print(user.visitingCardLocation);
