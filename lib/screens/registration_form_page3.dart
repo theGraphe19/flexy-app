@@ -103,7 +103,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
               labelText: 'GST Number',
             ),
             onEditingComplete: _validateInput,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
             validator: (value) => _validator.validateGST(value),
             onSaved: (String val) => currentUser.gstNo = val,
           ),

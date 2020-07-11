@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toast/toast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import '../models/user.dart';
 import '../HTTP_handler.dart';
@@ -23,7 +23,6 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
   bool userDataController = false;
   bool userSelectorController = false;
   HTTPHandler _handler = HTTPHandler();
-  SharedPreferences prefs;
   User currentUser;
   FormValidator _validator = FormValidator();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -53,52 +52,10 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
     });
   }
 
-  void _storeData(
-    String token,
-    bool loggedIn,
-    String email,
-    String password,
-  ) async {
-    prefs = await SharedPreferences.getInstance();
-    await prefs.remove('loggedIn');
-    await prefs.remove('loggedInEmail');
-    await prefs.remove('loggedInPassword');
-    await prefs.remove('token');
-    await prefs.remove('loginTime');
-    await prefs.setBool('loggedIn', loggedIn);
-    await prefs.setString('loggedInEmail', email);
-    await prefs.setString('loggedInPassword', password);
-    await prefs.setString('token', token);
-    await prefs.setInt('loginTime', DateTime.now().millisecondsSinceEpoch);
-    print('data stored');
-    print(prefs.getBool('loggedIn'));
-    print(prefs.getString('token'));
-  }
-
-  void _getUserDetails() async {
-    userDataController = true;
-    prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('loggedInEmail');
-    final password = prefs.getString('loggedInPassword');
-
-    _handler.loginUser(email, password).then((User user) {
-      if (user != null) {
-        print(user.name);
-        _storeData(
-          user.token,
-          true,
-          email,
-          password,
-        );
-        this.currentUser = user;
-        setState(() {});
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!userDataController) _getUserDetails();
+    //if (!userDataController) _getUserDetails();
+    currentUser = ModalRoute.of(context).settings.arguments as User;
 
     if (currentUser != null && !userSelectorController) {
       userSelectorController = true;
@@ -627,11 +584,20 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           await progressDialog.hide();
           scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
-              (status) ? 'Personal information updated!' : 'Network error!',
+              (status)
+                  ? 'Information updated, please restart!'
+                  : 'Network error!',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Color(0xff6c757d),
-            duration: Duration(seconds: 2),
+            duration: Duration(hours: 1),
+            action: SnackBarAction(
+              label: 'RESTART',
+              onPressed: () {
+                print('resart');
+                Phoenix.rebirth(context);
+              },
+            ),
           ));
         }).catchError((e) async {
           await progressDialog.hide();
@@ -643,8 +609,8 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             backgroundColor: Color(0xff6c757d),
             duration: Duration(seconds: 2),
           ));
+          Navigator.of(context).pop();
         });
-        Navigator.of(context).pop();
       }
     } else {
       setState(() {

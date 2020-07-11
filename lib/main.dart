@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot_callback/screenshot_callback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import './screens/start_screen.dart';
 import './screens/registration_form_page1.dart';
@@ -27,7 +28,9 @@ void main() {
     systemNavigationBarColor: Color(0xffbf1e2e), // navigation bar color
     statusBarColor: Color(0xffbf1e2e), // status bar color
   ));
-  runApp(MyApp());
+  runApp(Phoenix(
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -75,32 +78,26 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         home: StartScreen(),
         theme: ThemeData(
-          primaryColor: Color(0xffbf1e2e),
-          primaryColorDark: Color(0xff343a40),
-          primaryColorLight: Color(0xff6c757d),
-          accentColor: Color(0xff343a40),
-          colorScheme: ColorScheme(
-            primary: Color(0xffbf1e2e),
-            onPrimary: Color(0xff343a40),
-            primaryVariant: Color(0xff6c757d),
-
-            background: Colors.white,
-            onBackground: Colors.black,
-
-            secondary: Color(0xffc96b74),
-            onSecondary: Colors.black,
-            secondaryVariant: Color(0xffe4b2be),
-
-            error: Colors.red,
-            onError: Colors.white,
-
-            surface: Colors.white,
-            onSurface: Colors.black,
-
-            brightness: Brightness.light,
-          ),
-          backgroundColor: Colors.white
-        ),
+            primaryColor: Color(0xffbf1e2e),
+            primaryColorDark: Color(0xff343a40),
+            primaryColorLight: Color(0xff6c757d),
+            accentColor: Color(0xff343a40),
+            colorScheme: ColorScheme(
+              primary: Color(0xffbf1e2e),
+              onPrimary: Color(0xff343a40),
+              primaryVariant: Color(0xff6c757d),
+              background: Colors.white,
+              onBackground: Colors.black,
+              secondary: Color(0xffc96b74),
+              onSecondary: Colors.black,
+              secondaryVariant: Color(0xffe4b2be),
+              error: Colors.red,
+              onError: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+              brightness: Brightness.light,
+            ),
+            backgroundColor: Colors.white),
         routes: {
           StartScreen.routeName: (ctx) => StartScreen(),
           RegistrationFormPag1.routeName: (ctx) => RegistrationFormPag1(),
