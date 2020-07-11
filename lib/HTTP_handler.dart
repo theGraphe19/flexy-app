@@ -79,7 +79,6 @@ class HTTPHandler {
         'pincode': user.pincode,
         'agentName': user.agentName,
         'purchasePerson': user.purchasePerson,
-        'password': user.password,
       });
 
       Response response = await _dio.post(
