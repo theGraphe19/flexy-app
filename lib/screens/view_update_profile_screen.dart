@@ -5,12 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toast/toast.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../widgets/loading_body.dart';
 import '../utils/form_validator.dart';
-import '../utils/state_list.dart';
 
 class ViewUpdateProfile extends StatefulWidget {
   static const routeName = '/view-update-profile';
@@ -29,7 +29,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var _autoValidate = false;
-
+  ProgressDialog progressDialog;
   var _designation = '';
   var _photoIdType = '';
   var _firmNomenclature = '';
@@ -118,6 +118,21 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
       path = currentUser.photoLocation;
       path1 = currentUser.visitingCardLocation;
     }
+
+    progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+      showLogs: true,
+    );
+    progressDialog.style(
+      message: 'Please wait!',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+    );
 
     return Scaffold(
       key: scaffoldKey,
@@ -583,7 +598,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
         ],
       );
 
-  void _validateInput() {
+  void _validateInput() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (currentUser.photoLocation == null)
@@ -601,13 +616,15 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
           gravity: Toast.CENTER,
         );
       else {
+        await progressDialog.show();
         _handler
             .updateUser(
           currentUser,
           (currentUser.photoLocation == path) ? false : true,
           (currentUser.visitingCardLocation == path1) ? false : true,
         )
-            .then((bool status) {
+            .then((bool status) async {
+          await progressDialog.hide();
           scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
               (status) ? 'Personal information updated!' : 'Network error!',
@@ -616,7 +633,8 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             backgroundColor: Color(0xff6c757d),
             duration: Duration(seconds: 2),
           ));
-        }).catchError((e) {
+        }).catchError((e) async {
+          await progressDialog.hide();
           scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
               'Network error!',
@@ -626,6 +644,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             duration: Duration(seconds: 2),
           ));
         });
+        Navigator.of(context).pop();
       }
     } else {
       setState(() {
