@@ -99,12 +99,11 @@ class HTTPHandler {
     }
   }
 
-  Future<User> loginUser(String email, String password) async {
+  Future<User> loginUser(String mobileNo) async {
     User user = User();
     try {
       FormData formData = FormData.fromMap({
-        'email': email,
-        'password': password,
+        'mobileNo': mobileNo,
       });
 
       Response response = await _dio.post(

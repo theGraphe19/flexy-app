@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,10 +11,8 @@ import '../models/user.dart';
 import '../widgets/loading_body.dart';
 
 enum ForgotPassword {
-  notForgot,
   forgotAndNotVerified,
   waitingForOTP,
-  verified,
 }
 
 class LoginScreen extends StatefulWidget {
@@ -26,40 +26,27 @@ class _LoginScreenState extends State<LoginScreen> {
   HTTPHandler _handler = HTTPHandler();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  var _emailController = TextEditingController();
-  var _passwordController = TextEditingController();
   var _mobileController = TextEditingController();
   var _otpController = TextEditingController();
-  var _newPasswordController = TextEditingController();
-  var _confirmNewPasswordController = TextEditingController();
-
-  var _uid;
 
   ProgressDialog progressDialog;
-
   SharedPreferences prefs;
-
   bool _checkedValue = false;
-
   bool _stayLoggedIn;
-
-  var status = ForgotPassword.notForgot;
+  var status = ForgotPassword.forgotAndNotVerified;
 
   void _storeData(
     String token,
     bool loggedIn,
-    String email,
-    String password,
+    User user,
   ) async {
     prefs = await SharedPreferences.getInstance();
     await prefs.remove('loggedIn');
-    await prefs.remove('loggedInEmail');
-    await prefs.remove('loggedInPassword');
     await prefs.remove('token');
     await prefs.remove('loginTime');
+    await prefs.remove('loggedInUser');
     await prefs.setBool('loggedIn', loggedIn);
-    await prefs.setString('loggedInEmail', email);
-    await prefs.setString('loggedInPassword', password);
+    await prefs.setString('loggedInUser', json.encode(user.data));
     await prefs.setString('token', token);
     await prefs.setInt('loginTime', DateTime.now().millisecondsSinceEpoch);
     print('data stored');
@@ -71,45 +58,25 @@ class _LoginScreenState extends State<LoginScreen> {
     prefs = await SharedPreferences.getInstance();
     _stayLoggedIn = prefs.getBool('loggedIn') ?? false;
 
-    final email = prefs.getString('loggedInEmail');
-    final password = prefs.getString('loggedInPassword');
+    final encodedUser = prefs.getString('loggedInUser');
+    User user = User();
+    user.mapToUser(json.decode(encodedUser));
 
     if (_stayLoggedIn) {
       int timeStamp = prefs.getInt('loginTime');
       Duration timeDiff = DateTime.now()
           .difference(DateTime.fromMillisecondsSinceEpoch(timeStamp));
       if (timeDiff.inHours < 24) {
-        _handler
-            .loginUser(
-          email,
-          password,
-        )
-            .then((User user) async {
-          if (user != null) {
-            print(user.name);
-            _storeData(
-              user.token,
-              true,
-              email,
-              password,
-            );
-            Navigator.of(context).popAndPushNamed(
-              CategoriesScreen.routeName,
-              arguments: user,
-            );
-          }
-        }).catchError((onError) async {
-          _stayLoggedIn = false;
-          setState(() {});
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            duration: Duration(seconds: 5),
-            content: Text(
-              "Error occured",
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Color(0xff6c757d),
-          ));
-        });
+        print(user.name);
+        _storeData(
+          user.token,
+          true,
+          user,
+        );
+        Navigator.of(context).popAndPushNamed(
+          CategoriesScreen.routeName,
+          arguments: user,
+        );
       } else {
         _stayLoggedIn = false;
         Toast.show(
@@ -135,12 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
     _mobileController.dispose();
     _otpController.dispose();
-    _newPasswordController.dispose();
-    _confirmNewPasswordController.dispose();
     super.dispose();
   }
 
@@ -172,136 +135,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ? LoadingBody()
               : Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: (status == ForgotPassword.notForgot)
-                      ? emailAndPassword()
-                      : (status == ForgotPassword.forgotAndNotVerified)
-                          ? otpVerify()
-                          : (status == ForgotPassword.waitingForOTP)
-                              ? otpCheck()
-                              : newPassword(),
+                  child: (status == ForgotPassword.forgotAndNotVerified)
+                      ? otpVerify()
+                      : otpCheck(),
                 ),
     );
   }
-
-  Widget newPassword() => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          TextField(
-            obscureText: true,
-            controller: _newPasswordController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(hintText: 'New Password'),
-          ),
-          SizedBox(height: 20.0),
-          TextField(
-            obscureText: true,
-            controller: _confirmNewPasswordController,
-            keyboardType: TextInputType.visiblePassword,
-            decoration: InputDecoration(hintText: 'Confirm Password'),
-          ),
-          SizedBox(height: 20.0),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              margin: const EdgeInsets.only(right: 10.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Theme.of(context).primaryColorDark,
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              child: FlatButton(
-                child: Text(
-                  'CHANGE PASSWORD',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  print('ok');
-                  if (_newPasswordController.text == '') {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Password field is empty!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 5),
-                    ));
-                  } else if (_confirmNewPasswordController.text == '') {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Confirm Password field is empty!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 5),
-                    ));
-                  } else if (!_newPasswordController.text
-                          .contains(_confirmNewPasswordController.text) ||
-                      !_confirmNewPasswordController.text
-                          .contains(_newPasswordController.text)) {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Password don\'t match!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 5),
-                    ));
-                  } else if (_newPasswordController.text.length < 8) {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Password should be atleast 8 characters!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 5),
-                    ));
-                  } else {
-                    _handler
-                        .changePassword(_uid, _newPasswordController.text)
-                        .then((bool passwordUpdated) {
-                      print(passwordUpdated);
-                      if (passwordUpdated) {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Password updated! Please login again.',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 5),
-                        ));
-                        status = ForgotPassword.notForgot;
-                        setState(() {});
-                      } else {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Network error! Try again later.',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 5),
-                        ));
-                        status = ForgotPassword.notForgot;
-                        setState(() {});
-                      }
-                    }).catchError((e) {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Network error! Try again later.',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 5),
-                      ));
-                      status = ForgotPassword.notForgot;
-                      setState(() {});
-                    });
-                  }
-                },
-              ),
-            ),
-          ),
-        ],
-      );
 
   Widget otpCheck() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -342,9 +181,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         .verifyOTP(_mobileController.text, _otpController.text)
                         .then((bool verified) {
                       print(verified);
-                      if (verified) {
-                        status = ForgotPassword.verified;
-                        setState(() {});
+                      if (!verified) {   // TODO - Change to verified once we get transactionam OTP
+                        _handler
+                            .loginUser(_mobileController.text)
+                            .then((User user) {
+                          _storeData(user.token, _checkedValue, user);
+                          Navigator.of(context).popAndPushNamed(
+                            CategoriesScreen.routeName,
+                            arguments: user,
+                          );
+                        }).catchError((e) {
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                              'Network error! Try again later.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xff6c757d),
+                            duration: Duration(seconds: 5),
+                          ));
+                          status = ForgotPassword.forgotAndNotVerified;
+                          setState(() {});
+                        });
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
@@ -364,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 5),
                       ));
-                      status = ForgotPassword.notForgot;
+                      status = ForgotPassword.forgotAndNotVerified;
                       setState(() {});
                     });
                   }
@@ -384,6 +241,18 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: InputDecoration(hintText: 'Enter Mobile Number'),
           ),
           SizedBox(height: 20.0),
+          CheckboxListTile(
+            title: Text("Remember Me"),
+            value: _checkedValue,
+            onChanged: (newValue) {
+              setState(() {
+                _checkedValue = newValue;
+              });
+            },
+            activeColor: Theme.of(context).primaryColor,
+            controlAffinity: ListTileControlAffinity.leading,
+          ),
+          SizedBox(height: 10.0),
           Align(
             alignment: Alignment.bottomRight,
             child: Container(
@@ -410,11 +279,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
-                    _handler
-                        .requestPwdChangeOTP(_mobileController.text)
-                        .then((int uid) {
-                      _uid = uid;
-                      if (uid == null) {
+                    _handler.sendOTP(_mobileController.text).then((bool uid) {
+                      if (!uid) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
                             'Network error! Try again.',
@@ -436,123 +302,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 3),
                       ));
-                      status = ForgotPassword.notForgot;
+                      status = ForgotPassword.forgotAndNotVerified;
                       setState(() {});
                     });
                   }
-                },
-              ),
-            ),
-          ),
-        ],
-      );
-
-  Widget emailAndPassword() => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          TextField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(hintText: 'Email'),
-          ),
-          SizedBox(height: 20.0),
-          TextField(
-            obscureText: true,
-            controller: _passwordController,
-            keyboardType: TextInputType.visiblePassword,
-            decoration: InputDecoration(hintText: 'Password'),
-          ),
-          SizedBox(height: 20.0),
-          Container(
-            padding: const EdgeInsets.only(right: 5.0),
-            width: MediaQuery.of(context).size.width,
-            child: GestureDetector(
-              onTap: () {
-                print('forgot password');
-                status = ForgotPassword.forgotAndNotVerified;
-                setState(() {});
-              },
-              child: Text(
-                'Forgot Password?',
-                textAlign: TextAlign.end,
-                style: TextStyle(
-                  color: Theme.of(context).primaryColorDark,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
-          ),
-          CheckboxListTile(
-            title: Text("Remember Me"),
-            value: _checkedValue,
-            onChanged: (newValue) {
-              setState(() {
-                _checkedValue = newValue;
-              });
-            },
-            activeColor: Theme.of(context).primaryColor,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          SizedBox(height: 20.0),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              margin: const EdgeInsets.only(left: 10.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Theme.of(context).primaryColorDark,
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              child: FlatButton(
-                child: Text(
-                  'LOGIN',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  if (_emailController.text.isEmpty ||
-                      _passwordController.text.isEmpty) {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      duration: Duration(seconds: 5),
-                      content: Text(
-                        "Empty Credentials",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                    ));
-                    return;
-                  }
-                  await progressDialog.show();
-                  _handler
-                      .loginUser(
-                    _emailController.text,
-                    _passwordController.text,
-                  )
-                      .then((User user) async {
-                    if (user != null) {
-                      print(user.name);
-                      _storeData(
-                        user.token,
-                        _checkedValue,
-                        _emailController.text,
-                        _passwordController.text,
-                      );
-                      await progressDialog.hide();
-                      Navigator.of(context).popAndPushNamed(
-                        CategoriesScreen.routeName,
-                        arguments: user,
-                      );
-                    }
-                  }).catchError((onError) async {
-                    await progressDialog.hide();
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      duration: Duration(seconds: 5),
-                      content: Text(
-                        "Wrong password or not registered",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                    ));
-                  });
                 },
               ),
             ),
