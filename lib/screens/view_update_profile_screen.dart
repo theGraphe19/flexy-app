@@ -54,7 +54,6 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
 
   @override
   Widget build(BuildContext context) {
-    //if (!userDataController) _getUserDetails();
     currentUser = ModalRoute.of(context).settings.arguments as User;
 
     if (currentUser != null && !userSelectorController) {

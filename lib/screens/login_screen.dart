@@ -33,7 +33,19 @@ class _LoginScreenState extends State<LoginScreen> {
   SharedPreferences prefs;
   bool _checkedValue = false;
   bool _stayLoggedIn;
+  List<String> mobiles;
   var status = ForgotPassword.forgotAndNotVerified;
+
+  bool _chechNumber(String inputNumber) {
+    for (var i = 0; i < mobiles.length; i++) {
+      if (mobiles[i].contains(inputNumber) &&
+          inputNumber.contains(mobiles[i])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   void _storeData(
     String token,
@@ -58,25 +70,38 @@ class _LoginScreenState extends State<LoginScreen> {
     prefs = await SharedPreferences.getInstance();
     _stayLoggedIn = prefs.getBool('loggedIn') ?? false;
 
-    final encodedUser = prefs.getString('loggedInUser');
-    User user = User();
-    user.mapToUser(json.decode(encodedUser));
-
     if (_stayLoggedIn) {
+      final encodedUser = prefs.getString('loggedInUser');
+      User user = User();
+      user.mapToUser(json.decode(encodedUser));
+
       int timeStamp = prefs.getInt('loginTime');
       Duration timeDiff = DateTime.now()
           .difference(DateTime.fromMillisecondsSinceEpoch(timeStamp));
       if (timeDiff.inHours < 24) {
-        print(user.name);
-        _storeData(
-          user.token,
-          true,
-          user,
-        );
-        Navigator.of(context).popAndPushNamed(
-          CategoriesScreen.routeName,
-          arguments: user,
-        );
+        _handler.loginUser(user.mobileNo).then((User value) {
+          print(value.name);
+          _storeData(
+            value.token,
+            true,
+            value,
+          );
+          Navigator.of(context).popAndPushNamed(
+            CategoriesScreen.routeName,
+            arguments: value,
+          );
+        }).catchError((e) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+              'Network error! Try again later.',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 5),
+          ));
+          status = ForgotPassword.forgotAndNotVerified;
+          setState(() {});
+        });
       } else {
         _stayLoggedIn = false;
         Toast.show(
@@ -110,6 +135,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     //_retreiveData();
+    if (status == ForgotPassword.forgotAndNotVerified) {
+      _handler.getMobiles().then((value) {
+        this.mobiles = value;
+      });
+    }
+
     progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -181,7 +212,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         .verifyOTP(_mobileController.text, _otpController.text)
                         .then((bool verified) {
                       print(verified);
-                      if (!verified) {   // TODO - Change to verified once we get transactionam OTP
+                      if (!verified) {
+                        // TODO - Change to verified once we get transactionam OTP
                         _handler
                             .loginUser(_mobileController.text)
                             .then((User user) {
@@ -273,6 +305,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text(
                         'Enter a number',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Color(0xff6c757d),
+                      duration: Duration(seconds: 5),
+                    ));
+                  } else if (!_chechNumber(_mobileController.text)) {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(
+                        'Number not registered!',
                         style: TextStyle(color: Colors.white),
                       ),
                       backgroundColor: Color(0xff6c757d),
