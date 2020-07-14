@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -8,10 +7,14 @@ import '../widgets/loading_body.dart';
 import '../widgets/product_item.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
-import '../models/remark.dart';
 import '../utils/dialog_utils.dart';
 import '../screens/cart_screen.dart';
 import '../models/user.dart';
+
+/*
+<a target="_blank" href="https://icons8.com/icons/set/like">Heart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/shopping-cart">Shopping Cart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+*/
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
@@ -33,29 +36,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   var currentActiveIndex = 0;
   int selectedSize = 0;
   int colorSelected = 0;
-  List<Remark> _remarks;
   int quantitySelected = 1;
   bool isAnUpdate;
   CartScreenState _changeCartState;
 
   getProductDetails() {
     productsController = true;
-    _handler.remarkOfProduct(token, product.productId).then((value) {
-      _remarks = value;
-      _handler.getProductDetails(product.productId, token).then((value1) {
-        productDetails = value1;
-        print(productDetails.product.name);
-        setState(() {});
-      }).catchError((e) {
-        scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(
-            'Network error!',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Color(0xff6c757d),
-          duration: Duration(seconds: 3),
-        ));
-      });
+    _handler.getProductDetails(product.productId, token).then((value1) {
+      productDetails = value1;
+      print(productDetails.product.name);
+      setState(() {});
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
@@ -149,6 +139,85 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ],
                                   ),
                                 ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Image.asset(
+                                      'assets/images/search-outline.png',
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        return Container(
+                                          height: 30.0,
+                                          width: 30.0,
+                                          padding: const EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: Theme.of(context)
+                                                    .primaryColorLight),
+                                          ),
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(width: 10.0),
+                                    Image.asset(
+                                      'assets/images/cart-outline.png',
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        return Container(
+                                          height: 30.0,
+                                          width: 30.0,
+                                          padding: const EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: Theme.of(context)
+                                                    .primaryColorLight),
+                                          ),
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(width: 10.0),
+                                    Image.asset(
+                                      'assets/images/wishlist-outline.png',
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        return Container(
+                                          height: 30.0,
+                                          width: 30.0,
+                                          padding: const EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: Theme.of(context)
+                                                    .primaryColorLight),
+                                          ),
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -470,7 +539,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 50.0),
                       ],
                     ),
                   ),
