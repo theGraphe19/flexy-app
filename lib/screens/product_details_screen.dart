@@ -178,32 +178,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 5.0),
-                        Container(
-                          height: 30.0,
-                          margin: const EdgeInsets.only(bottom: 5.0),
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: product.productTags
-                                .split(',')
-                                .map((String tag) => Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0,
-                                        vertical: 5.0,
-                                      ),
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 5.0),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child: Text(tag),
-                                    ))
-                                .toList(),
-                          ),
-                        ),
                         Divider(),
                         Container(
                           child: Column(
@@ -301,86 +275,65 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               Container(
                                 height: 50.0,
                                 margin: const EdgeInsets.only(bottom: 5.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: product
-                                              .productSizes[selectedSize].colors
-                                              .map(
-                                                (ProductColor productColor) =>
-                                                    GestureDetector(
-                                                  onTap: () {
-                                                    colorSelected = product
-                                                        .productSizes[
-                                                            selectedSize]
-                                                        .colors
-                                                        .indexOf(
-                                                            productColor, 0);
-                                                    setState(() {});
-                                                  },
-                                                  child: Container(
-                                                    width: 50.0,
-                                                    margin: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 10.0),
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                      ),
-                                                      color: Color(int.parse(
-                                                              product
-                                                                  .productSizes[
-                                                                      selectedSize]
-                                                                  .colors[product
-                                                                      .productSizes[
-                                                                          selectedSize]
-                                                                      .colors
-                                                                      .indexOf(
-                                                                          productColor)]
-                                                                  .color
-                                                                  .substring(
-                                                                      1, 7),
-                                                              radix: 16) +
-                                                          0xFF000000),
-                                                    ),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.done,
-                                                        color: (colorSelected ==
-                                                                product
-                                                                    .productSizes[
-                                                                        selectedSize]
-                                                                    .colors
-                                                                    .indexOf(
-                                                                        productColor,
-                                                                        0))
-                                                            ? Colors.white
-                                                            : Colors
-                                                                .transparent,
-                                                      ),
-                                                    ),
-                                                  ),
+                                child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: product
+                                        .productSizes[selectedSize].colors
+                                        .map(
+                                          (ProductColor productColor) =>
+                                              GestureDetector(
+                                            onTap: () {
+                                              colorSelected = product
+                                                  .productSizes[selectedSize]
+                                                  .colors
+                                                  .indexOf(productColor, 0);
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                              width: 50.0,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10.0),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: Colors.grey,
                                                 ),
-                                              )
-                                              .toList()),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 10.0),
-                                      child: Text(
-                                        '${product.productSizes[selectedSize].colors[colorSelected].quantity} available',
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
+                                                color: Color(int.parse(
+                                                        product
+                                                            .productSizes[
+                                                                selectedSize]
+                                                            .colors[product
+                                                                .productSizes[
+                                                                    selectedSize]
+                                                                .colors
+                                                                .indexOf(
+                                                                    productColor)]
+                                                            .color
+                                                            .substring(1, 7),
+                                                        radix: 16) +
+                                                    0xFF000000),
+                                              ),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.done,
+                                                  color: (colorSelected ==
+                                                          product
+                                                              .productSizes[
+                                                                  selectedSize]
+                                                              .colors
+                                                              .indexOf(
+                                                                  productColor,
+                                                                  0))
+                                                      ? Colors.white
+                                                      : Colors.transparent,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList()),
+                              ),
                             ],
                           ),
                         ),
@@ -431,11 +384,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          if (quantitySelected <
-                                              product
-                                                  .productSizes[selectedSize]
-                                                  .colors[colorSelected]
-                                                  .quantity) quantitySelected++;
+                                          // if (quantitySelected <
+                                          //     product
+                                          //         .productSizes[selectedSize]
+                                          //         .colors[colorSelected]
+                                          //         .quantity) quantitySelected++;
                                         });
                                       },
                                       child: Icon(
@@ -517,30 +470,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                         ),
-                        Divider(),
-                        Container(
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () => showRemarkBottomSheet(),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Text(
-                                    'Customer Reviews ->',
-                                    style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                         SizedBox(height: 50.0),
                       ],
                     ),
@@ -556,214 +485,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
     );
-  }
-
-  void showRemarkBottomSheet() {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 400.0,
-            padding: EdgeInsets.only(top: 20.0),
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 5.0),
-            child: SizedBox(
-              height: _remarks.length * 50.0,
-              child: (_remarks != null && _remarks.length > 0)
-                  ? ListView(
-                      primary: false,
-                      children: _remarks
-                          .map(
-                            (Remark remark) => Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Text(
-                                        _remarks[_remarks.indexOf(remark)]
-                                            .userName,
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      user.id ==
-                                              _remarks[_remarks.indexOf(remark)]
-                                                  .userId
-                                          ? Material(
-                                              color: Colors.transparent,
-                                              child: InkWell(
-                                                splashColor: Colors.transparent,
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                  updateRemark(
-                                                      _remarks.indexOf(remark));
-                                                },
-                                                child: Container(
-                                                  height: 25.0,
-                                                  width: 70.0,
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Update",
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 12.0,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .primaryColorLight,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    border: Border.all(
-                                                        width: 1.0,
-                                                        color: Theme.of(context)
-                                                            .primaryColorLight),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : Text(""),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Text((_remarks[_remarks.indexOf(remark)]
-                                              .remarks
-                                              .length >=
-                                          250)
-                                      ? '${_remarks[_remarks.indexOf(remark)].remarks.substring(0, 249)}...'
-                                      : _remarks[_remarks.indexOf(remark)]
-                                          .remarks),
-                                  Divider(),
-                                ],
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    )
-                  : Center(
-                      child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/images/wait.png',
-                          height: 60.0,
-                          width: 60.0,
-                        ),
-                        Text('No remarks added!'),
-                      ],
-                    )),
-            ),
-          );
-        });
-  }
-
-  void updateRemark(int remarkIndex) {
-    final newRemark = new TextEditingController();
-    scaffoldKey.currentState.showBottomSheet((newContext) {
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        height: 180.0,
-        decoration: BoxDecoration(
-          /*border: Border.all(color: Colors.grey),*/
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
-          color: Color(0xfff0f0f0),
-        ),
-        child: Column(
-          children: [
-            TextField(
-              controller: newRemark,
-              textAlign: TextAlign.left,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
-              decoration: InputDecoration(
-                hintText: 'Enter New Remark',
-              ),
-            ),
-            SizedBox(height: 40.0),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                splashColor: Colors.transparent,
-                onTap: () {
-                  if (newRemark.text.isNotEmpty) {
-                    HTTPHandler()
-                        .updateRemark(product.productId.toString(), user.token,
-                            newRemark.text)
-                        .then((value) {
-                      Navigator.of(context).pop();
-                      if (value == 1) {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Remark Updated',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 3),
-                        ));
-                      } else {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Failed to Update Remark.',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 3),
-                        ));
-                      }
-                      setState(() {
-                        productsController = false;
-                      });
-                    }).catchError((e) {
-                      Navigator.pop(context);
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Network error!',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
-                    });
-                  } else {
-                    Toast.show("Enter Remark!", context);
-                  }
-                },
-                child: Container(
-                  height: 40.0,
-                  child: Center(
-                    child: Text(
-                      "Update Remark",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        width: 1.0, color: Theme.of(context).primaryColor),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
   }
 
   Widget titleValue(String title, String value) => RichText(
