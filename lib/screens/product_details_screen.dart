@@ -8,7 +8,8 @@ import '../widgets/product_item.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
 import '../utils/dialog_utils.dart';
-import '../screens/cart_screen.dart';
+import './cart_screen.dart';
+import './products_screen.dart';
 import '../models/user.dart';
 
 /*
@@ -65,6 +66,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     product = arguments[0] as Product;
     token = arguments[1] as String;
     user = arguments[3] as User;
+    categoryId = arguments[2];
     if (arguments.length > 4) {
       isAnUpdate = arguments[4] as bool;
       _changeCartState = arguments[5] as CartScreenState;
@@ -177,18 +179,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         int frame,
                                         bool wasSynchronouslyLoaded,
                                       ) {
-                                        return Container(
-                                          height: 30.0,
-                                          width: 30.0,
-                                          padding: const EdgeInsets.all(5.0),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Theme.of(context)
-                                                    .primaryColorLight),
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                              CartScreen.routeName,
+                                              arguments: user,
+                                            );
+                                          },
+                                          child: Container(
+                                            height: 30.0,
+                                            width: 30.0,
+                                            padding: const EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight),
+                                            ),
+                                            child: child,
                                           ),
-                                          child: child,
                                         );
                                       },
                                     ),
@@ -201,18 +211,23 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         int frame,
                                         bool wasSynchronouslyLoaded,
                                       ) {
-                                        return Container(
-                                          height: 30.0,
-                                          width: 30.0,
-                                          padding: const EdgeInsets.all(5.0),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Theme.of(context)
-                                                    .primaryColorLight),
+                                        return GestureDetector(
+                                          onTap: () {
+                                            print('return to favs');
+                                          },
+                                          child: Container(
+                                            height: 30.0,
+                                            width: 30.0,
+                                            padding: const EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight),
+                                            ),
+                                            child: child,
                                           ),
-                                          child: child,
                                         );
                                       },
                                     ),
