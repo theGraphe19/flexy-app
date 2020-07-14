@@ -32,6 +32,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     await progressDialog.show();
     _handler.registerUser(currentUser).then((value) async {
       if (value != null) {
+        currentUser.status = 0;
         await progressDialog.hide();
         Navigator.of(context).popAndPushNamed(
           CategoriesScreen.routeName,
@@ -56,14 +57,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         duration: Duration(seconds: 3),
       ));
     });
-
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        'Please enter same value in both text fields.',
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Color(0xff6c757d),
-    ));
   }
 
   @override
@@ -235,7 +228,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         .verifyOTP(currentUser.mobileNo, _otpController.text)
                         .then((bool otpVerified) async {
                       await progressDialog.hide();
-                      if (otpVerified) {
+                      if (!otpVerified) {
+                        //TODO - Change when we get transactional OTP
                         _confirmUser();
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
