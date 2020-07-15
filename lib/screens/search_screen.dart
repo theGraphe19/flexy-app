@@ -23,10 +23,16 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<List<Product>> search(String search) async {
     List<Product> result = [];
     for (var i = 0; i < _products.length; i++) {
-      if (_products[i].name.contains(search) ||
-          _products[i].description.contains(search) ||
-          _products[i].tagline.contains(search) ||
-          _products[i].productTags.contains(search)) {
+      if (_products[i].name.toLowerCase().contains(search.toLowerCase()) ||
+          _products[i]
+              .description
+              .toLowerCase()
+              .contains(search.toLowerCase()) ||
+          _products[i].tagline.toLowerCase().contains(search.toLowerCase()) ||
+          _products[i]
+              .productTags
+              .toLowerCase()
+              .contains(search.toLowerCase())) {
         result.add(_products[i]);
       }
     }
