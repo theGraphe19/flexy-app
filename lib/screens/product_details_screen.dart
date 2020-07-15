@@ -9,8 +9,8 @@ import '../models/product_size.dart';
 import '../models/product_color.dart';
 import '../utils/dialog_utils.dart';
 import './cart_screen.dart';
-import './products_screen.dart';
 import '../models/user.dart';
+import './search_screen.dart';
 
 /*
 <a target="_blank" href="https://icons8.com/icons/set/like">Heart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -40,6 +40,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int quantitySelected = 1;
   bool isAnUpdate;
   CartScreenState _changeCartState;
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => SearchScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
 
   getProductDetails() {
     productsController = true;
@@ -155,18 +174,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         int frame,
                                         bool wasSynchronouslyLoaded,
                                       ) {
-                                        return Container(
-                                          height: 30.0,
-                                          width: 30.0,
-                                          padding: const EdgeInsets.all(5.0),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Theme.of(context)
-                                                    .primaryColorLight),
+                                        return GestureDetector(
+                                          onTap: () {
+                                            print('search');
+                                            Navigator.of(context)
+                                                .push(_createRoute());
+                                          },
+                                          child: Container(
+                                            height: 30.0,
+                                            width: 30.0,
+                                            padding: const EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight),
+                                            ),
+                                            child: child,
                                           ),
-                                          child: child,
                                         );
                                       },
                                     ),
