@@ -9,6 +9,7 @@ import '../models/user.dart';
 import '../providers/product_provider.dart';
 import '../utils/drawer.dart';
 import '../utils/wishlist_bottom_sheet.dart';
+import './search_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -30,6 +31,25 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   var _radioValue = 1;
   var _radioValue1 = 0;
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => SearchScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
 
   getList() async {
     prodListCounterCalled = true;
@@ -81,6 +101,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
         title: Text('Products'),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              print('search');
+              Navigator.of(context).push(_createRoute());
+            },
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 5.0),
             child: IconButton(
