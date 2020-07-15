@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
@@ -11,6 +8,7 @@ import '../widgets/loading_body.dart';
 import '../models/user.dart';
 import '../providers/product_provider.dart';
 import '../utils/drawer.dart';
+import '../utils/wishlist_bottom_sheet.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -23,19 +21,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
   int categoryId;
   var prodListCounterCalled = false;
   User currentUser;
-  var _onlyFavourites = false;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
 
   List<Product> productList;
   ProductProvider _productProvider;
+  WishlistBottomSheet _wishlistBottomSheet;
 
   var _radioValue = 1;
   var _radioValue1 = 0;
 
   getList() async {
-    _onlyFavourites = false;
     prodListCounterCalled = true;
     _handler
         .getProductsList(context, currentUser.token, categoryId.toString())
@@ -54,24 +50,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
-  getWishlist() async {
-    _onlyFavourites = true;
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String favs = _prefs.getString('favourites-$categoryId');
-    List<dynamic> favouriteList;
-    if (favs != null) {
-      favouriteList = json.decode(favs);
-      productList.clear();
-      for (var i = 0; i < favouriteList.length; i++)
-        productList.add(_productProvider.getProduct(favouriteList[i]));
-    } else {
-      favouriteList = null;
-      productList = null;
-    }
-    print(productList.toString());
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     var data =
@@ -81,8 +59,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
     categoryId = data['category_id'];
     print(categoryId);
     _productProvider = Provider.of<ProductProvider>(context);
+    _wishlistBottomSheet = WishlistBottomSheet(
+      context: context,
+      scaffoldKey: scaffoldKey,
+      categoryId: categoryId,
+      user: currentUser,
+    );
 
-    if (!prodListCounterCalled && !_onlyFavourites) getList();
+    if (!prodListCounterCalled) getList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -97,20 +81,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
         title: Text('Products'),
         actions: <Widget>[
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert),
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {
-                (_onlyFavourites) ? 'All Products' : 'My Wishlist',
-              }.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 5.0),
+            child: IconButton(
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _wishlistBottomSheet.fireWishlist();
+              },
+            ),
+          )
         ],
       ),
       drawer: SideDrawer(currentUser, scaffoldKey).drawer(context),
@@ -137,44 +119,43 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   ),
           ),
           Divider(),
-          if (!_onlyFavourites)
-            Container(
-              padding: const EdgeInsets.only(
-                left: 10.0,
-                right: 10.0,
-                bottom: 20.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      print('sort products');
-                      _sortOptions(context);
-                    },
-                    child: Text(
-                      'Sort',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  Container(
-                    color: Colors.black12,
-                    height: 25,
-                    width: 2,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print('filter pressed');
-                      _filterOptions(context);
-                    },
-                    child: Text(
-                      'Filter',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  )
-                ],
-              ),
+          Container(
+            padding: const EdgeInsets.only(
+              left: 10.0,
+              right: 10.0,
+              bottom: 20.0,
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    print('sort products');
+                    _sortOptions(context);
+                  },
+                  child: Text(
+                    'Sort',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                Container(
+                  color: Colors.black12,
+                  height: 25,
+                  width: 2,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    print('filter pressed');
+                    _filterOptions(context);
+                  },
+                  child: Text(
+                    'Filter',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -331,16 +312,4 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         );
       });
-
-  void handleClick(String value) {
-    switch (value) {
-      case 'All Products':
-        getList();
-        break;
-
-      case 'My Wishlist':
-        getWishlist();
-        break;
-    }
-  }
 }
