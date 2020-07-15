@@ -34,7 +34,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => SearchScreen(),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          SearchScreen(currentUser),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
