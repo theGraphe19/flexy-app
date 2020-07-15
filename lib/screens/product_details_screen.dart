@@ -11,6 +11,7 @@ import '../utils/dialog_utils.dart';
 import './cart_screen.dart';
 import '../models/user.dart';
 import './search_screen.dart';
+import '../utils/wishlist_bottom_sheet.dart';
 
 /*
 <a target="_blank" href="https://icons8.com/icons/set/like">Heart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -40,6 +41,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int quantitySelected = 1;
   bool isAnUpdate;
   CartScreenState _changeCartState;
+  WishlistBottomSheet _wishlistBottomSheet;
 
   Route _createRoute() {
     return PageRouteBuilder(
@@ -80,6 +82,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _wishlistBottomSheet = WishlistBottomSheet(
+      context: context,
+      categoryId: categoryId,
+      scaffoldKey: scaffoldKey,
+      user: user,
+    );
     List<dynamic> arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     product = arguments[0] as Product;
@@ -240,6 +248,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         return GestureDetector(
                                           onTap: () {
                                             print('return to favs');
+                                            _wishlistBottomSheet.fireWishlist();
                                           },
                                           child: Container(
                                             height: 30.0,
@@ -576,6 +585,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 user,
                                 categoryId,
                                 scaffoldKey,
+                                false,
                               ),
                             ),
                           ),

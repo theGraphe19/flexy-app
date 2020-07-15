@@ -15,12 +15,14 @@ class ProductItem extends StatefulWidget {
   final User user;
   final int categoryId;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final bool forWishlist;
 
   ProductItem(
     this.product,
     this.user,
     this.categoryId,
     this.scaffoldKey,
+    this.forWishlist,
   );
 
   @override
@@ -51,7 +53,9 @@ class _ProductItemState extends State<ProductItem> {
     }
     widget.scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
-          (_isFavourite) ? 'Removed from wishlist!' : 'Added to wishlist!', style: TextStyle(color: Colors.white),),
+        (_isFavourite) ? 'Removed from wishlist!' : 'Added to wishlist!',
+        style: TextStyle(color: Colors.white),
+      ),
       backgroundColor: Color(0xff6c757d),
       duration: Duration(seconds: 2),
     ));
@@ -81,11 +85,17 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    if (!retreiveDataHandler) retreiveDataFromPrefs();
+    if (!retreiveDataHandler && !widget.forWishlist) retreiveDataFromPrefs();
+
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         ProductDetailsScreen.routeName,
-        arguments: <dynamic>[widget.product, widget.user.token, widget.categoryId, widget.user],
+        arguments: <dynamic>[
+          widget.product,
+          widget.user.token,
+          widget.categoryId,
+          widget.user
+        ],
       ),
       child: Container(
         child: Column(
@@ -159,11 +169,13 @@ class _ProductItemState extends State<ProductItem> {
                 IconButton(
                   icon: Icon(
                     Icons.favorite,
-                    color: (_isFavourite) ? Colors.red : Colors.grey,
+                    color: (widget.forWishlist)
+                        ? Colors.red
+                        : (_isFavourite) ? Colors.red : Colors.grey,
                   ),
                   onPressed: () {
                     print('pressed');
-                    addDataToPrefs();
+                    if (!widget.forWishlist) addDataToPrefs();
                   },
                 ),
               ],
