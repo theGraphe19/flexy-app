@@ -4,6 +4,7 @@ import './products_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../utils/drawer.dart';
+import '../widgets/loading_body.dart';
 import '../models/category.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -18,8 +19,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   bool categoryListHandler = false;
   List<Category> categoriesList;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  HTTPHandler _handler = HTTPHandler();
 
-  void _showAbout(BuildContext context) {
+  void _showAbout(BuildContext context, String about) {
     Future.delayed(Duration(seconds: 3), () {
       print('now');
       return showModalBottomSheet(
@@ -64,7 +66,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   Divider(),
                   SizedBox(height: 10.0),
                   Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                    about,
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -82,14 +84,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     _currentUser = ModalRoute.of(context).settings.arguments as User;
 
+    if (_currentUser.status != 1)
+      _handler.getAdminContactDetails().then((Map value) {
+        _showAbout(context, value['about']);
+      });
+
     if (!categoryListHandler) {
       categoryListHandler = true;
       if (_currentUser.status == 1)
-        HTTPHandler().getCategoriesList(_currentUser.token).then((cat) {
+        _handler.getCategoriesList(_currentUser.token).then((cat) {
           categoriesList = cat;
-          setState(() {
-            _showAbout(context);
-          });
+          setState(() {});
         }).catchError((e) {
           _scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
@@ -118,10 +123,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             (_currentUser.status == 1)
                 ? (categoriesList == null)
-                    ? CircularProgressIndicator()
+                    ? LoadingBody()
                     : Expanded(
                         child: ListView.builder(
                           itemCount: categoriesList.length,
@@ -156,9 +162,21 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           },
                         ),
                       )
-                : Text((_currentUser.status == 0)
-                    ? 'Please wait until allowed by Admin!'
-                    : 'You have been banned by admin!'),
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        (_currentUser.status == 0)
+                            ? 'assets/images/pending.png'
+                            : 'assets/images/rejected.png',
+                        height: 70.0,
+                        width: 70.0,
+                      ),
+                      Text((_currentUser.status == 0)
+                          ? 'Please wait until allowed by Admin!'
+                          : 'You have been banned by admin!'),
+                    ],
+                  ),
           ],
         ),
       ),

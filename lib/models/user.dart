@@ -1,4 +1,5 @@
 class User {
+  Map<String, dynamic> data;
   int id;
   String name;
   String mobileNo;
@@ -25,6 +26,7 @@ class User {
   int category;
 
   User({
+    this.data,
     this.id,
     this.name,
     this.mobileNo,
@@ -52,6 +54,7 @@ class User {
   });
 
   void mapToUser(Map<dynamic, dynamic> map) {
+    this.data = map;
     this.id = map['id'];
     this.name = map['name'];
     this.mobileNo = map['mobileNo'];

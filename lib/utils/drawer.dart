@@ -120,9 +120,8 @@ class SideDrawer {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
                   await prefs.remove('loggedIn');
-                  await prefs.remove('loggedInEmail');
+                  await prefs.remove('loggedInUser');
                   await prefs.remove('token');
-                  await prefs.remove('loggedInPassword');
                   Navigator.of(context).popAndPushNamed(
                     StartScreen.routeName,
                   );

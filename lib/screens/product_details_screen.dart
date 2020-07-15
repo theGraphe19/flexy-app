@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -8,10 +7,15 @@ import '../widgets/loading_body.dart';
 import '../widgets/product_item.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
-import '../models/remark.dart';
 import '../utils/dialog_utils.dart';
-import '../screens/cart_screen.dart';
+import './cart_screen.dart';
 import '../models/user.dart';
+import './search_screen.dart';
+
+/*
+<a target="_blank" href="https://icons8.com/icons/set/like">Heart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/shopping-cart">Shopping Cart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+*/
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details-screen';
@@ -33,29 +37,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   var currentActiveIndex = 0;
   int selectedSize = 0;
   int colorSelected = 0;
-  List<Remark> _remarks;
   int quantitySelected = 1;
   bool isAnUpdate;
   CartScreenState _changeCartState;
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => SearchScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   getProductDetails() {
     productsController = true;
-    _handler.remarkOfProduct(token, product.productId).then((value) {
-      _remarks = value;
-      _handler.getProductDetails(product.productId, token).then((value1) {
-        productDetails = value1;
-        print(productDetails.product.name);
-        setState(() {});
-      }).catchError((e) {
-        scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(
-            'Network error!',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Color(0xff6c757d),
-          duration: Duration(seconds: 3),
-        ));
-      });
+    _handler.getProductDetails(product.productId, token).then((value1) {
+      productDetails = value1;
+      print(productDetails.product.name);
+      setState(() {});
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
@@ -75,6 +85,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     product = arguments[0] as Product;
     token = arguments[1] as String;
     user = arguments[3] as User;
+    categoryId = arguments[2];
     if (arguments.length > 4) {
       isAnUpdate = arguments[4] as bool;
       _changeCartState = arguments[5] as CartScreenState;
@@ -150,6 +161,105 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   ),
                                 ],
                               ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Image.asset(
+                                      'assets/images/search-outline.png',
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            print('search');
+                                            Navigator.of(context)
+                                                .push(_createRoute());
+                                          },
+                                          child: Container(
+                                            height: 30.0,
+                                            width: 30.0,
+                                            padding: const EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight),
+                                            ),
+                                            child: child,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(width: 10.0),
+                                    Image.asset(
+                                      'assets/images/cart-outline.png',
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                              CartScreen.routeName,
+                                              arguments: user,
+                                            );
+                                          },
+                                          child: Container(
+                                            height: 30.0,
+                                            width: 30.0,
+                                            padding: const EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight),
+                                            ),
+                                            child: child,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(width: 10.0),
+                                    Image.asset(
+                                      'assets/images/wishlist-outline.png',
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            print('return to favs');
+                                          },
+                                          child: Container(
+                                            height: 30.0,
+                                            width: 30.0,
+                                            padding: const EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight),
+                                            ),
+                                            child: child,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -176,32 +286,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               color: Colors.black87,
                               fontSize: 15.0,
                             ),
-                          ),
-                        ),
-                        SizedBox(height: 5.0),
-                        Container(
-                          height: 30.0,
-                          margin: const EdgeInsets.only(bottom: 5.0),
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: product.productTags
-                                .split(',')
-                                .map((String tag) => Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0,
-                                        vertical: 5.0,
-                                      ),
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 5.0),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child: Text(tag),
-                                    ))
-                                .toList(),
                           ),
                         ),
                         Divider(),
@@ -301,86 +385,65 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               Container(
                                 height: 50.0,
                                 margin: const EdgeInsets.only(bottom: 5.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: product
-                                              .productSizes[selectedSize].colors
-                                              .map(
-                                                (ProductColor productColor) =>
-                                                    GestureDetector(
-                                                  onTap: () {
-                                                    colorSelected = product
-                                                        .productSizes[
-                                                            selectedSize]
-                                                        .colors
-                                                        .indexOf(
-                                                            productColor, 0);
-                                                    setState(() {});
-                                                  },
-                                                  child: Container(
-                                                    width: 50.0,
-                                                    margin: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 10.0),
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                      ),
-                                                      color: Color(int.parse(
-                                                              product
-                                                                  .productSizes[
-                                                                      selectedSize]
-                                                                  .colors[product
-                                                                      .productSizes[
-                                                                          selectedSize]
-                                                                      .colors
-                                                                      .indexOf(
-                                                                          productColor)]
-                                                                  .color
-                                                                  .substring(
-                                                                      1, 7),
-                                                              radix: 16) +
-                                                          0xFF000000),
-                                                    ),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.done,
-                                                        color: (colorSelected ==
-                                                                product
-                                                                    .productSizes[
-                                                                        selectedSize]
-                                                                    .colors
-                                                                    .indexOf(
-                                                                        productColor,
-                                                                        0))
-                                                            ? Colors.white
-                                                            : Colors
-                                                                .transparent,
-                                                      ),
-                                                    ),
-                                                  ),
+                                child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: product
+                                        .productSizes[selectedSize].colors
+                                        .map(
+                                          (ProductColor productColor) =>
+                                              GestureDetector(
+                                            onTap: () {
+                                              colorSelected = product
+                                                  .productSizes[selectedSize]
+                                                  .colors
+                                                  .indexOf(productColor, 0);
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                              width: 50.0,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10.0),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: Colors.grey,
                                                 ),
-                                              )
-                                              .toList()),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 10.0),
-                                      child: Text(
-                                        '${product.productSizes[selectedSize].colors[colorSelected].quantity} available',
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
+                                                color: Color(int.parse(
+                                                        product
+                                                            .productSizes[
+                                                                selectedSize]
+                                                            .colors[product
+                                                                .productSizes[
+                                                                    selectedSize]
+                                                                .colors
+                                                                .indexOf(
+                                                                    productColor)]
+                                                            .color
+                                                            .substring(1, 7),
+                                                        radix: 16) +
+                                                    0xFF000000),
+                                              ),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.done,
+                                                  color: (colorSelected ==
+                                                          product
+                                                              .productSizes[
+                                                                  selectedSize]
+                                                              .colors
+                                                              .indexOf(
+                                                                  productColor,
+                                                                  0))
+                                                      ? Colors.white
+                                                      : Colors.transparent,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList()),
+                              ),
                             ],
                           ),
                         ),
@@ -431,11 +494,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          if (quantitySelected <
-                                              product
-                                                  .productSizes[selectedSize]
-                                                  .colors[colorSelected]
-                                                  .quantity) quantitySelected++;
+                                          // if (quantitySelected <
+                                          //     product
+                                          //         .productSizes[selectedSize]
+                                          //         .colors[colorSelected]
+                                          //         .quantity) quantitySelected++;
                                         });
                                       },
                                       child: Icon(
@@ -517,31 +580,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                         ),
-                        Divider(),
-                        Container(
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () => showRemarkBottomSheet(),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Text(
-                                    'Customer Reviews ->',
-                                    style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 50.0),
                       ],
                     ),
                   ),
@@ -556,214 +594,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
     );
-  }
-
-  void showRemarkBottomSheet() {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 400.0,
-            padding: EdgeInsets.only(top: 20.0),
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 5.0),
-            child: SizedBox(
-              height: _remarks.length * 50.0,
-              child: (_remarks != null && _remarks.length > 0)
-                  ? ListView(
-                      primary: false,
-                      children: _remarks
-                          .map(
-                            (Remark remark) => Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Text(
-                                        _remarks[_remarks.indexOf(remark)]
-                                            .userName,
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      user.id ==
-                                              _remarks[_remarks.indexOf(remark)]
-                                                  .userId
-                                          ? Material(
-                                              color: Colors.transparent,
-                                              child: InkWell(
-                                                splashColor: Colors.transparent,
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                  updateRemark(
-                                                      _remarks.indexOf(remark));
-                                                },
-                                                child: Container(
-                                                  height: 25.0,
-                                                  width: 70.0,
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Update",
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 12.0,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .primaryColorLight,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    border: Border.all(
-                                                        width: 1.0,
-                                                        color: Theme.of(context)
-                                                            .primaryColorLight),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : Text(""),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Text((_remarks[_remarks.indexOf(remark)]
-                                              .remarks
-                                              .length >=
-                                          250)
-                                      ? '${_remarks[_remarks.indexOf(remark)].remarks.substring(0, 249)}...'
-                                      : _remarks[_remarks.indexOf(remark)]
-                                          .remarks),
-                                  Divider(),
-                                ],
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    )
-                  : Center(
-                      child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/images/wait.png',
-                          height: 60.0,
-                          width: 60.0,
-                        ),
-                        Text('No remarks added!'),
-                      ],
-                    )),
-            ),
-          );
-        });
-  }
-
-  void updateRemark(int remarkIndex) {
-    final newRemark = new TextEditingController();
-    scaffoldKey.currentState.showBottomSheet((newContext) {
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        height: 180.0,
-        decoration: BoxDecoration(
-          /*border: Border.all(color: Colors.grey),*/
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
-          color: Color(0xfff0f0f0),
-        ),
-        child: Column(
-          children: [
-            TextField(
-              controller: newRemark,
-              textAlign: TextAlign.left,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
-              decoration: InputDecoration(
-                hintText: 'Enter New Remark',
-              ),
-            ),
-            SizedBox(height: 40.0),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                splashColor: Colors.transparent,
-                onTap: () {
-                  if (newRemark.text.isNotEmpty) {
-                    HTTPHandler()
-                        .updateRemark(product.productId.toString(), user.token,
-                            newRemark.text)
-                        .then((value) {
-                      Navigator.of(context).pop();
-                      if (value == 1) {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Remark Updated',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 3),
-                        ));
-                      } else {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Failed to Update Remark.',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 3),
-                        ));
-                      }
-                      setState(() {
-                        productsController = false;
-                      });
-                    }).catchError((e) {
-                      Navigator.pop(context);
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Network error!',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
-                    });
-                  } else {
-                    Toast.show("Enter Remark!", context);
-                  }
-                },
-                child: Container(
-                  height: 40.0,
-                  child: Center(
-                    child: Text(
-                      "Update Remark",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        width: 1.0, color: Theme.of(context).primaryColor),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
   }
 
   Widget titleValue(String title, String value) => RichText(

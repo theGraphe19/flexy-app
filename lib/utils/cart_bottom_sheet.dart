@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_size.dart';

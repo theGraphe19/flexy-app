@@ -79,7 +79,6 @@ class HTTPHandler {
         'pincode': user.pincode,
         'agentName': user.agentName,
         'purchasePerson': user.purchasePerson,
-        'password': user.password,
       });
 
       Response response = await _dio.post(
@@ -100,12 +99,11 @@ class HTTPHandler {
     }
   }
 
-  Future<User> loginUser(String email, String password) async {
+  Future<User> loginUser(String mobileNo) async {
     User user = User();
     try {
       FormData formData = FormData.fromMap({
-        'email': email,
-        'password': password,
+        'mobileNo': mobileNo,
       });
 
       Response response = await _dio.post(
@@ -537,71 +535,6 @@ class HTTPHandler {
         bills.add(Bill.mapToBill(response.data['bills'][i]));
       print(bills.toString());
       return bills;
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
-  Future<int> requestPwdChangeOTP(String mobileNo) async {
-    try {
-      FormData formData = FormData.fromMap({
-        'mobileNo': mobileNo,
-      });
-
-      Response response = await _dio.post(
-        '$baseURL/frgtpassOTP',
-        data: formData,
-      );
-
-      print((response.data)['uid']);
-
-      if ((response.data).containsKey('uid')) {
-        return (response.data)['uid'];
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
-  Future<bool> changePassword(int uid, String password) async {
-    try {
-      FormData formData = FormData.fromMap({
-        'password': password,
-      });
-
-      Response response = await _dio.post(
-        '$baseURL/changepassword?id=$uid',
-        data: formData,
-      );
-
-      print(response.data);
-
-      if ((response.data)['status'].contains('success')) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
-  Future<List<Remark>> remarkOfProduct(String token, int productId) async {
-    try {
-      Response response =
-          await _dio.get('$baseURL/remperprod/$productId?api_token=$token');
-
-      List<Remark> remarksList = [];
-      for (var i = 0; i < response.data.length; i++) {
-        remarksList.add(Remark.fromMap(response.data[i]));
-      }
-      print(remarksList.toString());
-      return remarksList;
     } catch (e) {
       print(e);
       throw e;

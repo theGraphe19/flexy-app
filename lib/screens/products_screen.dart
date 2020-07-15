@@ -44,7 +44,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
       setState(() {});
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Network error!', style: TextStyle(color: Colors.white),),
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xff6c757d),
         duration: Duration(seconds: 3),
       ));
@@ -114,10 +117,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
       body: Column(
         children: <Widget>[
           Divider(),
-          (productList == null)
-              ? LoadingBody()
-              : Expanded(
-                  child: GridView.builder(
+          Expanded(
+            child: (productList == null)
+                ? LoadingBody()
+                : GridView.builder(
                     itemCount: productList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -131,7 +134,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       scaffoldKey,
                     ),
                   ),
-                ),
+          ),
           Divider(),
           if (!_onlyFavourites)
             Container(

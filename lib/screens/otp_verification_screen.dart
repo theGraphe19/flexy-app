@@ -5,12 +5,9 @@ import '../models/user.dart';
 import './registration_form_page1.dart';
 import './products_screen.dart';
 import '../HTTP_handler.dart';
+import './categories_screen.dart';
 
-enum VerificationStatus {
-  notVerified,
-  waiting,
-  verified,
-}
+enum VerificationStatus { notVerified, waiting }
 
 class OTPVerificationScreen extends StatefulWidget {
   static const routeName = '/otp-verification-screen';
@@ -26,62 +23,45 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   var _otpController = TextEditingController();
-  var _passwordController = TextEditingController();
-  var _confirmPasswordController = TextEditingController();
 
   VerificationStatus status = VerificationStatus.notVerified;
 
   ProgressDialog progressDialog;
 
   void _confirmUser() async {
-    if (_passwordController.text.isEmpty ||
-        _confirmPasswordController.text.isEmpty) {
+    await progressDialog.show();
+    _handler.registerUser(currentUser).then((value) async {
+      if (value != null) {
+        currentUser.status = 0;
+        await progressDialog.hide();
+        Navigator.of(context).popAndPushNamed(
+          CategoriesScreen.routeName,
+          arguments: currentUser,
+        );
+      } else
+        await progressDialog.hide();
       _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Please enter value in both text fields.', style: TextStyle(color: Colors.white),),
+        content: Text(
+          'User registration failed, try again later.',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xff6c757d),
       ));
-    } else {
-      if (_passwordController.text.contains(_confirmPasswordController.text) &&
-          _confirmPasswordController.text.contains(_passwordController.text)) {
-        currentUser.password = _confirmPasswordController.text;
-        print(currentUser.password);
-        await progressDialog.show();
-        _handler.registerUser(currentUser).then((value) async {
-          if (value != null) {
-            await progressDialog.hide();
-            Navigator.of(context).popAndPushNamed(
-              ProductsScreen.routeName,
-              arguments: value,
-            );
-          } else
-            await progressDialog.hide();
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('User registration failed, try again later.', style: TextStyle(color: Colors.white),),
-            backgroundColor: Color(0xff6c757d),
-          ));
-        }).catchError((e) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Network error!', style: TextStyle(color: Colors.white),),
-            backgroundColor: Color(0xff6c757d),
-            duration: Duration(seconds: 3),
-          ));
-        });
-
-        //Navigator.of(context).popAndPushNamed(ProductsScreen.routeName);
-      } else {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('Please enter same value in both text fields.', style: TextStyle(color: Colors.white),),
-          backgroundColor: Color(0xff6c757d),
-        ));
-      }
-    }
+    }).catchError((e) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
+    });
   }
 
   @override
   void dispose() {
     _otpController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -107,11 +87,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       appBar: AppBar(
         title: Text('Verify your Number'),
       ),
-      body: (status == VerificationStatus.notVerified)
-          ? sendOTP()
-          : (status == VerificationStatus.waiting)
-              ? verifyOTP()
-              : setPassword(),
+      body:
+          (status == VerificationStatus.notVerified) ? sendOTP() : verifyOTP(),
     );
   }
 
@@ -167,7 +144,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   onPressed: () async {
                     await progressDialog.show();
                     _handler
-                        .sendOTP('91${currentUser.mobileNo}')
+                        .sendOTP(currentUser.mobileNo)
                         .then((bool otpSent) async {
                       await progressDialog.hide();
                       if (otpSent) {
@@ -175,7 +152,10 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         setState(() {});
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('Unable to send OTP!', style: TextStyle(color: Colors.white),),
+                          content: Text(
+                            'Unable to send OTP!',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
@@ -234,7 +214,10 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   onPressed: () async {
                     if (_otpController.text.length != 6) {
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('Enter 6-digit OTP', style: TextStyle(color: Colors.white),),
+                        content: Text(
+                          'Enter 6-digit OTP',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         backgroundColor: Color(0xff6c757d),
                         duration: Duration(seconds: 5),
                       ));
@@ -242,16 +225,18 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     }
                     await progressDialog.show();
                     _handler
-                        .verifyOTP(
-                            '91${currentUser.mobileNo}', _otpController.text)
+                        .verifyOTP(currentUser.mobileNo, _otpController.text)
                         .then((bool otpVerified) async {
                       await progressDialog.hide();
-                      if (otpVerified) {
-                        status = VerificationStatus.verified;
-                        setState(() {});
+                      if (!otpVerified) {
+                        //TODO - Change when we get transactional OTP
+                        _confirmUser();
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('OPT verification failed', style: TextStyle(color: Colors.white),),
+                          content: Text(
+                            'OPT verification failed',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 5),
                         ));
@@ -268,49 +253,5 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             ),
           ],
         ),
-      );
-
-  Widget setPassword() => Column(
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: TextField(
-              controller: _passwordController,
-              obscureText: true,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                hintText: 'Enter Password',
-              ),
-            ),
-          ),
-          SizedBox(height: 20.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: TextField(
-              controller: _confirmPasswordController,
-              obscureText: true,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                hintText: 'Confirm Password',
-              ),
-            ),
-          ),
-          SizedBox(height: 10.0),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              margin: const EdgeInsets.only(right: 15.0),
-              child: RaisedButton(
-                onPressed: _confirmUser,
-                child: Text(
-                  'Proceed',
-                  style: TextStyle(color: Colors.white),
-                ),
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-          ),
-        ],
       );
 }
