@@ -198,11 +198,7 @@ class CartBottomSheet {
                         GestureDetector(
                           onTap: () {
                             _controller.setState(() {
-                              if (quantitySelected <
-                                  product
-                                      .productSizes[someInt1]
-                                      .colors[someInt2]
-                                      .quantity) quantitySelected++;
+                              quantitySelected++;
                             });
                           },
                           child: Icon(
