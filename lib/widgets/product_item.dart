@@ -151,9 +151,8 @@ class _ProductItemState extends State<ProductItem> {
                       colorList.add(temp1);
                       qtyList.add(temp2);
                     }
-                    CartBottomSheet().showBottomSheet(
+                    CartBottomSheet(widget.product).showBottomSheet(
                         context,
-                        widget.product,
                         widget.scaffoldKey,
                         colorList,
                         qtyList,

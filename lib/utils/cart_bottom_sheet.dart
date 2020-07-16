@@ -5,9 +5,29 @@ import '../models/product_size.dart';
 import '../HTTP_handler.dart';
 
 class CartBottomSheet {
+  Product product;
+
+  CartBottomSheet(this.product);
+
+  String _getName(String value, String sizeSelected) {
+    print('v => $value');
+    for (var i = 0; i < product.productSizes.length; i++) {
+      if (product.productSizes[i].size.contains(sizeSelected) &&
+          sizeSelected.contains(product.productSizes[i].size)) {
+        print(true);
+        for (var j = 0; j < product.productSizes[i].colors.length; j++) {
+          if (product.productSizes[i].colors[j].color.contains(value)) {
+            return product.productSizes[i].colors[j].colorName;
+          }
+        }
+      }
+      print(i);
+    }
+    return value;
+  }
+
   void showBottomSheet(
       BuildContext newContext,
-      Product product,
       GlobalKey<ScaffoldState> scaffoldKey,
       List<List<String>> colorList,
       List<List<int>> qtyList,
@@ -110,7 +130,7 @@ class CartBottomSheet {
                     child: Row(
                       children: [
                         Text(
-                          value,
+                          _getName(value, sizeSelected),
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 15.0,
