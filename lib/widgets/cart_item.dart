@@ -71,7 +71,7 @@ class CartItem extends StatelessWidget {
                             color: Colors.grey),
                       ),
                       Text(
-                        "Color : ${item.color}",
+                        "Color : ${item.colorName}",
                         style: TextStyle(
                             fontFamily: 'Montserrat',
                             fontSize: 15.0,
