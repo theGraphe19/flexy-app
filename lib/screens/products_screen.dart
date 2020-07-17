@@ -309,35 +309,45 @@ class _ProductsScreenState extends State<ProductsScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: 200.0,
+          height: 150.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Text('SORT BY'),
               Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Price - Low to High'),
-                  Radio<int>(
-                    value: 1,
-                    groupValue: _radioValue,
-                    onChanged: _handleRadioValueChange1,
+              SizedBox(
+                height: 30.0,
+                child: RadioListTile(
+                  title: Text(
+                    'Price - Low to High',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                    ),
                   ),
-                ],
+                  value: 1,
+                  groupValue: _radioValue,
+                  onChanged: _handleRadioValueChange1,
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Price - High to Low'),
-                  Radio<int>(
-                    value: 2,
-                    groupValue: _radioValue,
-                    onChanged: _handleRadioValueChange1,
+              SizedBox(height: 15.0),
+              SizedBox(
+                height: 30.0,
+                child: RadioListTile(
+                  title: Text(
+                    'Price - High to Low',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                    ),
                   ),
-                ],
+                  value: 2,
+                  groupValue: _radioValue,
+                  onChanged: _handleRadioValueChange1,
+                ),
               ),
             ],
           ),
