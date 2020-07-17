@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
 import './models/cart.dart';
-import './models/remark.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -44,6 +44,27 @@ class HTTPHandler {
         emails.add(response.data[i]['email']);
 
       return emails;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<Product>> searchData(String token) async {
+    try {
+      Response response =
+          await _dio.get('$baseURL/searchprod?api_token=$token');
+
+      List<Product> products = [];
+      if (response.statusCode == 200) {
+        for (var i = 0; i < response.data.length; i++) {
+          products.add(Product.mapToDetails(response.data[i]));
+        }
+
+        print(products.toString());
+        return products;
+      }
+      return null;
     } catch (e) {
       print(e);
       throw e;

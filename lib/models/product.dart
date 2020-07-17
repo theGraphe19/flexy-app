@@ -1,4 +1,5 @@
 import './product_size.dart';
+import './product_color.dart';
 
 class Product {
   String id;
@@ -11,7 +12,7 @@ class Product {
   String productTags;
   List<ProductSize> productSizes;
   List<dynamic> productImages;
-  // CHANGE TYPE TO PRODUCT_IMAGE ONCE IMAGE IS UPLOADED
+  List<ProductColor> productColors;
 
   Product({
     this.id,
@@ -24,6 +25,7 @@ class Product {
     this.productTags,
     this.productSizes,
     this.productImages,
+    this.productColors,
   });
 
   void mapToProduct(Map<dynamic, dynamic> map) {
@@ -39,6 +41,9 @@ class Product {
     this.productSizes = [];
     for (var i = 0; i < map['product_sizes'].length; i++)
       productSizes.add(ProductSize.mapToProductSize(map['product_sizes'][i]));
+    this.productColors = [];
+    for (var i = 0; i < map['product_colors'].length; i++)
+      productColors.add(ProductColor.fromProductMap(map['product_colors'][i]));
   }
 
   Product.mapToDetails(Map<dynamic, dynamic> map) {
@@ -54,5 +59,8 @@ class Product {
     this.productSizes = [];
     for (var i = 0; i < map['product_sizes'].length; i++)
       productSizes.add(ProductSize.mapToProductSize(map['product_sizes'][i]));
+    this.productColors = [];
+    for (var i = 0; i < map['product_colors'].length; i++)
+      productColors.add(ProductColor.fromProductMap(map['product_colors'][i]));
   }
 }

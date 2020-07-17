@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
@@ -11,6 +8,9 @@ import '../widgets/loading_body.dart';
 import '../models/user.dart';
 import '../providers/product_provider.dart';
 import '../utils/drawer.dart';
+import '../utils/wishlist_bottom_sheet.dart';
+import './search_screen.dart';
+import '../models/category.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -20,25 +20,43 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  int categoryId;
+  Category category;
   var prodListCounterCalled = false;
   User currentUser;
-  var _onlyFavourites = false;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
 
   List<Product> productList;
   ProductProvider _productProvider;
+  WishlistBottomSheet _wishlistBottomSheet;
 
   var _radioValue = 1;
   var _radioValue1 = 0;
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          SearchScreen(currentUser),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   getList() async {
-    _onlyFavourites = false;
     prodListCounterCalled = true;
     _handler
-        .getProductsList(context, currentUser.token, categoryId.toString())
+        .getProductsList(context, currentUser.token, category.id.toString())
         .then((value) {
       productList = value;
       setState(() {});
@@ -54,35 +72,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
-  getWishlist() async {
-    _onlyFavourites = true;
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String favs = _prefs.getString('favourites-$categoryId');
-    List<dynamic> favouriteList;
-    if (favs != null) {
-      favouriteList = json.decode(favs);
-      productList.clear();
-      for (var i = 0; i < favouriteList.length; i++)
-        productList.add(_productProvider.getProduct(favouriteList[i]));
-    } else {
-      favouriteList = null;
-      productList = null;
-    }
-    print(productList.toString());
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     var data =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     currentUser = data['user'];
     print(currentUser.token);
-    categoryId = data['category_id'];
-    print(categoryId);
+    category = data['category'];
+    print(category);
     _productProvider = Provider.of<ProductProvider>(context);
+    _wishlistBottomSheet = WishlistBottomSheet(
+      context: context,
+      scaffoldKey: scaffoldKey,
+      categoryId: category.id,
+      user: currentUser,
+    );
 
-    if (!prodListCounterCalled && !_onlyFavourites) getList();
+    if (!prodListCounterCalled) getList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -97,20 +103,28 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
         title: Text('Products'),
         actions: <Widget>[
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert),
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {
-                (_onlyFavourites) ? 'All Products' : 'My Wishlist',
-              }.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              print('search');
+              Navigator.of(context).push(_createRoute());
             },
           ),
+          Padding(
+            padding: const EdgeInsets.only(right: 5.0),
+            child: IconButton(
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _wishlistBottomSheet.fireWishlist();
+              },
+            ),
+          )
         ],
       ),
       drawer: SideDrawer(currentUser, scaffoldKey).drawer(context),
@@ -130,50 +144,50 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         ProductItem(
                       productList[index],
                       currentUser,
-                      categoryId,
+                      category.id,
                       scaffoldKey,
+                      false,
                     ),
                   ),
           ),
           Divider(),
-          if (!_onlyFavourites)
-            Container(
-              padding: const EdgeInsets.only(
-                left: 10.0,
-                right: 10.0,
-                bottom: 20.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      print('sort products');
-                      _sortOptions(context);
-                    },
-                    child: Text(
-                      'Sort',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  Container(
-                    color: Colors.black12,
-                    height: 25,
-                    width: 2,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print('filter pressed');
-                      _filterOptions(context);
-                    },
-                    child: Text(
-                      'Filter',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  )
-                ],
-              ),
+          Container(
+            padding: const EdgeInsets.only(
+              left: 10.0,
+              right: 10.0,
+              bottom: 20.0,
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    print('sort products');
+                    _sortOptions(context);
+                  },
+                  child: Text(
+                    'Sort',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                Container(
+                  color: Colors.black12,
+                  height: 25,
+                  width: 2,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    print('filter pressed');
+                    _filterOptions(context);
+                  },
+                  child: Text(
+                    'Filter',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -203,26 +217,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
     List<Product> newList = [];
     productList = _productProvider.productsList;
     if (value != 0) {
-      print('old length' + newList.length.toString());
       for (var i = 0; i < productList.length; i++) {
-        if (value == 1) {
-          if (productList[i].productSizes[0].price <= 500) {
-            newList.add(productList[i]);
-          }
-        } else if (value == 2) {
-          if (productList[i].productSizes[0].price <= 1000 &&
-              productList[i].productSizes[0].price > 500) {
-            newList.add(productList[i]);
-          }
-        } else {
-          if (productList[i].productSizes[0].price > 1000) {
-            newList.add(productList[i]);
-          }
+        if (productList[i]
+                .subCategory
+                .contains(category.subCategories[value - 1]) &&
+            category.subCategories[value - 1]
+                .contains(productList[i].subCategory)) {
+          newList.add(productList[i]);
         }
       }
-      print('new length' + newList.length.toString());
       productList = newList;
     }
+    print(value);
     setState(() {
       _radioValue1 = value;
       Navigator.of(context).pop();
@@ -240,51 +246,53 @@ class _ProductsScreenState extends State<ProductsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('FILTER BY'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('FILTER BY'),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
               Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('All products'),
-                  Radio<int>(
-                    value: 0,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
+              Container(
+                height: 30.0,
+                child: RadioListTile(
+                  title: Text(
+                    'All Products',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                    ),
                   ),
-                ],
+                  value: 0,
+                  groupValue: _radioValue1,
+                  onChanged: _handleRadioValueChange2,
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Below 500'),
-                  Radio<int>(
-                    value: 1,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('501 - 1000'),
-                  Radio<int>(
-                    value: 2,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Above 1000'),
-                  Radio<int>(
-                    value: 3,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
-                  ),
-                ],
+              Column(
+                children: category.subCategories.map((subCat) {
+                  return Container(
+                    height: 30.0,
+                    child: RadioListTile(
+                      title: Text(
+                        subCat,
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 15.0,
+                        ),
+                      ),
+                      value: (category.subCategories.indexOf(subCat, 0) + 1),
+                      groupValue: _radioValue1,
+                      onChanged: _handleRadioValueChange2,
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),
@@ -296,50 +304,60 @@ class _ProductsScreenState extends State<ProductsScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: 200.0,
+          height: 150.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Text('SORT BY'),
-              Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Price - Low to High'),
-                  Radio<int>(
-                    value: 1,
-                    groupValue: _radioValue,
-                    onChanged: _handleRadioValueChange1,
+                  Text('SORT BY'),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black87,
+                    ),
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Price - High to Low'),
-                  Radio<int>(
-                    value: 2,
-                    groupValue: _radioValue,
-                    onChanged: _handleRadioValueChange1,
+              Divider(),
+              SizedBox(
+                height: 30.0,
+                child: RadioListTile(
+                  title: Text(
+                    'Price - Low to High',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                    ),
                   ),
-                ],
+                  value: 1,
+                  groupValue: _radioValue,
+                  onChanged: _handleRadioValueChange1,
+                ),
+              ),
+              SizedBox(height: 15.0),
+              SizedBox(
+                height: 30.0,
+                child: RadioListTile(
+                  title: Text(
+                    'Price - High to Low',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  value: 2,
+                  groupValue: _radioValue,
+                  onChanged: _handleRadioValueChange1,
+                ),
               ),
             ],
           ),
         );
       });
-
-  void handleClick(String value) {
-    switch (value) {
-      case 'All Products':
-        getList();
-        break;
-
-      case 'My Wishlist':
-        getWishlist();
-        break;
-    }
-  }
 }

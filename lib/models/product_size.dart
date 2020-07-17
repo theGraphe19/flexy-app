@@ -19,4 +19,9 @@ class ProductSize {
       this.colors.add(ProductColor.fromMap(map['colors'][i]));
     }
   }
+
+  ProductSize.mapToProductSizeFromColors(Map<dynamic, dynamic> map) {
+    this.size = map['size'];
+    this.price = int.parse(map['price']);
+  }
 }

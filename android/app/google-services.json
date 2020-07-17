@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1067457461263",
+    "firebase_url": "https://flexyfirebase.firebaseio.com",
+    "project_id": "flexyfirebase",
+    "storage_bucket": "flexyfirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067457461263:android:d86337ab83ccb6369f777a",
+        "android_client_info": {
+          "package_name": "com.graphe.flexy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067457461263-tf88i6k5h9af2pp1e38dp8pm4m7poi6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ8sELXdzYFOJdyVXnr-KgCnPBMavPwpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1067457461263-tf88i6k5h9af2pp1e38dp8pm4m7poi6g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1067457461263-2j8oahfqlcdj5odn7n36b3udnodh2nps.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.graphe.flexy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
