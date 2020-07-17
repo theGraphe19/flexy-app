@@ -299,82 +299,82 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                         ),
                         Divider(),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Text(
-                                  'Available Sizes : ',
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10.0),
-                              Container(
-                                height: 30.0,
-                                margin: const EdgeInsets.only(bottom: 5.0),
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: product.productSizes
-                                      .map((ProductSize productSize) =>
-                                          GestureDetector(
-                                            onTap: () {
-                                              selectedSize = product
-                                                  .productSizes
-                                                  .indexOf(productSize, 0);
-                                              colorSelected = 0;
-                                              setState(() {});
-                                            },
-                                            child: Container(
-                                              width: 50.0,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 8.0,
-                                                vertical: 5.0,
-                                              ),
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 7.0),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.rectangle,
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                color: (selectedSize ==
-                                                        product.productSizes
-                                                            .indexOf(
-                                                                productSize, 0))
-                                                    ? Theme.of(context)
-                                                        .accentColor
-                                                    : Colors.white,
-                                              ),
-                                              child: Center(
-                                                  child: Text(
-                                                productSize.size,
-                                                style: TextStyle(
-                                                  color: (selectedSize ==
-                                                          product.productSizes
-                                                              .indexOf(
-                                                                  productSize,
-                                                                  0))
-                                                      ? Colors.white
-                                                      : Colors.black87,
-                                                ),
-                                              )),
-                                            ),
-                                          ))
-                                      .toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Container(
+                        //   child: Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: <Widget>[
+                        //       Padding(
+                        //         padding: const EdgeInsets.symmetric(
+                        //             horizontal: 10.0),
+                        //         child: Text(
+                        //           'Available Sizes : ',
+                        //           style: TextStyle(
+                        //             color: Colors.black87,
+                        //             fontWeight: FontWeight.bold,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       SizedBox(height: 10.0),
+                        //       Container(
+                        //         height: 30.0,
+                        //         margin: const EdgeInsets.only(bottom: 5.0),
+                        //         child: ListView(
+                        //           scrollDirection: Axis.horizontal,
+                        //           children: product.productSizes
+                        //               .map((ProductSize productSize) =>
+                        //                   GestureDetector(
+                        //                     onTap: () {
+                        //                       selectedSize = product
+                        //                           .productSizes
+                        //                           .indexOf(productSize, 0);
+                        //                       colorSelected = 0;
+                        //                       setState(() {});
+                        //                     },
+                        //                     child: Container(
+                        //                       width: 50.0,
+                        //                       padding:
+                        //                           const EdgeInsets.symmetric(
+                        //                         horizontal: 8.0,
+                        //                         vertical: 5.0,
+                        //                       ),
+                        //                       margin:
+                        //                           const EdgeInsets.symmetric(
+                        //                               horizontal: 7.0),
+                        //                       decoration: BoxDecoration(
+                        //                         shape: BoxShape.rectangle,
+                        //                         borderRadius:
+                        //                             BorderRadius.circular(5.0),
+                        //                         border: Border.all(
+                        //                             color: Colors.grey),
+                        //                         color: (selectedSize ==
+                        //                                 product.productSizes
+                        //                                     .indexOf(
+                        //                                         productSize, 0))
+                        //                             ? Theme.of(context)
+                        //                                 .accentColor
+                        //                             : Colors.white,
+                        //                       ),
+                        //                       child: Center(
+                        //                           child: Text(
+                        //                         productSize.size,
+                        //                         style: TextStyle(
+                        //                           color: (selectedSize ==
+                        //                                   product.productSizes
+                        //                                       .indexOf(
+                        //                                           productSize,
+                        //                                           0))
+                        //                               ? Colors.white
+                        //                               : Colors.black87,
+                        //                         ),
+                        //                       )),
+                        //                     ),
+                        //                   ))
+                        //               .toList(),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                         Divider(),
                         Container(
                           child: Column(
@@ -397,15 +397,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 margin: const EdgeInsets.only(bottom: 5.0),
                                 child: ListView(
                                     scrollDirection: Axis.horizontal,
-                                    children: product
-                                        .productSizes[selectedSize].colors
+                                    children: product.productColors
                                         .map(
                                           (ProductColor productColor) =>
                                               GestureDetector(
                                             onTap: () {
                                               colorSelected = product
-                                                  .productSizes[selectedSize]
-                                                  .colors
+                                                  .productColors
                                                   .indexOf(productColor, 0);
                                               setState(() {});
                                             },
@@ -421,14 +419,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                 ),
                                                 color: Color(int.parse(
                                                         product
-                                                            .productSizes[
-                                                                selectedSize]
-                                                            .colors[product
-                                                                .productSizes[
-                                                                    selectedSize]
-                                                                .colors
+                                                            .productColors[product
+                                                                .productColors
                                                                 .indexOf(
-                                                                    productColor)]
+                                                                    productColor,
+                                                                    0)]
                                                             .color
                                                             .substring(1, 7),
                                                         radix: 16) +
@@ -438,10 +433,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                 child: Icon(
                                                   Icons.done,
                                                   color: (colorSelected ==
-                                                          product
-                                                              .productSizes[
-                                                                  selectedSize]
-                                                              .colors
+                                                          product.productColors
                                                               .indexOf(
                                                                   productColor,
                                                                   0))
@@ -474,51 +466,106 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ),
                               ),
                               SizedBox(height: 10.0),
-                              Container(
-                                height: 50.0,
-                                margin: const EdgeInsets.only(bottom: 5.0),
-                                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (quantitySelected > 1)
-                                            quantitySelected--;
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.indeterminate_check_box,
-                                        size: 40.0,
-                                      ),
+                              Column(
+                                children: product
+                                    .productColors[colorSelected].sizes
+                                    .map((ProductSize productSize) {
+                                  return Container(
+                                    height: 50.0,
+                                    margin: const EdgeInsets.only(bottom: 5.0),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Container(
+                                          width: 30.0,
+                                          child: Text(
+                                            productSize.size,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 5.0),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              if (quantitySelected > 1)
+                                                quantitySelected--;
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.indeterminate_check_box,
+                                            size: 40.0,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10.0),
+                                        Text(quantitySelected.toString()),
+                                        SizedBox(width: 10.0),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              quantitySelected++;
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.add_box,
+                                            size: 40.0,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 10.0,
-                                    ),
-                                    Text(
-                                      quantitySelected.toString(),
-                                    ),
-                                    SizedBox(
-                                      width: 10.0,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          // if (quantitySelected <
-                                          //     product
-                                          //         .productSizes[selectedSize]
-                                          //         .colors[colorSelected]
-                                          //         .quantity) quantitySelected++;
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.add_box,
-                                        size: 40.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
+                                  );
+                                }).toList(),
+                              ),
+                              // Container(
+                              //   height: 50.0,
+                              //   margin: const EdgeInsets.only(bottom: 5.0),
+                              //   padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              //   child: Row(
+                              //     children: <Widget>[
+                              //       GestureDetector(
+                              //         onTap: () {
+                              //           setState(() {
+                              //             if (quantitySelected > 1)
+                              //               quantitySelected--;
+                              //           });
+                              //         },
+                              //         child: Icon(
+                              //           Icons.indeterminate_check_box,
+                              //           size: 40.0,
+                              //         ),
+                              //       ),
+                              //       SizedBox(
+                              //         width: 10.0,
+                              //       ),
+                              //       Text(
+                              //         quantitySelected.toString(),
+                              //       ),
+                              //       SizedBox(
+                              //         width: 10.0,
+                              //       ),
+                              //       GestureDetector(
+                              //         onTap: () {
+                              //           setState(() {
+                              //             // if (quantitySelected <
+                              //             //     product
+                              //             //         .productSizes[selectedSize]
+                              //             //         .colors[colorSelected]
+                              //             //         .quantity) quantitySelected++;
+                              //           });
+                              //         },
+                              //         child: Icon(
+                              //           Icons.add_box,
+                              //           size: 40.0,
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // )
                             ],
                           ),
                         ),

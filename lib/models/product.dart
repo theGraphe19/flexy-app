@@ -59,5 +59,8 @@ class Product {
     this.productSizes = [];
     for (var i = 0; i < map['product_sizes'].length; i++)
       productSizes.add(ProductSize.mapToProductSize(map['product_sizes'][i]));
+    this.productColors = [];
+    for (var i = 0; i < map['product_colors'].length; i++)
+      productColors.add(ProductColor.fromProductMap(map['product_colors'][i]));
   }
 }

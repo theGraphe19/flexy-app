@@ -263,7 +263,7 @@ class HTTPHandler {
 
       List<Category> categories = [];
       for (var i = 0; i < (response.data).length; i++)
-        categories.add(Category.frommap((response.data)[i]['category']));
+        categories.add(Category.frommap((response.data)[i]));
 
       print(categories);
       return categories;
