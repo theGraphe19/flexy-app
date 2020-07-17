@@ -10,6 +10,7 @@ import '../providers/product_provider.dart';
 import '../utils/drawer.dart';
 import '../utils/wishlist_bottom_sheet.dart';
 import './search_screen.dart';
+import '../models/category.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -19,7 +20,7 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  int categoryId;
+  Category category;
   var prodListCounterCalled = false;
   User currentUser;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -55,7 +56,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   getList() async {
     prodListCounterCalled = true;
     _handler
-        .getProductsList(context, currentUser.token, categoryId.toString())
+        .getProductsList(context, currentUser.token, category.id.toString())
         .then((value) {
       productList = value;
       setState(() {});
@@ -77,13 +78,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     currentUser = data['user'];
     print(currentUser.token);
-    categoryId = data['category_id'];
-    print(categoryId);
+    category = data['category'];
+    print(category);
     _productProvider = Provider.of<ProductProvider>(context);
     _wishlistBottomSheet = WishlistBottomSheet(
       context: context,
       scaffoldKey: scaffoldKey,
-      categoryId: categoryId,
+      categoryId: category.id,
       user: currentUser,
     );
 
@@ -143,7 +144,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         ProductItem(
                       productList[index],
                       currentUser,
-                      categoryId,
+                      category.id,
                       scaffoldKey,
                       false,
                     ),
@@ -216,26 +217,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
     List<Product> newList = [];
     productList = _productProvider.productsList;
     if (value != 0) {
-      print('old length' + newList.length.toString());
       for (var i = 0; i < productList.length; i++) {
-        if (value == 1) {
-          if (productList[i].productSizes[0].price <= 500) {
-            newList.add(productList[i]);
-          }
-        } else if (value == 2) {
-          if (productList[i].productSizes[0].price <= 1000 &&
-              productList[i].productSizes[0].price > 500) {
-            newList.add(productList[i]);
-          }
-        } else {
-          if (productList[i].productSizes[0].price > 1000) {
-            newList.add(productList[i]);
-          }
+        if (productList[i]
+                .subCategory
+                .contains(category.subCategories[value - 1]) &&
+            category.subCategories[value - 1]
+                .contains(productList[i].subCategory)) {
+          newList.add(productList[i]);
         }
       }
-      print('new length' + newList.length.toString());
       productList = newList;
     }
+    print(value);
     setState(() {
       _radioValue1 = value;
       Navigator.of(context).pop();
@@ -253,51 +246,53 @@ class _ProductsScreenState extends State<ProductsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('FILTER BY'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('FILTER BY'),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
               Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('All products'),
-                  Radio<int>(
-                    value: 0,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
+              Container(
+                height: 30.0,
+                child: RadioListTile(
+                  title: Text(
+                    'All Products',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                    ),
                   ),
-                ],
+                  value: 0,
+                  groupValue: _radioValue1,
+                  onChanged: _handleRadioValueChange2,
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Below 500'),
-                  Radio<int>(
-                    value: 1,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('501 - 1000'),
-                  Radio<int>(
-                    value: 2,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('Above 1000'),
-                  Radio<int>(
-                    value: 3,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
-                  ),
-                ],
+              Column(
+                children: category.subCategories.map((subCat) {
+                  return Container(
+                    height: 30.0,
+                    child: RadioListTile(
+                      title: Text(
+                        subCat,
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 15.0,
+                        ),
+                      ),
+                      value: (category.subCategories.indexOf(subCat, 0) + 1),
+                      groupValue: _radioValue1,
+                      onChanged: _handleRadioValueChange2,
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),

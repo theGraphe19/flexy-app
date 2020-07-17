@@ -138,7 +138,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                   ProductsScreen.routeName,
                                   arguments: <String, dynamic>{
                                     'user': _currentUser,
-                                    'category_id': categoriesList[index].id,
+                                    'category': categoriesList[index],
                                   },
                                 );
                               },
