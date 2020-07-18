@@ -318,14 +318,14 @@ class HTTPHandler {
   Future<Map> placeOrder(
     int productId,
     String token,
+    String color,
     List<Map<String, dynamic>> ordersList,
   ) async {
     try {
-      Map<String, dynamic> orderData = {};
+      Map<String, dynamic> orderData = {'order_color': color};
       for (var i = 0; i < ordersList.length; i++) {
         orderData['orders[$i][size]'] = ordersList[i]['size'];
         orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
-        orderData['orders[$i][color]'] = ordersList[i]['color'];
       }
       print("------>this<-------");
       print(orderData);
