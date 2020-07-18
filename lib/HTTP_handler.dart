@@ -533,11 +533,16 @@ class HTTPHandler {
       List<Order> orderedItems = [];
       Response response = await _dio.get("$baseURL/myorders?api_token=$token");
 
-      for (var i = 0; i < response.data.length; i++) {
-        Order order = Order();
-        order.mapToOrder(response.data[i]);
-        orderedItems.add(order);
+      print(response.data.keys);
+      for (String i in response.data.keys) {
+        for (var j = 0; j < response.data[i].length; j++) {
+          Order order = Order();
+          order.mapToOrder(response.data[i][j], int.parse(i));
+          orderedItems.add(order);
+        }
       }
+
+      print(orderedItems.toString());
       return orderedItems;
     } catch (e) {
       print(e);

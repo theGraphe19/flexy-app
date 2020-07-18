@@ -12,7 +12,7 @@ class MyOrdersScreen extends StatefulWidget {
 }
 
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
-  List<Order> myOrders = [];
+  List<Order> myOrders;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var orderController = false;
 
@@ -50,7 +50,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
           shape: BoxShape.rectangle,
           color: Colors.white,
         ),
-        child: (myOrders.isNotEmpty)
+        child: (myOrders != null)
             ? ListView.builder(
                 padding: const EdgeInsets.all(10.0),
                 itemCount: myOrders.length,

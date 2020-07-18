@@ -1,5 +1,6 @@
 class Order {
   int id;
+  int billId;
   String userId;
   String userName;
   String productId;
@@ -13,6 +14,7 @@ class Order {
 
   Order({
     this.id,
+    this.billId,
     this.userId,
     this.userName,
     this.productId,
@@ -25,8 +27,12 @@ class Order {
     this.pricePerPc,
   });
 
-  void mapToOrder(Map<dynamic, dynamic> map) {
+  void mapToOrder(
+    Map<dynamic, dynamic> map,
+    int billId,
+  ) {
     this.id = map['id'];
+    this.billId = billId;
     this.userId = map['user_id'];
     this.userName = map['user_name'];
     this.productId = map['prod_id'];
