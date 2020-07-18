@@ -402,18 +402,20 @@ class HTTPHandler {
   }
 
   Future<bool> addToCart(
+    int productId,
     String token,
-    String productId,
-    String size,
-    String qty,
     String color,
+    List<Map<String, dynamic>> ordersList,
   ) async {
     try {
-      FormData formData = FormData.fromMap({
-        'size': size,
-        'quantity': qty,
-        'color': color,
-      });
+      Map<String, dynamic> orderData = {'order_color': color};
+      for (var i = 0; i < ordersList.length; i++) {
+        orderData['orders[$i][size]'] = ordersList[i]['size'];
+        orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
+      }
+      print("------>this<-------");
+      print(orderData);
+      FormData formData = FormData.fromMap(orderData);
 
       Response response = await _dio.post(
         '$baseURL/addtocart/$productId?api_token=$token',
@@ -521,7 +523,7 @@ class HTTPHandler {
         cartItems.add(Cart.fromMap((response.data)[i]));
 
       print(cartItems);
-      return cartItems;
+      return cartItems.reversed.toList();
     } catch (e) {
       print(e);
       throw e;

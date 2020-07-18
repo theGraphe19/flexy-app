@@ -642,45 +642,70 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             GestureDetector(
               onTap: () {
                 if (isAnUpdate == false) {
-                  HTTPHandler()
-                      .addToCart(
-                    token,
-                    product.productId.toString(),
-                    product.productSizes[selectedSize].size,
-                    quantitySelected.toString(),
-                    product
-                        .productSizes[selectedSize].colors[colorSelected].color,
-                  )
-                      .then((value) {
-                    if (value == true) {
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Product Added to Your Cart',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
-                    } else {
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Failed to Add the Product to the Cart',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
+                  int prize = 0;
+                  for (int i = 0; i < quantities.length; i++) {
+                    if (quantities[i] != 0)
+                      prize +=
+                          product.productColors[colorSelected].sizes[i].price *
+                              quantities[i];
+                  }
+                  if (prize == 0) {
+                    Toast.show(
+                      'Please select quantity',
+                      context,
+                      gravity: Toast.CENTER,
+                    );
+                  } else {
+                    List<Map<String, dynamic>> orderList = [];
+                    for (var i = 0; i < quantities.length; i++) {
+                      if (quantities[i] != 0) {
+                        orderList.add({
+                          'size': product
+                              .productColors[colorSelected].sizes[i].size,
+                          'quantity': quantities[i],
+                        });
+                      }
+                      print(orderList.toString());
                     }
-                  }).catchError((e) {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Network error!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 3),
-                    ));
-                  });
+                    HTTPHandler()
+                        .addToCart(
+                      product.productId,
+                      token,
+                      product.productSizes[selectedSize].colors[colorSelected]
+                          .color,
+                      orderList,
+                    )
+                        .then((value) {
+                      if (value == true) {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Product Added to Your Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
+                      } else {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Failed to Add the Product to the Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
+                      }
+                    }).catchError((e) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          'Network error!',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
+                    });
+                  }
                 } else {
                   print(token);
                   print(product.productId.toString());
