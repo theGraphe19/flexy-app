@@ -1,5 +1,3 @@
-import 'package:flexy/HTTP_handler.dart';
-import 'package:flexy/screens/check_out_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +19,11 @@ import './screens/bill_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/view_update_profile_screen.dart';
 import './screens/my_order_details_screen.dart';
+import './screens/check_out_screen.dart';
+import './screens/chat_screen.dart';
 
 import './providers/product_provider.dart';
+import './HTTP_handler.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -115,6 +116,7 @@ class _MyAppState extends State<MyApp> {
           ViewUpdateProfile.routeName: (ctx) => ViewUpdateProfile(),
           CheckOutFromCart.routeName: (ctx) => CheckOutFromCart(),
           MyOrderDetailsScreen.routeName: (ctx) => MyOrderDetailsScreen(),
+          ChatScreen.routeName: (ctx) => ChatScreen(),
         },
       ),
     );

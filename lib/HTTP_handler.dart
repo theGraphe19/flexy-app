@@ -14,6 +14,7 @@ import './models/bill.dart';
 import './models/category.dart';
 import './models/cart.dart';
 import './models/order_details.dart';
+import './models/chat.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -592,6 +593,23 @@ class HTTPHandler {
       Response response = await _dio.get('$baseURL/contactadmin');
 
       return response.data;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<Chat>> getChats(String token) async {
+    try {
+      Response response = await _dio.get('$baseURL/myinbox?api_token=$token');
+
+      List<Chat> chats = [];
+      for (var i = 0; i < response.data.length; i++) {
+        chats.add(Chat.fromMap(response.data[i]));
+      }
+
+      print(chats.toString());
+      return chats;
     } catch (e) {
       print(e);
       throw e;
