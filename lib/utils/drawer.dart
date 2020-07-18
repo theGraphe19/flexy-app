@@ -86,6 +86,18 @@ class SideDrawer {
           Divider(),
           SizedBox(height: 5.0),
           _drawerTile(
+            'Chats and Notifications',
+            () {
+              print('chat');
+              // Navigator.pop(context);
+              // Navigator.of(context)
+              //     .pushNamed(ViewUpdateProfile.routeName, arguments: user);
+            },
+            'assets/images/chatnot.png',
+          ),
+          Divider(),
+          SizedBox(height: 5.0),
+          _drawerTile(
             'View Cart',
             () {
               print('view cart');
