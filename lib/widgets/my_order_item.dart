@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
-import '../models/order.dart';
+import '../models/order_details.dart';
 import '../models/product_details.dart';
 import '../screens/bill_screen.dart';
 import '../HTTP_handler.dart';
@@ -15,7 +15,7 @@ import './loading_body.dart';
 */
 
 class MyOrderItem extends StatefulWidget {
-  Order order = Order();
+  OrderDetails order = OrderDetails();
   GlobalKey<ScaffoldState> scaffoldKey;
   String token;
 

@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import '../screens/my_orders_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/view_update_profile_screen.dart';
+import '../screens/chat_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../screens/start_screen.dart';
@@ -82,6 +83,20 @@ class SideDrawer {
                   .pushNamed(ViewUpdateProfile.routeName, arguments: user);
             },
             'assets/images/user.png',
+          ),
+          Divider(),
+          SizedBox(height: 5.0),
+          _drawerTile(
+            'Chats',
+            () {
+              print('chat');
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(
+                ChatScreen.routeName,
+                arguments: user.token,
+              );
+            },
+            'assets/images/chatnot.png',
           ),
           Divider(),
           SizedBox(height: 5.0),

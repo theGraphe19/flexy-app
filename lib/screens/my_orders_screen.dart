@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../HTTP_handler.dart';
 import '../models/order.dart';
+import './my_order_details_screen.dart';
 import '../widgets/my_order_item.dart';
+
+/*
+  <a target="_blank" href="https://icons8.com/icons/set/bill">Bill icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+ */
 
 class MyOrdersScreen extends StatefulWidget {
   static const routeName = '/my-orders-screen';
@@ -12,7 +18,7 @@ class MyOrdersScreen extends StatefulWidget {
 }
 
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
-  List<Order> myOrders = [];
+  List<Order> myOrders;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var orderController = false;
 
@@ -25,7 +31,10 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       setState(() {});
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Network error!', style: TextStyle(color: Colors.white),),
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xff6c757d),
         duration: Duration(seconds: 3),
       ));
@@ -50,13 +59,34 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
           shape: BoxShape.rectangle,
           color: Colors.white,
         ),
-        child: (myOrders.isNotEmpty)
+        child: (myOrders != null)
             ? ListView.builder(
                 padding: const EdgeInsets.all(10.0),
                 itemCount: myOrders.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    MyOrderItem(myOrders[index], scaffoldKey, token),
-              )
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    leading: Image.asset(
+                      'assets/images/bill.png',
+                      height: 60.0,
+                      width: 60.0,
+                    ),
+                    title: Text('Order : ${myOrders[index].id.toString()}'),
+                    subtitle: Text(
+                        'Placed on : ${DateFormat('dd-MM-yyyy').format(DateTime.parse(myOrders[index].timeStamp))}'),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.chevron_right,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: () => Navigator.of(context).pushNamed(
+                          MyOrderDetailsScreen.routeName,
+                          arguments: <dynamic>[
+                            token,
+                            myOrders[index].id,
+                          ]),
+                    ),
+                  );
+                })
             : Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +13,8 @@ import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
 import './models/cart.dart';
+import './models/order_details.dart';
+import './models/chat.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -318,14 +319,14 @@ class HTTPHandler {
   Future<Map> placeOrder(
     int productId,
     String token,
+    String color,
     List<Map<String, dynamic>> ordersList,
   ) async {
     try {
-      Map<String, dynamic> orderData = {};
+      Map<String, dynamic> orderData = {'order_color': color};
       for (var i = 0; i < ordersList.length; i++) {
         orderData['orders[$i][size]'] = ordersList[i]['size'];
         orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
-        orderData['orders[$i][color]'] = ordersList[i]['color'];
       }
       print("------>this<-------");
       print(orderData);
@@ -402,18 +403,20 @@ class HTTPHandler {
   }
 
   Future<bool> addToCart(
+    int productId,
     String token,
-    String productId,
-    String size,
-    String qty,
     String color,
+    List<Map<String, dynamic>> ordersList,
   ) async {
     try {
-      FormData formData = FormData.fromMap({
-        'size': size,
-        'quantity': qty,
-        'color': color,
-      });
+      Map<String, dynamic> orderData = {'order_color': color};
+      for (var i = 0; i < ordersList.length; i++) {
+        orderData['orders[$i][size]'] = ordersList[i]['size'];
+        orderData['orders[$i][quantity]'] = ordersList[i]['quantity'];
+      }
+      print("------>this<-------");
+      print(orderData);
+      FormData formData = FormData.fromMap(orderData);
 
       Response response = await _dio.post(
         '$baseURL/addtocart/$productId?api_token=$token',
@@ -521,7 +524,7 @@ class HTTPHandler {
         cartItems.add(Cart.fromMap((response.data)[i]));
 
       print(cartItems);
-      return cartItems;
+      return cartItems.reversed.toList();
     } catch (e) {
       print(e);
       throw e;
@@ -533,11 +536,34 @@ class HTTPHandler {
       List<Order> orderedItems = [];
       Response response = await _dio.get("$baseURL/myorders?api_token=$token");
 
-      for (var i = 0; i < response.data.length; i++) {
-        Order order = Order();
-        order.mapToOrder(response.data[i]);
-        orderedItems.add(order);
+      print(response.data.keys);
+      for (String i in response.data.keys) {
+        orderedItems
+            .add(Order(int.parse(i), response.data[i][0]['created_at']));
       }
+      print(orderedItems.toString());
+      return orderedItems.reversed.toList();
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<OrderDetails>> getOrderDetails(String token, int orderId) async {
+    try {
+      List<OrderDetails> orderedItems = [];
+      Response response = await _dio.get("$baseURL/myorders?api_token=$token");
+
+      for (String i in response.data.keys) {
+        if (int.parse(i) == orderId) {
+          for (var j = 0; j < response.data[i].length; j++) {
+            orderedItems.add(
+                OrderDetails.mapToOrder(response.data[i][j], int.parse(i)));
+          }
+          break;
+        }
+      }
+      print(orderedItems.toString());
       return orderedItems;
     } catch (e) {
       print(e);
@@ -567,6 +593,23 @@ class HTTPHandler {
       Response response = await _dio.get('$baseURL/contactadmin');
 
       return response.data;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<Chat>> getChats(String token) async {
+    try {
+      Response response = await _dio.get('$baseURL/myinbox?api_token=$token');
+
+      List<Chat> chats = [];
+      for (var i = 0; i < response.data.length; i++) {
+        chats.add(Chat.fromMap(response.data[i]));
+      }
+
+      print(chats.toString());
+      return chats;
     } catch (e) {
       print(e);
       throw e;

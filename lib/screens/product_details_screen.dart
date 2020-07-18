@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -42,6 +43,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   bool isAnUpdate;
   CartScreenState _changeCartState;
   WishlistBottomSheet _wishlistBottomSheet;
+  List<int> quantities;
 
   Route _createRoute() {
     return PageRouteBuilder(
@@ -68,6 +70,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     _handler.getProductDetails(product.productId, token).then((value1) {
       productDetails = value1;
       print(productDetails.product.name);
+      quantities = [];
+      for (var i = 0; i < product.productColors[0].sizes.length; i++)
+        quantities.add(0);
       setState(() {});
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -299,83 +304,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                         ),
                         Divider(),
-                        // Container(
-                        //   child: Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: <Widget>[
-                        //       Padding(
-                        //         padding: const EdgeInsets.symmetric(
-                        //             horizontal: 10.0),
-                        //         child: Text(
-                        //           'Available Sizes : ',
-                        //           style: TextStyle(
-                        //             color: Colors.black87,
-                        //             fontWeight: FontWeight.bold,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       SizedBox(height: 10.0),
-                        //       Container(
-                        //         height: 30.0,
-                        //         margin: const EdgeInsets.only(bottom: 5.0),
-                        //         child: ListView(
-                        //           scrollDirection: Axis.horizontal,
-                        //           children: product.productSizes
-                        //               .map((ProductSize productSize) =>
-                        //                   GestureDetector(
-                        //                     onTap: () {
-                        //                       selectedSize = product
-                        //                           .productSizes
-                        //                           .indexOf(productSize, 0);
-                        //                       colorSelected = 0;
-                        //                       setState(() {});
-                        //                     },
-                        //                     child: Container(
-                        //                       width: 50.0,
-                        //                       padding:
-                        //                           const EdgeInsets.symmetric(
-                        //                         horizontal: 8.0,
-                        //                         vertical: 5.0,
-                        //                       ),
-                        //                       margin:
-                        //                           const EdgeInsets.symmetric(
-                        //                               horizontal: 7.0),
-                        //                       decoration: BoxDecoration(
-                        //                         shape: BoxShape.rectangle,
-                        //                         borderRadius:
-                        //                             BorderRadius.circular(5.0),
-                        //                         border: Border.all(
-                        //                             color: Colors.grey),
-                        //                         color: (selectedSize ==
-                        //                                 product.productSizes
-                        //                                     .indexOf(
-                        //                                         productSize, 0))
-                        //                             ? Theme.of(context)
-                        //                                 .accentColor
-                        //                             : Colors.white,
-                        //                       ),
-                        //                       child: Center(
-                        //                           child: Text(
-                        //                         productSize.size,
-                        //                         style: TextStyle(
-                        //                           color: (selectedSize ==
-                        //                                   product.productSizes
-                        //                                       .indexOf(
-                        //                                           productSize,
-                        //                                           0))
-                        //                               ? Colors.white
-                        //                               : Colors.black87,
-                        //                         ),
-                        //                       )),
-                        //                     ),
-                        //                   ))
-                        //               .toList(),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        Divider(),
                         Container(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,6 +333,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               colorSelected = product
                                                   .productColors
                                                   .indexOf(productColor, 0);
+
+                                              quantities = [];
+                                              for (var i = 0;
+                                                  i <
+                                                      product
+                                                          .productColors[
+                                                              colorSelected]
+                                                          .sizes
+                                                          .length;
+                                                  i++) quantities.add(0);
                                               setState(() {});
                                             },
                                             child: Container(
@@ -470,6 +408,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 children: product
                                     .productColors[colorSelected].sizes
                                     .map((ProductSize productSize) {
+                                  int index = product
+                                      .productColors[colorSelected].sizes
+                                      .indexOf(productSize, 0);
+                                  print(index);
                                   return Container(
                                     height: 50.0,
                                     margin: const EdgeInsets.only(bottom: 5.0),
@@ -493,8 +435,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              if (quantitySelected > 1)
-                                                quantitySelected--;
+                                              if (quantities[index] > 0)
+                                                quantities[index]--;
                                             });
                                           },
                                           child: Icon(
@@ -503,12 +445,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           ),
                                         ),
                                         SizedBox(width: 10.0),
-                                        Text(quantitySelected.toString()),
+                                        Text(quantities[index].toString()),
                                         SizedBox(width: 10.0),
                                         GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              quantitySelected++;
+                                              quantities[index]++;
                                             });
                                           },
                                           child: Icon(
@@ -521,51 +463,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   );
                                 }).toList(),
                               ),
-                              // Container(
-                              //   height: 50.0,
-                              //   margin: const EdgeInsets.only(bottom: 5.0),
-                              //   padding: EdgeInsets.symmetric(horizontal: 10.0),
-                              //   child: Row(
-                              //     children: <Widget>[
-                              //       GestureDetector(
-                              //         onTap: () {
-                              //           setState(() {
-                              //             if (quantitySelected > 1)
-                              //               quantitySelected--;
-                              //           });
-                              //         },
-                              //         child: Icon(
-                              //           Icons.indeterminate_check_box,
-                              //           size: 40.0,
-                              //         ),
-                              //       ),
-                              //       SizedBox(
-                              //         width: 10.0,
-                              //       ),
-                              //       Text(
-                              //         quantitySelected.toString(),
-                              //       ),
-                              //       SizedBox(
-                              //         width: 10.0,
-                              //       ),
-                              //       GestureDetector(
-                              //         onTap: () {
-                              //           setState(() {
-                              //             // if (quantitySelected <
-                              //             //     product
-                              //             //         .productSizes[selectedSize]
-                              //             //         .colors[colorSelected]
-                              //             //         .quantity) quantitySelected++;
-                              //           });
-                              //         },
-                              //         child: Icon(
-                              //           Icons.add_box,
-                              //           size: 40.0,
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // )
                             ],
                           ),
                         ),
@@ -703,28 +600,33 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             GestureDetector(
               onTap: () {
                 int prize = 0;
-                for (var i = 0; i < product.productSizes.length; i++) {
-                  if (product.productSizes[i].size
-                          .contains(product.productSizes[selectedSize].size) &&
-                      product.productSizes[selectedSize].size
-                          .contains(product.productSizes[i].size)) {
-                    prize = product.productSizes[i].price;
-                    break;
-                  }
+                for (int i = 0; i < quantities.length; i++) {
+                  if (quantities[i] != 0)
+                    prize +=
+                        product.productColors[colorSelected].sizes[i].price *
+                            quantities[i];
                 }
-                DialogUtils().showCustomDialog(
-                  context,
-                  title: 'Confirm Order Details',
-                  productDetails: productDetails,
-                  product: product,
-                  size: product.productSizes[selectedSize].size,
-                  quantity: quantitySelected.toString(),
-                  color: product
-                      .productSizes[selectedSize].colors[colorSelected].color,
-                  price: prize,
-                  token: token,
-                  scaffoldKey: scaffoldKey,
-                );
+                if (prize == 0) {
+                  Toast.show(
+                    'Please select quantity',
+                    context,
+                    gravity: Toast.CENTER,
+                  );
+                } else {
+                  DialogUtils().showCustomDialog(
+                    context,
+                    title: 'Confirm Order Details',
+                    productDetails: productDetails,
+                    product: product,
+                    size: product.productColors[colorSelected].sizes,
+                    quantity: quantities,
+                    color: product
+                        .productSizes[selectedSize].colors[colorSelected].color,
+                    price: prize,
+                    token: token,
+                    scaffoldKey: scaffoldKey,
+                  );
+                }
               },
               child: Text(
                 'ORDER NOW',
@@ -740,45 +642,70 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             GestureDetector(
               onTap: () {
                 if (isAnUpdate == false) {
-                  HTTPHandler()
-                      .addToCart(
-                    token,
-                    product.productId.toString(),
-                    product.productSizes[selectedSize].size,
-                    quantitySelected.toString(),
-                    product
-                        .productSizes[selectedSize].colors[colorSelected].color,
-                  )
-                      .then((value) {
-                    if (value == true) {
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Product Added to Your Cart',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
-                    } else {
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Failed to Add the Product to the Cart',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
+                  int prize = 0;
+                  for (int i = 0; i < quantities.length; i++) {
+                    if (quantities[i] != 0)
+                      prize +=
+                          product.productColors[colorSelected].sizes[i].price *
+                              quantities[i];
+                  }
+                  if (prize == 0) {
+                    Toast.show(
+                      'Please select quantity',
+                      context,
+                      gravity: Toast.CENTER,
+                    );
+                  } else {
+                    List<Map<String, dynamic>> orderList = [];
+                    for (var i = 0; i < quantities.length; i++) {
+                      if (quantities[i] != 0) {
+                        orderList.add({
+                          'size': product
+                              .productColors[colorSelected].sizes[i].size,
+                          'quantity': quantities[i],
+                        });
+                      }
+                      print(orderList.toString());
                     }
-                  }).catchError((e) {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Network error!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 3),
-                    ));
-                  });
+                    HTTPHandler()
+                        .addToCart(
+                      product.productId,
+                      token,
+                      product.productSizes[selectedSize].colors[colorSelected]
+                          .color,
+                      orderList,
+                    )
+                        .then((value) {
+                      if (value == true) {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Product Added to Your Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
+                      } else {
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Failed to Add the Product to the Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Color(0xff6c757d),
+                          duration: Duration(seconds: 3),
+                        ));
+                      }
+                    }).catchError((e) {
+                      scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          'Network error!',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color(0xff6c757d),
+                        duration: Duration(seconds: 3),
+                      ));
+                    });
+                  }
                 } else {
                   print(token);
                   print(product.productId.toString());

@@ -222,15 +222,17 @@ class CartBottomSheet {
                   if (isAnUpdate == false) {
                     print(
                         '$token => ${product.productId} => $sizeSelected => ${quantitySelected.toString()} => $colorSelected');
-                    HTTPHandler()
-                        .addToCart(
+                    HTTPHandler().addToCart(
+                      product.productId,
                       token,
-                      product.productId.toString(),
-                      sizeSelected,
-                      quantitySelected.toString(),
                       colorSelected,
-                    )
-                        .then((value) {
+                      [
+                        {
+                          'size': sizeSelected,
+                          'quantity': quantitySelected,
+                        }
+                      ],
+                    ).then((value) {
                       Navigator.of(newContext).pop();
                       if (value == true) {
                         scaffoldKey.currentState.showSnackBar(SnackBar(

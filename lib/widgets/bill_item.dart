@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../models/bill.dart';
-import '../models/order.dart';
+import '../models/order_details.dart';
 import '../screens/download_screen.dart';
 
 class BillItem extends StatelessWidget {
   final Bill bill;
-  final Order order;
+  final OrderDetails order;
   String token;
   GlobalKey<ScaffoldState> scaffoldKey;
 
