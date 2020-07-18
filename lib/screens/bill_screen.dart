@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/order.dart';
+import '../models/order_details.dart';
 import '../models/bill.dart';
 import '../widgets/loading_body.dart';
 import '../HTTP_handler.dart';
@@ -19,7 +19,7 @@ class BillScreen extends StatefulWidget {
 }
 
 class _BillScreenState extends State<BillScreen> {
-  Order order;
+  OrderDetails order;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -51,7 +51,7 @@ class _BillScreenState extends State<BillScreen> {
 
   @override
   Widget build(BuildContext context) {
-    order = ModalRoute.of(context).settings.arguments as Order;
+    order = ModalRoute.of(context).settings.arguments as OrderDetails;
     if (!_tokenController) _getToken();
     return Scaffold(
       key: scaffoldKey,
@@ -68,7 +68,7 @@ class _BillScreenState extends State<BillScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              child: (bills.isEmpty)
+              child: (bills == null)
                   ? Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

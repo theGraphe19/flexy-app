@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +13,7 @@ import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
 import './models/cart.dart';
+import './models/order_details.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -535,13 +535,31 @@ class HTTPHandler {
 
       print(response.data.keys);
       for (String i in response.data.keys) {
-        for (var j = 0; j < response.data[i].length; j++) {
-          Order order = Order();
-          order.mapToOrder(response.data[i][j], int.parse(i));
-          orderedItems.add(order);
+        orderedItems
+            .add(Order(int.parse(i), response.data[i][0]['created_at']));
+      }
+      print(orderedItems.toString());
+      return orderedItems.reversed.toList();
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<OrderDetails>> getOrderDetails(String token, int orderId) async {
+    try {
+      List<OrderDetails> orderedItems = [];
+      Response response = await _dio.get("$baseURL/myorders?api_token=$token");
+
+      for (String i in response.data.keys) {
+        if (int.parse(i) == orderId) {
+          for (var j = 0; j < response.data[i].length; j++) {
+            orderedItems.add(
+                OrderDetails.mapToOrder(response.data[i][j], int.parse(i)));
+          }
+          break;
         }
       }
-
       print(orderedItems.toString());
       return orderedItems;
     } catch (e) {
