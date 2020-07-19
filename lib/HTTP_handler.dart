@@ -615,4 +615,20 @@ class HTTPHandler {
       throw e;
     }
   }
+
+  Future<bool> readChats(String token, int adminId) async {
+    try {
+      Response response =
+          await _dio.get('$baseURL/readmsg/$adminId?api_token=$token');
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
 }

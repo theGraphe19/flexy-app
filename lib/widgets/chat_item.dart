@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
+import '../HTTP_handler.dart';
 import '../models/chat_overview.dart';
 import '../models/chat.dart';
 
@@ -11,10 +12,12 @@ import '../models/chat.dart';
  */
 
 class ChatItem extends StatefulWidget {
+  final String token;
   final ChatOverView chat;
   final GlobalKey<ScaffoldState> _scaffoldKey;
 
   ChatItem(
+    this.token,
     this.chat,
     this._scaffoldKey,
   );
@@ -24,127 +27,146 @@ class ChatItem extends StatefulWidget {
 }
 
 class _ChatItemState extends State<ChatItem> {
+  bool _show = true;
+
   int _countUnreadMessages() {
     var count = 0;
     for (var i = 0; i < widget.chat.chats.length; i++) {
       if (widget.chat.chats[i].status == 0) count++;
     }
-    print(count);
     return count;
   }
 
   void _showMessages() {
-    widget._scaffoldKey.currentState.showBottomSheet((BuildContext context) {
-      return Container(
-        height: (widget.chat.chats.length * 150 > 400)
-            ? 400
-            : (widget.chat.chats.length * 150.0),
-        padding: const EdgeInsets.all(10.0),
-        width: double.infinity,
-        color: Colors.grey[100],
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    HTTPHandler()
+        .readChats(widget.token, widget.chat.chats[0].adminId)
+        .then((value) {
+      if (value)
+        widget._scaffoldKey.currentState
+            .showBottomSheet((BuildContext context) {
+          return Container(
+            height: (widget.chat.chats.length * 150 > 400)
+                ? 400
+                : (widget.chat.chats.length * 150.0),
+            padding: const EdgeInsets.all(10.0),
+            width: double.infinity,
+            color: Colors.grey[100],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(widget.chat.chats[0].adminName),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.black87,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(widget.chat.chats[0].adminName),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            _show = false;
+                          });
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.black87,
+                        ),
+                      )
+                    ],
+                  ),
+                  Divider(),
+                  Column(
+                    children: widget.chat.chats.map((Chat c) {
+                      return TimelineTile(
+                        alignment: TimelineAlign.manual,
+                        lineX: 0.1,
+                        topLineStyle: LineStyle(color: Colors.grey[300]),
+                        indicatorStyle: IndicatorStyle(
+                          indicatorY: 0.2,
+                          drawGap: true,
+                          width: 30,
+                          height: 30,
+                          indicator: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withOpacity(0.7),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: Image.asset(
+                                      'assets/images/chat-item.png',
+                                      height: 30.0,
+                                      width: 30.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        rightChild: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 16, right: 10, top: 10, bottom: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                c.adminName,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                DateFormat('dd-MM-yyyy').format(c.timeStamp),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                c.message,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   )
                 ],
               ),
-              Divider(),
-              Column(
-                children: widget.chat.chats.map((Chat c) {
-                  return TimelineTile(
-                    alignment: TimelineAlign.manual,
-                    lineX: 0.1,
-                    topLineStyle:
-                        LineStyle(color: Colors.white.withOpacity(0.7)),
-                    indicatorStyle: IndicatorStyle(
-                      indicatorY: 0.2,
-                      drawGap: true,
-                      width: 30,
-                      height: 30,
-                      indicator: Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.7),
-                            ),
-                          ),
-                          Positioned.fill(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                height: 30,
-                                width: 30,
-                                child: Image.asset(
-                                  'assets/images/chat-item.png',
-                                  height: 30.0,
-                                  width: 30.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    rightChild: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16, right: 10, top: 10, bottom: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            c.adminName,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            DateFormat('dd-MM-yyyy').format(c.timeStamp),
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            c.message,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              )
-            ],
-          ),
+            ),
+          );
+        });
+    }).catchError((e) {
+      widget._scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
         ),
-      );
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    _countUnreadMessages();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10.0),
@@ -164,25 +186,30 @@ class _ChatItemState extends State<ChatItem> {
         subtitle: Text((widget.chat.chats[0].message.length > 30)
             ? '${widget.chat.chats[0].message.substring(0, 30)}...'
             : widget.chat.chats[0].message),
-        trailing: Container(
-          height: 25.0,
-          width: 25.0,
-          padding: const EdgeInsets.all(4.0),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: (widget.chat.chats[0].status == 0)
-                ? Colors.grey
-                : Colors.transparent,
-          ),
-          child: Center(
-              child: Text(
-            '${_countUnreadMessages()}',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15.0,
-            ),
-          )),
-        ),
+        trailing: (_show)
+            ? Container(
+                height: 25.0,
+                width: 25.0,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: (widget.chat.chats[0].status == 0)
+                      ? Colors.grey
+                      : Colors.transparent,
+                ),
+                child: Center(
+                    child: Text(
+                  '${_countUnreadMessages()}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.0,
+                  ),
+                )),
+              )
+            : Container(
+                height: 25.0,
+                width: 25.0,
+              ),
       ),
     );
   }
