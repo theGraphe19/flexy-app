@@ -10,6 +10,7 @@ class Cart {
   int quantity;
   int productPrice;
   List<dynamic> productImages;
+  DateTime timeStamp;
 
   Cart({
     this.id,
@@ -23,6 +24,7 @@ class Cart {
     this.quantity,
     this.productPrice,
     this.productImages,
+    this.timeStamp,
   });
 
   Cart.fromMap(Map<String, dynamic> map) {
@@ -31,11 +33,12 @@ class Cart {
     this.userName = map['user_name'];
     this.productId = int.parse(map['prod_id']);
     this.productName = map['prod_name'];
-    this.productSize = map['size'];
+    this.productSize = map['prod_size'];
     this.color = map['color'];
     this.colorName = map['color_name'];
     this.quantity = int.parse(map['quantity']);
-    this.productPrice = int.parse(map['price']);
+    this.productPrice = int.parse(map['price(per pc.)']);
     this.productImages = map['product_images'];
+    this.timeStamp = DateTime.parse(map['created_at']);
   }
 }

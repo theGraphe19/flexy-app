@@ -3,7 +3,6 @@ import 'package:progress_dialog/progress_dialog.dart';
 
 import '../models/user.dart';
 import './registration_form_page1.dart';
-import './products_screen.dart';
 import '../HTTP_handler.dart';
 import './categories_screen.dart';
 

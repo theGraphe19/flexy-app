@@ -12,7 +12,7 @@ import './models/product_details.dart';
 import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
-import './models/cart.dart';
+import './models/cart_overview.dart';
 import './models/order_details.dart';
 import './models/chat_overview.dart';
 
@@ -433,6 +433,7 @@ class HTTPHandler {
     }
   }
 
+  //needs to be removed
   Future<bool> updateCart(
     String token,
     String productId,
@@ -462,6 +463,7 @@ class HTTPHandler {
     }
   }
 
+  //needs to be removed
   Future<bool> removeFromCart(
     String token,
     String id,
@@ -471,6 +473,21 @@ class HTTPHandler {
         '$baseURL/remcartitem/$id?api_token=$token',
       );
       if (response.statusCode == 200)
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<bool> removeItemFromCart(String token, int prodId) async {
+    try {
+      Response response =
+          await _dio.get('$baseURL/remcartprod/$prodId?api_token=$token');
+
+      if (response.data['status'].contains('success'))
         return true;
       else
         return false;
@@ -514,17 +531,21 @@ class HTTPHandler {
     }
   }
 
-  Future<List<Cart>> getCartItems(String token) async {
+  Future<List<CartOverView>> getCartItems(String token) async {
     try {
-      List<Cart> cartItems = [];
+      List<CartOverView> cartItems = [];
 
       Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
 
-      for (var i = 0; i < (response.data).length; i++)
-        cartItems.add(Cart.fromMap((response.data)[i]));
-
-      print(cartItems);
-      return cartItems.reversed.toList();
+      print(response.data);
+      if (response.data.length != 0) {
+        for (String i in response.data.keys) {
+          cartItems.add(CartOverView.fromMap(int.parse(i), response.data[i]));
+        }
+        print(cartItems);
+        return cartItems.reversed.toList();
+      }
+      return [];
     } catch (e) {
       print(e);
       throw e;
