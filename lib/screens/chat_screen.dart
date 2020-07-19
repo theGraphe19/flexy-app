@@ -52,8 +52,10 @@ class _ChatScreenState extends State<ChatScreen> {
             ? LoadingBody()
             : ListView.builder(
                 itemCount: _chats.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    ChatItem(_chats[index]),
+                itemBuilder: (BuildContext context, int index) => ChatItem(
+                  _chats[index],
+                  _scaffoldKey,
+                ),
               ),
       ),
     );
