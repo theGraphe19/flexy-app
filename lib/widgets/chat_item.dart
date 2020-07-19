@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../models/chat.dart';
+import '../models/chat_overview.dart';
 
 /*
   <a target="_blank" href="https://icons8.com/icons/set/chat">Chat icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
  */
 
 class ChatItem extends StatefulWidget {
-  Chat chat;
+  ChatOverView chat;
 
   ChatItem(this.chat);
 
@@ -18,8 +18,18 @@ class ChatItem extends StatefulWidget {
 class _ChatItemState extends State<ChatItem> {
   bool _show = false;
 
+  int _countUnreadMessages() {
+    var count = 0;
+    for (var i = 0; i < widget.chat.chats.length; i++) {
+      if (widget.chat.chats[i].status == 0) count++;
+    }
+    print(count);
+    return count;
+  }
+
   @override
   Widget build(BuildContext context) {
+    _countUnreadMessages();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10.0),
@@ -34,14 +44,33 @@ class _ChatItemState extends State<ChatItem> {
           width: 60.0,
         ),
         title: Text(
-          widget.chat.adminName,
+          widget.chat.name,
           style: TextStyle(color: Colors.black87),
         ),
         subtitle: Text((!_show)
-            ? (widget.chat.message.length > 40)
-                ? '${widget.chat.message.substring(0, 40)}...'
-                : widget.chat.message
-            : widget.chat.message),
+            ? (widget.chat.chats[0].message.length > 30)
+                ? '${widget.chat.chats[0].message.substring(0, 30)}...'
+                : widget.chat.chats[0].message
+            : widget.chat.chats[0].message),
+        trailing: Container(
+          height: 25.0,
+          width: 25.0,
+          padding: const EdgeInsets.all(4.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: (widget.chat.chats[0].status == 0)
+                ? Colors.green
+                : Colors.transparent,
+          ),
+          child: Center(
+              child: Text(
+            '${_countUnreadMessages()}',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15.0,
+            ),
+          )),
+        ),
       ),
     );
   }

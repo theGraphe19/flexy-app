@@ -14,7 +14,7 @@ import './models/bill.dart';
 import './models/category.dart';
 import './models/cart.dart';
 import './models/order_details.dart';
-import './models/chat.dart';
+import './models/chat_overview.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -599,13 +599,13 @@ class HTTPHandler {
     }
   }
 
-  Future<List<Chat>> getChats(String token) async {
+  Future<List<ChatOverView>> getChats(String token) async {
     try {
       Response response = await _dio.get('$baseURL/myinbox?api_token=$token');
 
-      List<Chat> chats = [];
-      for (var i = 0; i < response.data.length; i++) {
-        chats.add(Chat.fromMap(response.data[i]));
+      List<ChatOverView> chats = [];
+      for (String i in response.data.keys) {
+        chats.add(ChatOverView.fromMap(i, response.data[i]));
       }
 
       print(chats.toString());
