@@ -504,7 +504,7 @@ class HTTPHandler {
       Response response = await _dio.get(
         '$baseURL/cartorder?api_token=$token',
       );
-      if (response.statusCode == 200)
+      if (response.data['status'].contains('success'))
         return true;
       else
         return false;

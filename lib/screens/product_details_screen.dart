@@ -682,8 +682,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         .addToCart(
                       product.productId,
                       token,
-                      product.productSizes[selectedSize].colors[colorSelected]
-                          .color,
+                      product.productColors[colorSelected].color,
                       orderList,
                     )
                         .then((value) {

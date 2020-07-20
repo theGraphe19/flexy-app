@@ -303,10 +303,24 @@ class CartScreenState extends State<CartScreen> {
             );
           } else {
             setState(() {
-              Navigator.of(context).pushNamed(
+              Navigator.of(context)
+                  .pushNamed(
                 CheckOutFromCart.routeName,
                 arguments: currentUser,
-              );
+              )
+                  .then((value) {
+                itemsHandler = false;
+                setState(() {
+                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text(
+                      'Order Placed',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Color(0xff6c757d),
+                    duration: Duration(seconds: 3),
+                  ));
+                });
+              });
             });
           }
         },
