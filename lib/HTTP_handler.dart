@@ -433,55 +433,6 @@ class HTTPHandler {
     }
   }
 
-  //needs to be removed
-  Future<bool> updateCart(
-    String token,
-    String productId,
-    String size,
-    String qty,
-    String color,
-  ) async {
-    try {
-      FormData formData = FormData.fromMap({
-        'size': size,
-        'quantity': qty,
-        'color': color,
-      });
-
-      Response response = await _dio.post(
-        '$baseURL/editorder/$productId?api_token=$token',
-        data: formData,
-      );
-
-      if (response.statusCode == 200)
-        return true;
-      else
-        return false;
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
-  //needs to be removed
-  Future<bool> removeFromCart(
-    String token,
-    String id,
-  ) async {
-    try {
-      Response response = await _dio.get(
-        '$baseURL/remcartitem/$id?api_token=$token',
-      );
-      if (response.statusCode == 200)
-        return true;
-      else
-        return false;
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
   Future<bool> removeItemFromCart(String token, int prodId) async {
     try {
       Response response =
@@ -599,10 +550,13 @@ class HTTPHandler {
           await _dio.get('$baseURL/showbill/$orderId?api_token=$token');
 
       //print(response.data);
-      for (var i = 0; i < response.data['bills'].length; i++)
-        bills.add(Bill.mapToBill(response.data['bills'][i]));
-      print(bills.toString());
-      return bills;
+      if (response.data.contains('bills')) {
+        for (var i = 0; i < response.data['bills'].length; i++)
+          bills.add(Bill.mapToBill(response.data['bills'][i]));
+        print(bills.toString());
+        return bills;
+      } else
+        return [];
     } catch (e) {
       print(e);
       throw e;

@@ -4,6 +4,7 @@ import '../HTTP_handler.dart';
 import '../models/order_details.dart';
 import '../widgets/loading_body.dart';
 import '../widgets/my_order_item.dart';
+import './bill_screen.dart';
 
 class MyOrderDetailsScreen extends StatefulWidget {
   static const routeName = '/my-order-details-screen';
@@ -45,26 +46,47 @@ class _MyOrderDetailsScreenState extends State<MyOrderDetailsScreen> {
     if (!orderController) _getOrderDetails();
 
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Order Details'),
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Order Details'),
+      ),
+      body: (orders == null)
+          ? LoadingBody()
+          : Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.white,
+              ),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(10.0),
+                itemCount: orders.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (orders[index].quantity != '0')
+                    return MyOrderItem(
+                      orders[index],
+                      _scaffoldKey,
+                      token,
+                    );
+                  else
+                    return Container();
+                },
+              ),
+            ),
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          print('tapped : ${orders[0].id}');
+          Navigator.of(context).pushNamed(
+            BillScreen.routeName,
+            arguments: orders[0],
+          );
+        },
+        child: Container(
+          height: 70.0,
+          width: 70.0,
+          decoration: BoxDecoration(shape: BoxShape.circle),
+          child: Image.asset("assets/images/download.png"),
         ),
-        body: (orders == null)
-            ? LoadingBody()
-            : Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.white,
-                ),
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount: orders.length,
-                  itemBuilder: (BuildContext context, int index) => MyOrderItem(
-                    orders[index],
-                    _scaffoldKey,
-                    token,
-                  ),
-                ),
-              ));
+      ),
+    );
   }
 }

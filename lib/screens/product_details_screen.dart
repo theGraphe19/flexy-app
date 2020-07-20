@@ -606,9 +606,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         },
       );
 
-  Widget orderButton() => GridTileBar(
-        backgroundColor: Colors.white,
-        title: Row(
+  Widget orderButton() => Container(
+        // padding: const EdgeInsets.symmetric(
+        //   horizontal: 15.0,
+        //   vertical: 10.0,
+        // ),
+        margin: const EdgeInsets.only(
+          left: 15.0,
+          right: 15.0,
+          bottom: 10.0,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
               onTap: () {
@@ -641,17 +654,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   );
                 }
               },
-              child: Text(
-                'ORDER NOW',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).primaryColorDark,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
+              child: Container(
+                padding: const EdgeInsets.only(
+                  top: 12.0,
+                  bottom: 12.0,
+                  right: 25.0,
+                  left: 30.0,
+                ),
+                child: Text(
+                  'Order Now',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ),
                 ),
               ),
             ),
-            Spacer(),
             GestureDetector(
               onTap: () {
                 if (isAnUpdate == false) {
@@ -810,17 +830,32 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   });
                 }
               },
-              child: Text(
-                isAnUpdate ? 'Update Cart' : 'Add To Cart',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
+              child: Container(
+                margin: const EdgeInsets.only(left: 25.0),
+                padding: const EdgeInsets.only(
+                  top: 12.0,
+                  bottom: 12.0,
+                  left: 30.0,
+                  right: 20.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
+                  ),
+                ),
+                child: Text(
+                  isAnUpdate ? 'Update Cart' : 'Add To Cart',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ),
                 ),
               ),
             ),
-            SizedBox(width: 30.0),
           ],
         ),
       );

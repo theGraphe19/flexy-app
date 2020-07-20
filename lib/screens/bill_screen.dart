@@ -68,7 +68,7 @@ class _BillScreenState extends State<BillScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              child: (bills == null)
+              child: (bills == null || bills.length == 0)
                   ? Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

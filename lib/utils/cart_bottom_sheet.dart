@@ -263,49 +263,7 @@ class CartBottomSheet {
                         duration: Duration(seconds: 3),
                       ));
                     });
-                  } else {
-                    print(
-                        '$token => ${product.productId} => $sizeSelected => ${quantitySelected.toString()} => $colorSelected');
-                    HTTPHandler()
-                        .updateCart(
-                      token,
-                      product.productId.toString(),
-                      sizeSelected,
-                      quantitySelected.toString(),
-                      colorSelected,
-                    )
-                        .then((value) {
-                      Navigator.of(newContext).pop();
-                      if (value == true) {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Cart Updated',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 3),
-                        ));
-                      } else {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Failed to Update Cart',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 3),
-                        ));
-                      }
-                    }).catchError((e) {
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Network error!',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
-                    });
-                  }
+                  } 
                 },
                 child: Container(
                   height: 50.0,

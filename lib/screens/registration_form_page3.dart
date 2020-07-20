@@ -62,9 +62,15 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
             ),
             FloatingActionButton.extended(
               onPressed: _validateInput,
-              label: Text('Submit'),
+              label: Text(
+                'Submit',
+                style: TextStyle(color: Colors.white),
+              ),
               backgroundColor: Theme.of(context).primaryColorDark,
-              icon: Icon(Icons.done),
+              icon: Icon(
+                Icons.done,
+                color: Colors.white,
+              ),
             ),
           ],
         ));

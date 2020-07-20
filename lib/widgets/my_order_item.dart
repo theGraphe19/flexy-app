@@ -124,41 +124,41 @@ class _MyOrderItemState extends State<MyOrderItem> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Container(
-                              child: GestureDetector(
-                                onTap: () {
-                                  print('tapped : ${widget.order.id}');
-                                  Navigator.of(context).pushNamed(
-                                    BillScreen.routeName,
-                                    arguments: widget.order,
-                                  );
-                                },
-                                child: Container(
-                                  height: 60.0,
-                                  width: 60.0,
-                                  decoration:
-                                      BoxDecoration(shape: BoxShape.circle),
-                                  child:
-                                      Image.asset("assets/images/download.png"),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                'Download',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Column(
+                        //   mainAxisAlignment: MainAxisAlignment.end,
+                        //   crossAxisAlignment: CrossAxisAlignment.end,
+                        //   children: <Widget>[
+                        //     Container(
+                        //       child: GestureDetector(
+                        //         onTap: () {
+                        //           print('tapped : ${widget.order.id}');
+                        //           Navigator.of(context).pushNamed(
+                        //             BillScreen.routeName,
+                        //             arguments: widget.order,
+                        //           );
+                        //         },
+                        //         child: Container(
+                        //           height: 60.0,
+                        //           width: 60.0,
+                        //           decoration:
+                        //               BoxDecoration(shape: BoxShape.circle),
+                        //           child:
+                        //               Image.asset("assets/images/download.png"),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Container(
+                        //       child: Text(
+                        //         'Download',
+                        //         style: TextStyle(
+                        //           color: Colors.black,
+                        //           fontSize: 12.0,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                         SizedBox(width: 10.0),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
