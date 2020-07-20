@@ -723,6 +723,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     cartId,
                   )
                       .then((value) {
+                    print('removed');
                     if (value) {
                       int prize = 0;
                       for (int i = 0; i < quantities.length; i++) {
@@ -740,11 +741,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       } else {
                         List<Map<String, dynamic>> orderList = [];
                         for (var i = 0; i < quantities.length; i++) {
-                          orderList.add({
-                            'size': product
-                                .productColors[colorSelected].sizes[i].size,
-                            'quantity': quantities[i],
-                          });
+                          if (quantities[i] != 0)
+                            orderList.add({
+                              'size': product
+                                  .productColors[colorSelected].sizes[i].size,
+                              'quantity': quantities[i],
+                            });
                           print(orderList.toString());
                         }
                         _handler

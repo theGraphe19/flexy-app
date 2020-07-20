@@ -26,6 +26,7 @@ class CartScreenState extends State<CartScreen> {
   String token;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   ProductDetails productDetails;
+  int colorSelected;
 
   Future<String> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -123,16 +124,6 @@ class CartScreenState extends State<CartScreen> {
                                                 .cartItems[0]
                                                 .color);
                                             List<int> quantity = [];
-                                            for (var i = 0;
-                                                i <
-                                                    items[index]
-                                                        .cartItems
-                                                        .length;
-                                                i++) {
-                                              quantity.add(items[index]
-                                                  .cartItems[i]
-                                                  .quantity);
-                                            }
                                             print(quantity.toString());
                                             _handler
                                                 .getProductDetails(
@@ -142,12 +133,76 @@ class CartScreenState extends State<CartScreen> {
                                                     token)
                                                 .then((value) {
                                               productDetails = value;
+                                              for (var i = 0;
+                                                  i <
+                                                      productDetails.product
+                                                          .productColors.length;
+                                                  i++) {
+                                                if (productDetails.product
+                                                        .productColors[i].color
+                                                        .contains(items[index]
+                                                            .cartItems[0]
+                                                            .color) &&
+                                                    items[index]
+                                                        .cartItems[0]
+                                                        .color
+                                                        .contains(productDetails
+                                                            .product
+                                                            .productColors[i]
+                                                            .color)) {
+                                                  colorSelected = i;
+                                                  break;
+                                                }
+                                              }
+                                              print(productDetails
+                                                  .product
+                                                  .productColors[colorSelected]
+                                                  .color);
+                                              int flag;
+                                              for (var i = 0;
+                                                  i <
+                                                      productDetails
+                                                          .product
+                                                          .productColors[
+                                                              colorSelected]
+                                                          .sizes
+                                                          .length;
+                                                  i++) {
+                                                flag = 0;
+                                                for (var j = 0;
+                                                    j <
+                                                        items[index]
+                                                            .cartItems
+                                                            .length;
+                                                    j++) {
+                                                  if (productDetails
+                                                      .product
+                                                      .productColors[
+                                                          colorSelected]
+                                                      .sizes[i]
+                                                      .size
+                                                      .contains(items[index]
+                                                          .cartItems[j]
+                                                          .productSize)) {
+                                                    quantity.add(items[index]
+                                                        .cartItems[j]
+                                                        .quantity);
+                                                    flag = 1;
+                                                    break;
+                                                  }
+                                                }
+                                                if (flag == 0) quantity.add(0);
+                                              }
+
+                                              print(quantity.toString());
                                               Navigator.of(context).pushNamed(
                                                 ProductDetailsScreen.routeName,
                                                 arguments: <dynamic>[
                                                   productDetails.product,
                                                   token,
-                                                  1, //CHANGE
+                                                  items[index]
+                                                      .cartItems[0]
+                                                      .categoryId,
                                                   currentUser,
                                                   true,
                                                   this,
