@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 import '../HTTP_handler.dart';
-import '../models/cart.dart';
+import '../models/cart_overview.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
 import '../widgets/check_out_item.dart';
@@ -17,7 +17,7 @@ class CheckOutFromCart extends StatefulWidget {
 }
 
 class CheckOutFromCartState extends State<CheckOutFromCart> {
-  List<Cart> items;
+  List<CartOverView> items;
   User _currentUser;
   bool itemsHandler = false;
   String token;
@@ -39,13 +39,18 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
           items = value;
           setState(() {
             grandTotal = 0;
-            for (Cart cart in items) {
-              grandTotal += cart.productPrice * cart.quantity;
+            for (CartOverView cart in items) {
+              for (var i = 0; i < cart.cartItems.length; i++)
+                grandTotal +=
+                    cart.cartItems[i].productPrice * cart.cartItems[i].quantity;
             }
           });
         }).catchError((e) {
           scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Network error!', style: TextStyle(color: Colors.white),),
+            content: Text(
+              'Network error!',
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Color(0xff6c757d),
             duration: Duration(seconds: 3),
           ));
@@ -70,8 +75,8 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
               width: MediaQuery.of(context).size.width,
               child: ListView.builder(
                 itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    CheckOutItem(items[index], this, index, token, scaffoldKey),
+                itemBuilder: (BuildContext context, int index) => CheckOutItem(
+                    items[index], index, token, scaffoldKey),
               ),
             ),
       floatingActionButton: FloatingActionButton.extended(
@@ -84,7 +89,9 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
               height: 180.0,
               decoration: BoxDecoration(
                 /*border: Border.all(color: Colors.grey),*/
-                borderRadius: BorderRadius.only(topRight: Radius.circular(20.0), topLeft: Radius.circular(20.0)),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20.0),
+                    topLeft: Radius.circular(20.0)),
                 color: Color(0xfff0f0f0),
               ),
               child: Column(
@@ -114,7 +121,10 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                                 .then((value) {
                               if (value) {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text('Order Placed', style: TextStyle(color: Colors.white),),
+                                  content: Text(
+                                    'Order Placed',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   backgroundColor: Color(0xff6c757d),
                                   duration: Duration(seconds: 3),
                                 ));
@@ -128,7 +138,10 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                                 // });
                               } else {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text('Failed to Place Order', style: TextStyle(color: Colors.white),),
+                                  content: Text(
+                                    'Failed to Place Order',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   backgroundColor: Color(0xff6c757d),
                                   duration: Duration(seconds: 3),
                                 ));
@@ -139,7 +152,10 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                               }
                             }).catchError((e) {
                               scaffoldKey.currentState.showSnackBar(SnackBar(
-                                content: Text('Network error!', style: TextStyle(color: Colors.white),),
+                                content: Text(
+                                  'Network error!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                                 backgroundColor: Color(0xff6c757d),
                                 duration: Duration(seconds: 3),
                               ));
@@ -163,8 +179,9 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
                           borderRadius: BorderRadius.circular(10),
-                          border:
-                              Border.all(width: 1.0, color: Theme.of(context).primaryColor),
+                          border: Border.all(
+                              width: 1.0,
+                              color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),

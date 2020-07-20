@@ -20,6 +20,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   List<Category> categoriesList;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
+  String mobileNo;
+  bool _controller = false;
 
   void _showAbout(BuildContext context, String about) {
     Future.delayed(Duration(seconds: 3), () {
@@ -84,10 +86,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     _currentUser = ModalRoute.of(context).settings.arguments as User;
 
-    if (_currentUser.status != 1)
+    if (_currentUser.status != 1 && !_controller) {
+      _controller = true;
       _handler.getAdminContactDetails().then((Map value) {
-        _showAbout(context, value['about']);
+        mobileNo = value['phone'];
+        setState(() {
+          _showAbout(context, value['about']);
+        });
       });
+    }
 
     if (!categoryListHandler) {
       categoryListHandler = true;
@@ -122,63 +129,70 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       drawer: SideDrawer(_currentUser, _scaffoldKey).drawer(context),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            (_currentUser.status == 1)
-                ? (categoriesList == null)
-                    ? LoadingBody()
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: categoriesList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).pushNamed(
-                                  ProductsScreen.routeName,
-                                  arguments: <String, dynamic>{
-                                    'user': _currentUser,
-                                    'category': categoriesList[index],
-                                  },
-                                );
+        child: (_currentUser.status == 1)
+            ? (categoriesList == null)
+                ? LoadingBody()
+                : Container(
+                    height: double.infinity,
+                    child: ListView.builder(
+                      itemCount: categoriesList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              ProductsScreen.routeName,
+                              arguments: <String, dynamic>{
+                                'user': _currentUser,
+                                'category': categoriesList[index],
                               },
-                              child: Container(
-                                height: MediaQuery.of(context).size.height / 3,
-                                width: double.infinity,
-                                child: Column(
-                                  children: [
-                                    Image.network(
-                                      'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                                  3 -
-                                              5,
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                  ],
-                                ),
-                              ),
                             );
                           },
-                        ),
-                      )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                        (_currentUser.status == 0)
-                            ? 'assets/images/pending.png'
-                            : 'assets/images/rejected.png',
-                        height: 70.0,
-                        width: 70.0,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / 3,
+                            width: double.infinity,
+                            child: Column(
+                              children: [
+                                Image.network(
+                                  'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
+                                  height:
+                                      MediaQuery.of(context).size.height / 3 -
+                                          5,
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+            : Container(
+                height: double.infinity,
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                        'Thank You for registering and providing us your details. Your account is under review and will be accepted for trade soon. Meanwhile You can get in touch with us through Call/Whatsapp us at: $mobileNo'),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset(
+                            (_currentUser.status == 0)
+                                ? 'assets/images/pending.png'
+                                : 'assets/images/rejected.png',
+                            height: 70.0,
+                            width: 70.0,
+                          ),
+                          Text((_currentUser.status == 0)
+                              ? 'Please wait until allowed by Admin!'
+                              : 'You have been banned by admin!'),
+                        ],
                       ),
-                      Text((_currentUser.status == 0)
-                          ? 'Please wait until allowed by Admin!'
-                          : 'You have been banned by admin!'),
-                    ],
-                  ),
-          ],
-        ),
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }

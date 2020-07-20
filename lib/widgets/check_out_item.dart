@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
-import '../models/cart.dart';
-import '../utils/dailod_cart_utils.dart';
-import '../screens/check_out_screen.dart';
+import '../models/cart_overview.dart';
 import '../models/product_details.dart';
+import '../models/product_size.dart';
+import '../utils/dialog_utils.dart';
+import '../HTTP_handler.dart';
 
 class CheckOutItem extends StatelessWidget {
-  Cart item;
-  CheckOutFromCartState _parent;
+  CartOverView item;
   int index;
   String token;
   final GlobalKey<ScaffoldState> scaffoldKey;
   ProductDetails productDetails;
+  int prize = 0;
+  ProgressDialog progressDialog;
 
   CheckOutItem(
     this.item,
-    this._parent,
     this.index,
     this.token,
     this.scaffoldKey,
@@ -23,12 +26,70 @@ class CheckOutItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+      showLogs: true,
+    );
+    progressDialog.style(
+      message: 'Please wait!',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+    );
+
+    for (int i = 0; i < item.cartItems.length; i++) {
+      if (item.cartItems[i].quantity != 0)
+        prize += item.cartItems[i].productPrice * item.cartItems[i].quantity;
+    }
+
     return Padding(
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
       child: GestureDetector(
-        onTap: () {
-          DialogCartUtils().showCustomDialog(context,
-              title: "Product Details", item: item, scaffoldKey: scaffoldKey);
+        onTap: () async {
+          await progressDialog.show();
+          HTTPHandler()
+              .getProductDetails(item.cartItems[0].productId, token)
+              .then((value) async {
+            await progressDialog.hide();
+            this.productDetails = value;
+            List<int> quantity = [];
+            List<ProductSize> sizes = [];
+            for (var i = 0; i < item.cartItems.length; i++) {
+              quantity.add(item.cartItems[i].quantity);
+              sizes.add(ProductSize.mapToProductSizeFromColors({
+                'size': item.cartItems[i].productSize,
+                'price': item.cartItems[i].productPrice.toString(),
+              }));
+            }
+            DialogUtils().showCustomDialog(
+              context,
+              title: 'Item Details',
+              cancelBtnText: 'OK',
+              color: item.cartItems[0].color,
+              okBtnText: '',
+              price: prize,
+              product: productDetails.product,
+              productDetails: productDetails,
+              quantity: quantity,
+              scaffoldKey: scaffoldKey,
+              size: sizes,
+              token: token,
+            );
+          }).catchError((e) {
+            print(e);
+            scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: Text(
+                'Network error!',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Color(0xff6c757d),
+              duration: Duration(seconds: 3),
+            ));
+          });
         },
         child: Container(
           decoration: BoxDecoration(
@@ -49,32 +110,21 @@ class CheckOutItem extends StatelessWidget {
                   ),
                   Divider(),
                   Text(
-                    "Name : ${item.productName}",
+                    "Name : ${item.cartItems[0].productName}",
                     style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 17.0,
                         fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    "Size : ${item.productSize}",
+                    "Date : ${DateFormat('dd-MM-yyyy').format(item.cartItems[0].timeStamp)}",
                     style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15.0,
                         color: Colors.grey),
                   ),
                   Text(
-                    "Quantity : x${item.quantity}",
-                    style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 15.0,
-                        color: Colors.grey),
-                  ),
-                  Divider(
-                    thickness: 2.0,
-                    color: Colors.grey,
-                  ),
-                  Text(
-                    "Total Price : ${item.productPrice * item.quantity} (${item.productPrice} * ${item.quantity})",
+                    "Total Price : ${prize.toStringAsFixed(2)}",
                     style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15.0,

@@ -44,6 +44,7 @@ dependencies:
   flutter_phoenix: ^0.1.0
   flappy_search_bar: ^1.4.1
   intl: ^0.16.1
+  timeline_tile: ^0.1.2
 
 dev_dependencies:
   flutter_test:
@@ -53,9 +54,9 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/icon.png"
+  image_path: "assets/icon/app.png"
   adaptive_icon_background: "#191919"
-  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_foreground: "assets/icon/app.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

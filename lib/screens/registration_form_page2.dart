@@ -88,9 +88,12 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
           ),
           FloatingActionButton.extended(
             onPressed: _validateInput,
-            label: Text('Next'),
+            label: Text(
+              'Next',
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Theme.of(context).primaryColorDark,
-            icon: Icon(Icons.chevron_right),
+            icon: Icon(Icons.chevron_right, color: Colors.white),
           ),
         ],
       ),

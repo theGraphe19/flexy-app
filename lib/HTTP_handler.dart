@@ -12,9 +12,9 @@ import './models/product_details.dart';
 import './models/order.dart';
 import './models/bill.dart';
 import './models/category.dart';
-import './models/cart.dart';
+import './models/cart_overview.dart';
 import './models/order_details.dart';
-import './models/chat.dart';
+import './models/chat_overview.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -433,44 +433,12 @@ class HTTPHandler {
     }
   }
 
-  Future<bool> updateCart(
-    String token,
-    String productId,
-    String size,
-    String qty,
-    String color,
-  ) async {
+  Future<bool> removeItemFromCart(String token, int prodId) async {
     try {
-      FormData formData = FormData.fromMap({
-        'size': size,
-        'quantity': qty,
-        'color': color,
-      });
+      Response response =
+          await _dio.get('$baseURL/remcartprod/$prodId?api_token=$token');
 
-      Response response = await _dio.post(
-        '$baseURL/editorder/$productId?api_token=$token',
-        data: formData,
-      );
-
-      if (response.statusCode == 200)
-        return true;
-      else
-        return false;
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
-  Future<bool> removeFromCart(
-    String token,
-    String id,
-  ) async {
-    try {
-      Response response = await _dio.get(
-        '$baseURL/remcartitem/$id?api_token=$token',
-      );
-      if (response.statusCode == 200)
+      if (response.data['status'].contains('success'))
         return true;
       else
         return false;
@@ -487,7 +455,7 @@ class HTTPHandler {
       Response response = await _dio.get(
         '$baseURL/cartorder?api_token=$token',
       );
-      if (response.statusCode == 200)
+      if (response.data['status'].contains('success'))
         return true;
       else
         return false;
@@ -514,17 +482,21 @@ class HTTPHandler {
     }
   }
 
-  Future<List<Cart>> getCartItems(String token) async {
+  Future<List<CartOverView>> getCartItems(String token) async {
     try {
-      List<Cart> cartItems = [];
+      List<CartOverView> cartItems = [];
 
       Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
 
-      for (var i = 0; i < (response.data).length; i++)
-        cartItems.add(Cart.fromMap((response.data)[i]));
-
-      print(cartItems);
-      return cartItems.reversed.toList();
+      print(response.data);
+      if (response.data.length != 0) {
+        for (String i in response.data.keys) {
+          cartItems.add(CartOverView.fromMap(int.parse(i), response.data[i]));
+        }
+        print(cartItems);
+        return cartItems.reversed.toList();
+      }
+      return [];
     } catch (e) {
       print(e);
       throw e;
@@ -578,10 +550,13 @@ class HTTPHandler {
           await _dio.get('$baseURL/showbill/$orderId?api_token=$token');
 
       //print(response.data);
-      for (var i = 0; i < response.data['bills'].length; i++)
-        bills.add(Bill.mapToBill(response.data['bills'][i]));
-      print(bills.toString());
-      return bills;
+      if (response.data.contains('bills')) {
+        for (var i = 0; i < response.data['bills'].length; i++)
+          bills.add(Bill.mapToBill(response.data['bills'][i]));
+        print(bills.toString());
+        return bills;
+      } else
+        return [];
     } catch (e) {
       print(e);
       throw e;
@@ -599,17 +574,33 @@ class HTTPHandler {
     }
   }
 
-  Future<List<Chat>> getChats(String token) async {
+  Future<List<ChatOverView>> getChats(String token) async {
     try {
       Response response = await _dio.get('$baseURL/myinbox?api_token=$token');
 
-      List<Chat> chats = [];
-      for (var i = 0; i < response.data.length; i++) {
-        chats.add(Chat.fromMap(response.data[i]));
+      List<ChatOverView> chats = [];
+      for (String i in response.data.keys) {
+        chats.add(ChatOverView.fromMap(i, response.data[i]));
       }
 
       print(chats.toString());
       return chats;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<bool> readChats(String token, int adminId) async {
+    try {
+      Response response =
+          await _dio.get('$baseURL/readmsg/$adminId?api_token=$token');
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       print(e);
       throw e;

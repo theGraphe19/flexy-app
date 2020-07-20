@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../HTTP_handler.dart';
 import '../widgets/loading_body.dart';
 import '../widgets/chat_item.dart';
-import '../models/chat.dart';
+import '../models/chat_overview.dart';
 
 class ChatScreen extends StatefulWidget {
   static const routeName = '/chat-screen';
@@ -15,7 +15,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   String token;
   bool _chatsHandler = false;
-  List<Chat> _chats;
+  List<ChatOverView> _chats;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _getChats() {
@@ -52,8 +52,10 @@ class _ChatScreenState extends State<ChatScreen> {
             ? LoadingBody()
             : ListView.builder(
                 itemCount: _chats.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    ChatItem(_chats[index]),
+                itemBuilder: (BuildContext context, int index) => ChatItem(token,
+                  _chats[index],
+                  _scaffoldKey,
+                ),
               ),
       ),
     );

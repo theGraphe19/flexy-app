@@ -6,6 +6,7 @@ class Chat {
   String adminName;
   String message;
   DateTime timeStamp;
+  int status;
 
   Chat({
     this.id,
@@ -15,6 +16,7 @@ class Chat {
     this.adminName,
     this.message,
     this.timeStamp,
+    this.status,
   });
 
   Chat.fromMap(Map<dynamic, dynamic> map) {
@@ -25,5 +27,6 @@ class Chat {
     this.adminName = map['admin'];
     this.message = map['message'];
     this.timeStamp = DateTime.parse(map['created_at']);
+    this.status = int.parse(map['status']);
   }
 }
