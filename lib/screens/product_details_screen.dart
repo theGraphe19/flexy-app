@@ -333,70 +333,85 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ),
                               ),
                               SizedBox(height: 10.0),
-                              Container(
-                                height: 50.0,
-                                margin: const EdgeInsets.only(bottom: 5.0),
-                                child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: product.productColors
-                                        .map(
-                                          (ProductColor productColor) =>
-                                              GestureDetector(
-                                            onTap: () {
-                                              colorSelected = product
-                                                  .productColors
-                                                  .indexOf(productColor, 0);
+                              (product.productColors[0].color != null)
+                                  ? Container(
+                                      height: 50.0,
+                                      margin:
+                                          const EdgeInsets.only(bottom: 5.0),
+                                      child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: product.productColors
+                                              .map(
+                                                (ProductColor productColor) =>
+                                                    GestureDetector(
+                                                  onTap: () {
+                                                    colorSelected = product
+                                                        .productColors
+                                                        .indexOf(
+                                                            productColor, 0);
 
-                                              quantities = [];
-                                              for (var i = 0;
-                                                  i <
-                                                      product
-                                                          .productColors[
-                                                              colorSelected]
-                                                          .sizes
-                                                          .length;
-                                                  i++) quantities.add(0);
-                                              setState(() {});
-                                            },
-                                            child: Container(
-                                              width: 50.0,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Colors.grey,
+                                                    quantities = [];
+                                                    for (var i = 0;
+                                                        i <
+                                                            product
+                                                                .productColors[
+                                                                    colorSelected]
+                                                                .sizes
+                                                                .length;
+                                                        i++) quantities.add(0);
+                                                    setState(() {});
+                                                  },
+                                                  child: Container(
+                                                    width: 50.0,
+                                                    margin: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10.0),
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: Colors.grey,
+                                                      ),
+                                                      color: Color(int.parse(
+                                                              product
+                                                                  .productColors[product
+                                                                      .productColors
+                                                                      .indexOf(
+                                                                          productColor,
+                                                                          0)]
+                                                                  .color
+                                                                  .substring(
+                                                                      1, 7),
+                                                              radix: 16) +
+                                                          0xFF000000),
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.done,
+                                                        color: (colorSelected ==
+                                                                product
+                                                                    .productColors
+                                                                    .indexOf(
+                                                                        productColor,
+                                                                        0))
+                                                            ? Colors.white
+                                                            : Colors
+                                                                .transparent,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                                color: Color(int.parse(
-                                                        product
-                                                            .productColors[product
-                                                                .productColors
-                                                                .indexOf(
-                                                                    productColor,
-                                                                    0)]
-                                                            .color
-                                                            .substring(1, 7),
-                                                        radix: 16) +
-                                                    0xFF000000),
-                                              ),
-                                              child: Center(
-                                                child: Icon(
-                                                  Icons.done,
-                                                  color: (colorSelected ==
-                                                          product.productColors
-                                                              .indexOf(
-                                                                  productColor,
-                                                                  0))
-                                                      ? Colors.white
-                                                      : Colors.transparent,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                        .toList()),
-                              ),
+                                              )
+                                              .toList()),
+                                    )
+                                  : Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      width: double.infinity,
+                                      child: Text(
+                                        'No Color',
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    )
                             ],
                           ),
                         ),
@@ -639,6 +654,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     gravity: Toast.CENTER,
                   );
                 } else {
+                  if (product.productColors[0].color == null) colorSelected = 0;
                   DialogUtils().showCustomDialog(
                     context,
                     title: 'Confirm Order Details',
@@ -646,8 +662,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     product: product,
                     size: product.productColors[colorSelected].sizes,
                     quantity: quantities,
-                    color: product
-                        .productSizes[selectedSize].colors[colorSelected].color,
+                    color: product.productColors[colorSelected].color,
                     price: prize,
                     token: token,
                     scaffoldKey: scaffoldKey,
