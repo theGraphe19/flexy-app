@@ -1,26 +1,22 @@
+import './order_details.dart';
+
 class Bill {
-  int id;
-  String orderId;
-  String productId;
-  String userId;
-  String billDocument;
-  String status;
+  List<OrderDetails> orders;
+  List<dynamic> bills;
 
   Bill({
-    this.id,
-    this.orderId,
-    this.productId,
-    this.userId,
-    this.billDocument,
-    this.status,
+    this.orders,
+    this.bills,
   });
 
-  Bill.mapToBill(Map<dynamic, dynamic> map) {
-    this.id = map['id'];
-    this.orderId = map['order_id'];
-    this.productId = map['product_id'];
-    this.userId = map['user_id'];
-    this.billDocument = map['bill'];
-    this.status = map['status'];
+  Bill.fromMap(
+    Map<dynamic, dynamic> map,
+    int billId,
+  ) {
+    orders = [];
+    for (var i = 0; i < map['orders'].length; i++) {
+      orders.add(OrderDetails.mapToBill(map['orders'][i], billId));
+    }
+    this.bills = map['bills'];
   }
 }

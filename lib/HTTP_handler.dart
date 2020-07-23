@@ -543,20 +543,15 @@ class HTTPHandler {
     }
   }
 
-  Future<List<Bill>> getBills(String token, String orderId) async {
+  Future<Bill> getBills(String token, int billId) async {
     try {
-      List<Bill> bills = [];
       Response response =
-          await _dio.get('$baseURL/showbill/$orderId?api_token=$token');
+          await _dio.get('$baseURL/showbill/$billId?api_token=$token');
 
-      //print(response.data);
-      if (response.data.contains('bills')) {
-        for (var i = 0; i < response.data['bills'].length; i++)
-          bills.add(Bill.mapToBill(response.data['bills'][i]));
-        print(bills.toString());
-        return bills;
+      if (response.statusCode == 200) {
+        return Bill.fromMap(response.data, billId);
       } else
-        return [];
+        return null;
     } catch (e) {
       print(e);
       throw e;

@@ -839,7 +839,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   right: 20.0,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
                   borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(20.0),
                     topRight: Radius.circular(20.0),
