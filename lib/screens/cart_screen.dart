@@ -133,27 +133,40 @@ class CartScreenState extends State<CartScreen> {
                                                     token)
                                                 .then((value) {
                                               productDetails = value;
-                                              for (var i = 0;
-                                                  i <
-                                                      productDetails.product
-                                                          .productColors.length;
-                                                  i++) {
-                                                if (productDetails.product
-                                                        .productColors[i].color
-                                                        .contains(items[index]
-                                                            .cartItems[0]
-                                                            .color) &&
-                                                    items[index]
-                                                        .cartItems[0]
-                                                        .color
-                                                        .contains(productDetails
+                                              print(
+                                                  productDetails.product.name);
+                                              if (productDetails.product
+                                                      .productColors[0].color ==
+                                                  null)
+                                                colorSelected = 0;
+                                              else
+                                                for (var i = 0;
+                                                    i <
+                                                        productDetails
                                                             .product
-                                                            .productColors[i]
-                                                            .color)) {
-                                                  colorSelected = i;
-                                                  break;
+                                                            .productColors
+                                                            .length;
+                                                    i++) {
+                                                  if (productDetails
+                                                          .product
+                                                          .productColors[i]
+                                                          .color
+                                                          .contains(items[index]
+                                                              .cartItems[0]
+                                                              .color) &&
+                                                      items[index]
+                                                          .cartItems[0]
+                                                          .color
+                                                          .contains(
+                                                              productDetails
+                                                                  .product
+                                                                  .productColors[
+                                                                      i]
+                                                                  .color)) {
+                                                    colorSelected = i;
+                                                    break;
+                                                  }
                                                 }
-                                              }
                                               print(productDetails
                                                   .product
                                                   .productColors[colorSelected]
@@ -358,24 +371,10 @@ class CartScreenState extends State<CartScreen> {
             );
           } else {
             setState(() {
-              Navigator.of(context)
-                  .pushNamed(
+              Navigator.of(context).pushNamed(
                 CheckOutFromCart.routeName,
                 arguments: currentUser,
-              )
-                  .then((value) {
-                itemsHandler = false;
-                setState(() {
-                  scaffoldKey.currentState.showSnackBar(SnackBar(
-                    content: Text(
-                      'Order Placed',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Color(0xff6c757d),
-                    duration: Duration(seconds: 3),
-                  ));
-                });
-              });
+              );
             });
           }
         },

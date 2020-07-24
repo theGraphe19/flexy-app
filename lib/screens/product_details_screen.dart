@@ -107,7 +107,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       isAnUpdate = arguments[4] as bool;
       _changeCartState = arguments[5] as CartScreenState;
       quantities = arguments[6];
-      if (!productsController)
+      if (!productsController) if (product.productColors[0].color != null) {
         for (var i = 0; i < product.productColors.length; i++) {
           if (product.productColors[i].color.contains(arguments[7]) &&
               arguments[7].contains(product.productColors[i].color)) {
@@ -115,6 +115,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             break;
           }
         }
+      } else {
+        colorSelected = 0;
+      }
       cartId = arguments[8];
     } else {
       isAnUpdate = false;

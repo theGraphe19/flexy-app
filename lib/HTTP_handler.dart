@@ -508,6 +508,7 @@ class HTTPHandler {
       List<Order> orderedItems = [];
       Response response = await _dio.get("$baseURL/myorders?api_token=$token");
 
+      if (response.data.isEmpty) return null;
       print(response.data.keys);
       for (String i in response.data.keys) {
         orderedItems
