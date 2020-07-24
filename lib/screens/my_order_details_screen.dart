@@ -74,7 +74,7 @@ class _MyOrderDetailsScreenState extends State<MyOrderDetailsScreen> {
             ),
       floatingActionButton: GestureDetector(
         onTap: () {
-          print('tapped : ${orders[0].id}');
+          print('tapped : ${orders[0].billId}');
           Navigator.of(context).pushNamed(
             BillScreen.routeName,
             arguments: orders[0],

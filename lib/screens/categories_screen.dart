@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import './products_screen.dart';
 import '../models/user.dart';
@@ -80,6 +81,27 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         ),
       );
     });
+  }
+
+  @override
+  void initState() {
+    final fbm = FirebaseMessaging();
+    fbm.requestNotificationPermissions();
+    fbm.configure(
+      onMessage: (message) {
+        print('onMessage => $message');
+        return;
+      },
+      onLaunch: (message) {
+        print('onLaunch => $message');
+        return;
+      },
+      onResume: (message) {
+        print('onResume => $message');
+        return;
+      },
+    );
+    super.initState();
   }
 
   @override

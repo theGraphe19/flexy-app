@@ -6,6 +6,7 @@ import '../screens/my_orders_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/view_update_profile_screen.dart';
 import '../screens/chat_screen.dart';
+import '../screens/legal_details_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../screens/start_screen.dart';
@@ -16,6 +17,7 @@ import '../screens/start_screen.dart';
 <a target="_blank" href="https://icons8.com/icons/set/purchase-order">Purchase Order icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 <a target="_blank" href="https://icons8.com/icons/set/exit">Exit icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 <a target="_blank" href="https://icons8.com/icons/set/phone">Phone icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+<a target="_blank" href="https://icons8.com/icons/set/connected-people">Connected People icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 */
 
 class SideDrawer {
@@ -123,6 +125,17 @@ class SideDrawer {
                   .pushNamed(MyOrdersScreen.routeName, arguments: user.token);
             },
             'assets/images/order.png',
+          ),
+          Divider(),
+          SizedBox(height: 5.0),
+          _drawerTile(
+            'Legal Details',
+            () {
+              print('legal details');
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(LegalDetailsScreen.routeName);
+            },
+            'assets/images/legal.png',
           ),
           Divider(),
           SizedBox(height: 5.0),

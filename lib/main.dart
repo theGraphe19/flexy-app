@@ -21,6 +21,7 @@ import './screens/view_update_profile_screen.dart';
 import './screens/my_order_details_screen.dart';
 import './screens/check_out_screen.dart';
 import './screens/chat_screen.dart';
+import './screens/legal_details_screen.dart';
 
 import './providers/product_provider.dart';
 import './HTTP_handler.dart';
@@ -117,6 +118,7 @@ class _MyAppState extends State<MyApp> {
           CheckOutFromCart.routeName: (ctx) => CheckOutFromCart(),
           MyOrderDetailsScreen.routeName: (ctx) => MyOrderDetailsScreen(),
           ChatScreen.routeName: (ctx) => ChatScreen(),
+          LegalDetailsScreen.routeName: (ctx) => LegalDetailsScreen(),
         },
       ),
     );

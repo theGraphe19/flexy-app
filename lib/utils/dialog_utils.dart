@@ -171,21 +171,22 @@ class DialogUtils {
             SizedBox(height: 5.0),
             orderDescriptiontile('Category', productDetails.product.category),
             SizedBox(height: 5.0),
-            // orderDescriptiontile('Size', this.size),
-            // SizedBox(height: 5.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text('Color'),
-                Container(
-                  height: 20.0,
-                  width: 40.0,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      color: Color(
-                          int.parse(this.color.substring(1, 7), radix: 16) +
-                              0xFF000000)),
-                ),
+                (color == null)
+                    ? Text('No Color')
+                    : Container(
+                        height: 20.0,
+                        width: 40.0,
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                            color: Color(int.parse(this.color.substring(1, 7),
+                                    radix: 16) +
+                                0xFF000000)),
+                      ),
               ],
             ),
             Divider(),
