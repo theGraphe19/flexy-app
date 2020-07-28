@@ -70,7 +70,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     productsController = true;
     _handler.getProductDetails(product.productId, token).then((value1) {
       productDetails = value1;
-      print(productDetails.product.name);
+      print(productDetails.product.productColors[0].sizes.length);
+      print(quantities);
       if (quantities == null) {
         quantities = [];
         for (var i = 0; i < product.productColors[0].sizes.length; i++)

@@ -59,7 +59,7 @@ class HTTPHandler {
       List<Product> products = [];
       if (response.statusCode == 200) {
         for (var i = 0; i < response.data.length; i++) {
-          products.add(Product.mapToDetails(response.data[i]));
+          products.add(Product.mapToSearch(response.data[i]));
         }
 
         print(products.toString());
