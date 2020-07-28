@@ -72,7 +72,26 @@ class WishlistBottomSheet {
             Divider(),
             Expanded(
               child: (_favouriteProducts == null)
-                  ? LoadingBody()
+                  ? Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 70.0,
+                            width: 70.0,
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                            child: Image.asset('assets/images/wait.png'),
+                          ),
+                          Text(
+                            'No items added yet!',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   : ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: _favouriteProducts.length,
