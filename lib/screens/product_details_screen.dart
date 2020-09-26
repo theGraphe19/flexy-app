@@ -666,7 +666,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     product: product,
                     size: product.productColors[colorSelected].sizes,
                     quantity: quantities,
-                    color: product.productColors[colorSelected].color,
+                    color: product.productColors[colorSelected],
                     price: prize,
                     token: token,
                     scaffoldKey: scaffoldKey,

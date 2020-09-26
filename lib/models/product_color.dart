@@ -7,6 +7,8 @@ class ProductColor {
   int stock;
   List<ProductSize> sizes;
 
+  ProductColor.onlyColor({this.color, this.colorName});
+
   ProductColor.fromMap(Map<String, dynamic> map) {
     if (map['color'] != null) this.color = map['color'];
     this.colorName = map['color_name'];

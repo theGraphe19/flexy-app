@@ -240,7 +240,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: 250.0,
+          height: 350.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
           child: Column(

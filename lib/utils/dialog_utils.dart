@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/product_details.dart';
 import '../models/product.dart';
 import '../models/product_size.dart';
+import '../models/product_color.dart';
 import '../HTTP_handler.dart';
 
 class DialogUtils {
@@ -11,7 +12,7 @@ class DialogUtils {
   ProductDetails productDetails;
   Product product;
   List<ProductSize> size;
-  String color;
+  ProductColor color;
   List<int> quantity;
   int price;
 
@@ -27,7 +28,7 @@ class DialogUtils {
     ProductDetails productDetails,
     Product product,
     List<ProductSize> size,
-    String color,
+    ProductColor color,
     List<int> quantity,
     int price,
     String token,
@@ -79,7 +80,7 @@ class DialogUtils {
                       .placeOrder(
                     product.productId,
                     token,
-                    color,
+                    color.color,
                     orderList,
                   )
                       .then((value) {
@@ -177,15 +178,22 @@ class DialogUtils {
                 Text('Color'),
                 (color == null)
                     ? Text('No Color')
-                    : Container(
-                        height: 20.0,
-                        width: 40.0,
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            color: Color(int.parse(this.color.substring(1, 7),
-                                    radix: 16) +
-                                0xFF000000)),
+                    : Row(
+                        children: [
+                          Text(color.colorName),
+                          SizedBox(width: 10.0),
+                          Container(
+                            height: 20.0,
+                            width: 40.0,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                color: Color(int.parse(
+                                        this.color.color.substring(1, 7),
+                                        radix: 16) +
+                                    0xFF000000)),
+                          ),
+                        ],
                       ),
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import '../models/cart_overview.dart';
 import '../models/product_details.dart';
 import '../models/product_size.dart';
+import '../models/product_color.dart';
 import '../utils/dialog_utils.dart';
 import '../HTTP_handler.dart';
 
@@ -69,7 +70,10 @@ class CheckOutItem extends StatelessWidget {
               context,
               title: 'Item Details',
               cancelBtnText: 'OK',
-              color: item.cartItems[0].color,
+              color: ProductColor.onlyColor(
+                color: item.cartItems[0].color,
+                colorName: item.cartItems[0].colorName,
+              ),
               okBtnText: '',
               price: prize,
               product: productDetails.product,
