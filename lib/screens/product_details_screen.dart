@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -159,8 +161,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               Center(
                                 child: (product.productImages.length > 0)
                                     ? imagePageView()
-                                    : Image.network(
-                                        'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+                                    : PhotoView(
+                                        backgroundDecoration:
+                                            BoxDecoration(color: Colors.white),
+                                        imageProvider: NetworkImage(
+                                            'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+                                      ),
                               ),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -605,24 +611,36 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
       );
 
-  Widget imagePageView() => PageView.builder(
-        itemCount: product.productImages.length,
-        onPageChanged: (int currentIndex) {
-          setState(() {
-            currentActiveIndex = currentIndex;
-          });
-        },
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            width: double.infinity,
-            height: 400.0,
-            color: Colors.white,
-            child: Center(
-              child: Image.network(
-                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+  Widget imagePageView() => Container(
+        child: PhotoViewGallery.builder(
+          scrollPhysics: BouncingScrollPhysics(),
+          itemCount: product.productImages.length,
+          onPageChanged: (int currentIndex) {
+            setState(() {
+              currentActiveIndex = currentIndex;
+            });
+          },
+          loadingBuilder: (BuildContext context, ImageChunkEvent event) =>
+              Center(
+            child: Container(
+              width: 20.0,
+              height: 20.0,
+              child: CircularProgressIndicator(
+                value: event == null
+                    ? 0
+                    : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                backgroundColor: Colors.red[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+              ),
             ),
-          );
-        },
+          ),
+          builder: (BuildContext context, int index) =>
+              PhotoViewGalleryPageOptions(
+            imageProvider: NetworkImage(
+                'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+          ),
+          backgroundDecoration: BoxDecoration(color: Colors.white),
+        ),
       );
 
   Widget orderButton() => Container(
