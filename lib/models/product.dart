@@ -10,6 +10,7 @@ class Product {
   String tagline;
   String subCategory;
   String productTags;
+  bool isFav;
   List<ProductSize> productSizes;
   List<dynamic> productImages;
   List<ProductColor> productColors;
@@ -26,9 +27,12 @@ class Product {
     this.productSizes,
     this.productImages,
     this.productColors,
-  });
+  }) {
+    this.isFav = false;
+  }
 
   void mapToProduct(Map<dynamic, dynamic> map) {
+    this.isFav = false;
     this.id = map['uniq_id'];
     this.productId = map['id'];
     this.name = map['name'];
@@ -47,6 +51,7 @@ class Product {
   }
 
   Product.mapToDetails(Map<dynamic, dynamic> map) {
+    this.isFav = false;
     this.id = map['uniq_id'];
     this.productId = map['id'];
     this.name = map['name'];
@@ -65,6 +70,7 @@ class Product {
   }
 
   Product.mapToSearch(Map<dynamic, dynamic> map) {
+    this.isFav = false;
     this.id = map['uniq_id'];
     this.productId = map['id'];
     this.name = map['name'];

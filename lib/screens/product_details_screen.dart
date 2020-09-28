@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:provider/provider.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
 import '../widgets/loading_body.dart';
-import '../widgets/product_item.dart';
+import '../widgets/product_item_unrelated.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
 import '../utils/dialog_utils.dart';
@@ -15,6 +16,7 @@ import './cart_screen.dart';
 import '../models/user.dart';
 import './search_screen.dart';
 import '../utils/wishlist_bottom_sheet.dart';
+import '../providers/product_provider.dart';
 
 /*
 <a target="_blank" href="https://icons8.com/icons/set/like">Heart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -47,6 +49,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   WishlistBottomSheet _wishlistBottomSheet;
   List<int> quantities;
   int cartId;
+  ProductProvider _productProvider;
 
   Route _createRoute() {
     return PageRouteBuilder(
@@ -94,6 +97,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _productProvider = Provider.of<ProductProvider>(context);
     _wishlistBottomSheet = WishlistBottomSheet(
       context: context,
       categoryId: categoryId,
@@ -345,7 +349,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               SizedBox(height: 10.0),
                               (product.productColors[0].color != null)
                                   ? Container(
-                                      height: 50.0,
+                                      height: 90.0,
                                       margin:
                                           const EdgeInsets.only(bottom: 5.0),
                                       child: ListView(
@@ -371,43 +375,58 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                         i++) quantities.add(0);
                                                     setState(() {});
                                                   },
-                                                  child: Container(
-                                                    width: 50.0,
-                                                    margin: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 10.0),
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                        color: Colors.grey,
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        width: 50.0,
+                                                        height: 50.0,
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 10.0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          border: Border.all(
+                                                            color: Colors.grey,
+                                                          ),
+                                                          color: Color(int.parse(
+                                                                  product
+                                                                      .productColors[product
+                                                                          .productColors
+                                                                          .indexOf(
+                                                                              productColor,
+                                                                              0)]
+                                                                      .color
+                                                                      .substring(
+                                                                          1, 7),
+                                                                  radix: 16) +
+                                                              0xFF000000),
+                                                        ),
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.done,
+                                                            color: (colorSelected ==
+                                                                    product
+                                                                        .productColors
+                                                                        .indexOf(
+                                                                            productColor,
+                                                                            0))
+                                                                ? Colors.white
+                                                                : Colors
+                                                                    .transparent,
+                                                          ),
+                                                        ),
                                                       ),
-                                                      color: Color(int.parse(
-                                                              product
-                                                                  .productColors[product
-                                                                      .productColors
-                                                                      .indexOf(
-                                                                          productColor,
-                                                                          0)]
-                                                                  .color
-                                                                  .substring(
-                                                                      1, 7),
-                                                              radix: 16) +
-                                                          0xFF000000),
-                                                    ),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.done,
-                                                        color: (colorSelected ==
-                                                                product
-                                                                    .productColors
-                                                                    .indexOf(
-                                                                        productColor,
-                                                                        0))
-                                                            ? Colors.white
-                                                            : Colors
-                                                                .transparent,
-                                                      ),
-                                                    ),
+                                                      SizedBox(height: 10.0),
+                                                      Text(product
+                                                          .productColors[product
+                                                              .productColors
+                                                              .indexOf(
+                                                                  productColor,
+                                                                  0)]
+                                                          .colorName),
+                                                    ],
                                                   ),
                                                 ),
                                               )
@@ -456,9 +475,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 10.0),
                                     child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Container(
-                                          width: 30.0,
                                           child: Text(
                                             productSize.size,
                                             textAlign: TextAlign.center,
@@ -470,31 +490,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           ),
                                         ),
                                         SizedBox(width: 5.0),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              if (quantities[index] > 0)
-                                                quantities[index]--;
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.indeterminate_check_box,
-                                            size: 40.0,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.0),
-                                        Text(quantities[index].toString()),
-                                        SizedBox(width: 10.0),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              quantities[index]++;
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.add_box,
-                                            size: 40.0,
-                                          ),
+                                        Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  if (quantities[index] > 0)
+                                                    quantities[index]--;
+                                                });
+                                              },
+                                              child: Icon(
+                                                Icons.indeterminate_check_box,
+                                                size: 40.0,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10.0),
+                                            Text(quantities[index].toString()),
+                                            SizedBox(width: 10.0),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  quantities[index]++;
+                                                });
+                                              },
+                                              child: Icon(
+                                                Icons.add_box,
+                                                size: 40.0,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -563,12 +587,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: ProductItem(
+                              child: ProductItemUnrelated(
                                 productDetails.relatedProducts[index],
                                 user,
                                 categoryId,
                                 scaffoldKey,
-                                false,
                               ),
                             ),
                           ),
@@ -644,10 +667,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       );
 
   Widget orderButton() => Container(
-        // padding: const EdgeInsets.symmetric(
-        //   horizontal: 15.0,
-        //   vertical: 10.0,
-        // ),
         margin: const EdgeInsets.only(
           left: 15.0,
           right: 15.0,
