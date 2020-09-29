@@ -15,6 +15,7 @@ class DialogUtils {
   ProductColor color;
   List<int> quantity;
   int price;
+  List<ProductColor> colors;
 
   DialogUtils.internal();
 
@@ -33,6 +34,7 @@ class DialogUtils {
     int price,
     String token,
     GlobalKey<ScaffoldState> scaffoldKey,
+    @required List<ProductColor> colors,
   }) {
     this.context = context;
     this.productDetails = productDetails;
@@ -41,26 +43,26 @@ class DialogUtils {
     this.color = color;
     this.quantity = quantity;
     this.price = price;
+    this.colors = colors;
     showDialog(
         context: context,
         builder: (_) {
           return AlertDialog(
-            title: Text(title),
-            content: Container(
-              height: double.infinity,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: <Widget>[
-                  orderImage(),
-                  SizedBox(height: 10.0),
-                  orderDescription(),
-                ],
-              ),
+            scrollable: true,
+            contentPadding: EdgeInsets.all(0.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Text(title),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                orderImage(),
+                SizedBox(height: 10.0),
+                orderDescription(),
+              ],
             ),
             actions: <Widget>[
               FlatButton(
@@ -129,8 +131,9 @@ class DialogUtils {
   }
 
   Widget orderImage() => Container(
-        height: 300.0,
-        width: 400.0,
+        width: 380.0,
+        height: 380.0,
+        margin: const EdgeInsets.only(top: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.rectangle,
@@ -175,37 +178,38 @@ class DialogUtils {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('Color'),
-                (color == null)
-                    ? Text('No Color')
-                    : Row(
-                        children: [
-                          Text(color.colorName),
-                          SizedBox(width: 10.0),
-                          Container(
-                            height: 20.0,
-                            width: 40.0,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                color: Color(int.parse(
-                                        this.color.color.substring(1, 7),
-                                        radix: 16) +
-                                    0xFF000000)),
-                          ),
-                        ],
-                      ),
+                if (color == null) Text('Color'),
+                if (color == null) Text('No Color')
+                // else
+                //   Row(
+                //     children: [
+                //       Text(color.colorName),
+                //       SizedBox(width: 10.0),
+                //       Container(
+                //         height: 20.0,
+                //         width: 40.0,
+                //         decoration: BoxDecoration(
+                //             borderRadius:
+                //                 BorderRadius.all(Radius.circular(10.0)),
+                //             color: Color(int.parse(
+                //                     this.color.color.substring(1, 7),
+                //                     radix: 16) +
+                //                 0xFF000000)),
+                //       ),
+                //     ],
+                //   ),
               ],
             ),
             Divider(),
-            orderDescriptiontile('Size', 'Quantity'),
+            orderDescriptiontile('Size (Color)', 'Quantity'),
             Divider(),
             Column(
               children: size.map((e) {
                 if (quantity[size.indexOf(e, 0)] != 0)
                   return Column(
                     children: <Widget>[
-                      orderDescriptiontile(size[size.indexOf(e, 0)].size,
+                      orderDescriptiontile(
+                          '${size[size.indexOf(e, 0)].size} ( ${colors[size.indexOf(e)].colorName} )',
                           quantity[size.indexOf(e, 0)].toString()),
                     ],
                   );

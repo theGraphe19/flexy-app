@@ -681,12 +681,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           children: [
             GestureDetector(
               onTap: () {
+                List<ProductColor> colorList = [];
                 int prize = 0;
                 for (int i = 0; i < quantities.length; i++) {
-                  if (quantities[i] != 0)
+                  if (quantities[i] != 0) {
                     prize +=
                         product.productColors[colorSelected].sizes[i].price *
                             quantities[i];
+                    colorList.add(product.productColors[colorSelected]);
+                  }
                 }
                 if (prize == 0) {
                   Toast.show(
@@ -707,6 +710,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     price: prize,
                     token: token,
                     scaffoldKey: scaffoldKey,
+                    colors: colorList,
                   );
                 }
               },

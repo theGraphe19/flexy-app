@@ -17,6 +17,7 @@ class CheckOutItem extends StatelessWidget {
   ProductDetails productDetails;
   int prize = 0;
   ProgressDialog progressDialog;
+  List<ProductColor> colorsList = [];
 
   CheckOutItem(
     this.item,
@@ -43,8 +44,13 @@ class CheckOutItem extends StatelessWidget {
     );
 
     for (int i = 0; i < item.cartItems.length; i++) {
-      if (item.cartItems[i].quantity != 0)
+      if (item.cartItems[i].quantity != 0) {
         prize += item.cartItems[i].productPrice * item.cartItems[i].quantity;
+        colorsList.add(ProductColor.onlyColor(
+          color: item.cartItems[i].color,
+          colorName: item.cartItems[i].colorName,
+        ));
+      }
     }
 
     return Padding(
@@ -82,6 +88,7 @@ class CheckOutItem extends StatelessWidget {
               scaffoldKey: scaffoldKey,
               size: sizes,
               token: token,
+              colors: colorsList,
             );
           }).catchError((e) {
             print(e);
