@@ -5,6 +5,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import '../models/cart_overview.dart';
 import '../models/product_details.dart';
 import '../models/product_size.dart';
+import '../models/product_color.dart';
 import '../utils/dialog_utils.dart';
 import '../HTTP_handler.dart';
 
@@ -16,6 +17,7 @@ class CheckOutItem extends StatelessWidget {
   ProductDetails productDetails;
   int prize = 0;
   ProgressDialog progressDialog;
+  List<ProductColor> colorsList = [];
 
   CheckOutItem(
     this.item,
@@ -42,8 +44,13 @@ class CheckOutItem extends StatelessWidget {
     );
 
     for (int i = 0; i < item.cartItems.length; i++) {
-      if (item.cartItems[i].quantity != 0)
+      if (item.cartItems[i].quantity != 0) {
         prize += item.cartItems[i].productPrice * item.cartItems[i].quantity;
+        colorsList.add(ProductColor.onlyColor(
+          color: item.cartItems[i].color,
+          colorName: item.cartItems[i].colorName,
+        ));
+      }
     }
 
     return Padding(
@@ -69,7 +76,10 @@ class CheckOutItem extends StatelessWidget {
               context,
               title: 'Item Details',
               cancelBtnText: 'OK',
-              color: item.cartItems[0].color,
+              color: ProductColor.onlyColor(
+                color: item.cartItems[0].color,
+                colorName: item.cartItems[0].colorName,
+              ),
               okBtnText: '',
               price: prize,
               product: productDetails.product,
@@ -78,6 +88,7 @@ class CheckOutItem extends StatelessWidget {
               scaffoldKey: scaffoldKey,
               size: sizes,
               token: token,
+              colors: colorsList,
             );
           }).catchError((e) {
             print(e);

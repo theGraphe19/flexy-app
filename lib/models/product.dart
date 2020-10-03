@@ -10,6 +10,7 @@ class Product {
   String tagline;
   String subCategory;
   String productTags;
+  bool isFav;
   List<ProductSize> productSizes;
   List<dynamic> productImages;
   List<ProductColor> productColors;
@@ -26,9 +27,12 @@ class Product {
     this.productSizes,
     this.productImages,
     this.productColors,
-  });
+  }) {
+    this.isFav = false;
+  }
 
   void mapToProduct(Map<dynamic, dynamic> map) {
+    this.isFav = false;
     this.id = map['uniq_id'];
     this.productId = map['id'];
     this.name = map['name'];
@@ -47,6 +51,26 @@ class Product {
   }
 
   Product.mapToDetails(Map<dynamic, dynamic> map) {
+    this.isFav = false;
+    this.id = map['uniq_id'];
+    this.productId = map['id'];
+    this.name = map['name'];
+    this.description = map['description'];
+    this.category = map['category'].toString();
+    this.tagline = map['tagline'];
+    this.subCategory = map['subcategory'].toString();
+    this.productTags = map['product_tags'].toString();
+    this.productImages = map['product_images'];
+    this.productSizes = [];
+    for (var i = 0; i < map['product_sizes'].length; i++)
+      productSizes.add(ProductSize.mapToProductSize(map['product_sizes'][i]));
+    this.productColors = [];
+    for (var i = 0; i < map['product_colors'].length; i++)
+      productColors.add(ProductColor.fromProductMap(map['product_colors'][i]));
+  }
+
+  Product.mapToSearch(Map<dynamic, dynamic> map) {
+    this.isFav = false;
     this.id = map['uniq_id'];
     this.productId = map['id'];
     this.name = map['name'];

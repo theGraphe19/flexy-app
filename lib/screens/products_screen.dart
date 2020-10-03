@@ -26,7 +26,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
 
-  List<Product> productList;
+  bool _productsLoaded = false;
   ProductProvider _productProvider;
   WishlistBottomSheet _wishlistBottomSheet;
 
@@ -58,8 +58,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
     _handler
         .getProductsList(context, currentUser.token, category.id.toString())
         .then((value) {
-      productList = value;
-      setState(() {});
+      setState(() {
+        _productsLoaded = true;
+      });
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
@@ -132,17 +133,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
         children: <Widget>[
           Divider(),
           Expanded(
-            child: (productList == null)
+            child: (!_productsLoaded)
                 ? LoadingBody()
                 : GridView.builder(
-                    itemCount: productList.length,
+                    itemCount: _productProvider.productsList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.59,
                     ),
                     itemBuilder: (BuildContext context, int index) =>
                         ProductItem(
-                      productList[index],
+                      index,
                       currentUser,
                       category.id,
                       scaffoldKey,
@@ -195,17 +196,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   void _handleRadioValueChange1(int value) {
     if (value == 1) {
-      print(productList[0].name);
-      productList.sort((p1, p2) =>
+      print(_productProvider.productsList[0].name);
+      _productProvider.productsList.sort((p1, p2) =>
           p1.productSizes[0].price.compareTo(p2.productSizes[0].price));
-      print(productList[0].name);
+      print(_productProvider.productsList[0].name);
     }
     if (value == 2) {
-      print(productList[0].name);
-      productList.sort((p1, p2) =>
+      print(_productProvider.productsList[0].name);
+      _productProvider.productsList.sort((p1, p2) =>
           p1.productSizes[0].price.compareTo(p2.productSizes[0].price));
-      productList = productList.reversed.toList();
-      print(productList[0].name);
+      _productProvider.productList =
+          _productProvider.productsList.reversed.toList();
+      print(_productProvider.productsList[0].name);
     }
     setState(() {
       _radioValue = value;
@@ -215,18 +217,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   void _handleRadioValueChange2(int value) {
     List<Product> newList = [];
-    productList = _productProvider.productsList;
+    _productProvider.productList = _productProvider.productsListDuplicate;
     if (value != 0) {
-      for (var i = 0; i < productList.length; i++) {
-        if (productList[i]
-                .subCategory
+      for (var i = 0; i < _productProvider.productsList.length; i++) {
+        if (_productProvider.productsList[i].subCategory
                 .contains(category.subCategories[value - 1]) &&
             category.subCategories[value - 1]
-                .contains(productList[i].subCategory)) {
-          newList.add(productList[i]);
+                .contains(_productProvider.productsList[i].subCategory)) {
+          newList.add(_productProvider.productsList[i]);
         }
       }
-      productList = newList;
+      _productProvider.productList = newList;
     }
     print(value);
     setState(() {
@@ -240,7 +241,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: 250.0,
+          height: 350.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
           child: Column(

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/loading_body.dart';
 import '../widgets/product_item.dart';
 import '../providers/product_provider.dart';
+import '../providers/favourite_product_provider.dart';
 import '../models/product.dart';
 import '../models/user.dart';
 
@@ -16,6 +16,7 @@ class WishlistBottomSheet {
   int categoryId;
   User user;
   ProductProvider _productProvider;
+  FavouriteProductProvider _favouriteProductProvider;
   List<Product> _favouriteProducts;
 
   WishlistBottomSheet({
@@ -25,6 +26,8 @@ class WishlistBottomSheet {
     @required this.user,
   }) {
     _productProvider = Provider.of<ProductProvider>(context);
+    _favouriteProductProvider =
+        Provider.of<FavouriteProductProvider>(context, listen: true);
   }
 
   void _getFavouriteList() async {
@@ -38,6 +41,8 @@ class WishlistBottomSheet {
         _favouriteProducts.add(_productProvider.getProduct(favouriteList[i]));
       }
     }
+    _favouriteProductProvider.clear();
+    _favouriteProductProvider.addItem(_favouriteProducts);
     print(favouriteList.toString());
     print(_favouriteProducts.toString());
   }
@@ -71,15 +76,39 @@ class WishlistBottomSheet {
             ),
             Divider(),
             Expanded(
-              child: (_favouriteProducts == null)
-                  ? LoadingBody()
+              child: (_favouriteProductProvider.favProductsList == null ||
+                      _favouriteProductProvider.favProductsList.length == 0)
+                  ? Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 70.0,
+                            width: 70.0,
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                            child: Image.asset('assets/images/wait.png'),
+                          ),
+                          Text(
+                            'No items added yet!',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   : ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: _favouriteProducts.length,
+                      itemCount:
+                          _favouriteProductProvider.favProductsList.length,
                       itemBuilder: (BuildContext context, int index) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: ProductItem(
-                          _favouriteProducts[index],
+                          // _favouriteProducts[index],
+                          // index,
+                          _productProvider.productsList.indexOf(
+                              _favouriteProductProvider.favProductsList[index]),
                           user,
                           categoryId,
                           scaffoldKey,

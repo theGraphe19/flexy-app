@@ -24,6 +24,7 @@ import './screens/chat_screen.dart';
 import './screens/legal_details_screen.dart';
 
 import './providers/product_provider.dart';
+import './providers/favourite_product_provider.dart';
 import './HTTP_handler.dart';
 
 void main() {
@@ -73,8 +74,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: ProductProvider(),
+        ChangeNotifierProvider(
+          builder: (_) => ProductProvider(),
+        ),
+        ChangeNotifierProvider(
+          builder: (_) => FavouriteProductProvider(),
         ),
       ],
       child: MaterialApp(
