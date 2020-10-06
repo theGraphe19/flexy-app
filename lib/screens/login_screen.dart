@@ -209,31 +209,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ));
                   } else {
                     _handler
-                        .verifyOTP(_mobileController.text, _otpController.text)
-                        .then((bool verified) {
-                      print(verified);
-                      if (!verified) {
-                        // TODO - Change to verified once we get transactionam OTP
-                        _handler
-                            .loginUser(_mobileController.text)
-                            .then((User user) {
-                          _storeData(user.token, _checkedValue, user);
-                          Navigator.of(context).popAndPushNamed(
-                            CategoriesScreen.routeName,
-                            arguments: user,
-                          );
-                        }).catchError((e) {
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                              'Network error! Try again later.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Color(0xff6c757d),
-                            duration: Duration(seconds: 5),
-                          ));
-                          status = ForgotPassword.forgotAndNotVerified;
-                          setState(() {});
-                        });
+                        .verifyOTPLogin(
+                            _mobileController.text, _otpController.text)
+                        .then((User user) {
+                      if (user != null) {
+                        print(user.name);
+                        _storeData(user.token, _checkedValue, user);
+                        Navigator.of(context).popAndPushNamed(
+                          CategoriesScreen.routeName,
+                          arguments: user,
+                        );
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
@@ -320,7 +305,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
-                    _handler.sendOTP(_mobileController.text).then((bool uid) {
+                    _handler
+                        .sendOTP(_mobileController.text, 'login')
+                        .then((bool uid) {
                       if (!uid) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
@@ -335,6 +322,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {});
                       }
                     }).catchError((e) {
+                      print(e);
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text(
                           'Network error!',
