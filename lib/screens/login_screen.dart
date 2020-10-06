@@ -118,6 +118,41 @@ class _LoginScreenState extends State<LoginScreen> {
     print(_stayLoggedIn);
   }
 
+  void _resend() async {
+    await progressDialog.show();
+    _handler.sendOTP(_mobileController.text, 'login').then((bool value) async {
+      await progressDialog.hide();
+      if (value) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+            'OTP Sent Again',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff6c757d),
+          duration: Duration(seconds: 5),
+        ));
+      } else {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+            'OTP couldn\'t be sent.',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff6c757d),
+          duration: Duration(seconds: 5),
+        ));
+      }
+    }).catchError((e) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Network Error!',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 5),
+      ));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -180,6 +215,18 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: _otpController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(hintText: 'Enter OTP'),
+          ),
+          SizedBox(height: 15.0),
+          GestureDetector(
+            onTap: () => _resend(),
+            child: Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: Text(
+                'Didn\'t receive OTP? Send Again',
+                style: TextStyle(color: Colors.grey[400]),
+              ),
+            ),
           ),
           SizedBox(height: 20.0),
           Align(
