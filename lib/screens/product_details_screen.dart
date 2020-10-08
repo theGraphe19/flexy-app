@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product.dart';
@@ -50,6 +50,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   List<int> quantities;
   int cartId;
   ProductProvider _productProvider;
+  VideoPlayerController _controller;
+  Future<void> _initializeVideoPlayerFuture;
 
   Route _createRoute() {
     return PageRouteBuilder(
@@ -73,7 +75,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   getProductDetails() {
     productsController = true;
-    _handler.getProductDetails(product.productId, token).then((value1) {
+
+    _handler.getProductDetails(product.productId, token).then((value1) async {
       productDetails = value1;
       print(productDetails.product.productColors[0].sizes.length);
       print(quantities);
@@ -82,6 +85,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         for (var i = 0; i < product.productColors[0].sizes.length; i++)
           quantities.add(0);
       }
+
+      // Assigning value to video player
+      for (String s in product.productImages) {
+        List ext = s.split('.');
+        if (ext.contains('mp4')) {
+          _controller = VideoPlayerController.network(
+            'https://developers.thegraphe.com/flexy/storage/app/product_images/${s}',
+          );
+          await _controller.setLooping(true);
+
+          _initializeVideoPlayerFuture = _controller.initialize();
+        }
+      }
+
       setState(() {});
     }).catchError((e) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -302,6 +319,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   ],
                                 ),
                               ),
+                              if ((product.productImages[currentActiveIndex]
+                                      .split('.'))
+                                  .contains('mp4'))
+                                Center(
+                                  child: Opacity(
+                                    opacity: 0.75,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (_controller.value.isPlaying) {
+                                            _controller.pause();
+                                          } else {
+                                            _controller.play();
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 50.0,
+                                        width: 50.0,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          _controller.value.isPlaying
+                                              ? Icons.pause
+                                              : Icons.play_arrow,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
                             ],
                           ),
                         ),
@@ -634,36 +684,55 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
       );
 
-  Widget imagePageView() => Container(
-        child: PhotoViewGallery.builder(
-          scrollPhysics: BouncingScrollPhysics(),
-          itemCount: product.productImages.length,
-          onPageChanged: (int currentIndex) {
-            setState(() {
-              currentActiveIndex = currentIndex;
-            });
-          },
-          loadingBuilder: (BuildContext context, ImageChunkEvent event) =>
-              Center(
-            child: Container(
-              width: 20.0,
-              height: 20.0,
-              child: CircularProgressIndicator(
-                value: event == null
-                    ? 0
-                    : event.cumulativeBytesLoaded / event.expectedTotalBytes,
-                backgroundColor: Colors.red[300],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+  Widget imagePageView() => PageView.builder(
+        itemCount: product.productImages.length,
+        onPageChanged: (int currentIndex) {
+          setState(() {
+            currentActiveIndex = currentIndex;
+          });
+        },
+        itemBuilder: (BuildContext context, int index) {
+          List<String> ext =
+              (product.productImages[currentActiveIndex] as String).split('.');
+          print(ext[ext.length - 1]);
+          if (ext[ext.length - 1] == 'mp4') {
+            // _controller = VideoPlayerController.network(
+            //   'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}',
+            // );
+
+            // _initializeVideoPlayerFuture = _controller.initialize();
+
+            return FutureBuilder(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return AspectRatio(
+                    aspectRatio: 0.5,
+                    child: VideoPlayer(_controller),
+                  );
+                } else {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                  ));
+                }
+              },
+            );
+          } else
+            return Container(
+              width: double.infinity,
+              height: 400.0,
+              color: Colors.white,
+              child: Center(
+                child: PhotoView(
+                  backgroundDecoration: BoxDecoration(color: Colors.white),
+                  imageProvider: NetworkImage(
+                    'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}',
+                  ),
+                ),
               ),
-            ),
-          ),
-          builder: (BuildContext context, int index) =>
-              PhotoViewGalleryPageOptions(
-            imageProvider: NetworkImage(
-                'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
-          ),
-          backgroundDecoration: BoxDecoration(color: Colors.white),
-        ),
+            );
+        },
       );
 
   Widget orderButton() => Container(

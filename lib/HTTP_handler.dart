@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './credentials.dart';
 import './providers/product_provider.dart';
 import './models/user.dart';
 import './models/product.dart';
@@ -332,6 +329,8 @@ class HTTPHandler {
     try {
       Response response =
           await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
+
+      print('$baseURL/proddetails/$productId?api_token=$token');
 
       print(response.data);
       ProductDetails details =
