@@ -21,6 +21,13 @@ class DialogUtils {
 
   factory DialogUtils() => _instance;
 
+  int _getTotalQuantity(List<int> quantity) {
+    int net = 0;
+    for (var i in quantity) net += i;
+
+    return net;
+  }
+
   void showCustomDialog(
     BuildContext context, {
     @required String title,
@@ -180,24 +187,6 @@ class DialogUtils {
               children: <Widget>[
                 if (color == null) Text('Color'),
                 if (color == null) Text('No Color')
-                // else
-                //   Row(
-                //     children: [
-                //       Text(color.colorName),
-                //       SizedBox(width: 10.0),
-                //       Container(
-                //         height: 20.0,
-                //         width: 40.0,
-                //         decoration: BoxDecoration(
-                //             borderRadius:
-                //                 BorderRadius.all(Radius.circular(10.0)),
-                //             color: Color(int.parse(
-                //                     this.color.color.substring(1, 7),
-                //                     radix: 16) +
-                //                 0xFF000000)),
-                //       ),
-                //     ],
-                //   ),
               ],
             ),
             Divider(),
@@ -220,7 +209,8 @@ class DialogUtils {
             // orderDescriptiontile('Quantity', this.quantity),
             // SizedBox(height: 5.0),
             Divider(),
-            orderDescriptiontile('Net Amount', (price).toStringAsFixed(2)),
+            orderDescriptiontile(
+                'Total Quantity', _getTotalQuantity(quantity).toString()),
           ],
         ),
       );

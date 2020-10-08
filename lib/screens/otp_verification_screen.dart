@@ -143,7 +143,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   onPressed: () async {
                     await progressDialog.show();
                     _handler
-                        .sendOTP(currentUser.mobileNo)
+                        .sendOTP(currentUser.mobileNo, 'register')
                         .then((bool otpSent) async {
                       await progressDialog.hide();
                       if (otpSent) {
@@ -224,11 +224,11 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     }
                     await progressDialog.show();
                     _handler
-                        .verifyOTP(currentUser.mobileNo, _otpController.text)
+                        .verifyOTPRegister(
+                            currentUser.mobileNo, _otpController.text)
                         .then((bool otpVerified) async {
                       await progressDialog.hide();
-                      if (!otpVerified) {
-                        //TODO - Change when we get transactional OTP
+                      if (otpVerified) {
                         _confirmUser();
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(

@@ -71,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _stayLoggedIn = prefs.getBool('loggedIn') ?? false;
 
     if (_stayLoggedIn) {
+      print('staying');
       final encodedUser = prefs.getString('loggedInUser');
       User user = User();
       user.mapToUser(json.decode(encodedUser));
@@ -79,29 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
       Duration timeDiff = DateTime.now()
           .difference(DateTime.fromMillisecondsSinceEpoch(timeStamp));
       if (timeDiff.inHours < 24) {
-        _handler.loginUser(user.mobileNo).then((User value) {
-          print(value.name);
-          _storeData(
-            value.token,
-            true,
-            value,
-          );
-          Navigator.of(context).popAndPushNamed(
-            CategoriesScreen.routeName,
-            arguments: value,
-          );
-        }).catchError((e) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text(
-              'Network error! Try again later.',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Color(0xff6c757d),
-            duration: Duration(seconds: 5),
-          ));
-          status = ForgotPassword.forgotAndNotVerified;
-          setState(() {});
-        });
+        Navigator.of(context).popAndPushNamed(
+          CategoriesScreen.routeName,
+          arguments: user,
+        );
       } else {
         _stayLoggedIn = false;
         Toast.show(
@@ -116,6 +98,41 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {});
     }
     print(_stayLoggedIn);
+  }
+
+  void _resend() async {
+    await progressDialog.show();
+    _handler.sendOTP(_mobileController.text, 'login').then((bool value) async {
+      await progressDialog.hide();
+      if (value) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+            'OTP Sent Again',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff6c757d),
+          duration: Duration(seconds: 5),
+        ));
+      } else {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+            'OTP couldn\'t be sent.',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff6c757d),
+          duration: Duration(seconds: 5),
+        ));
+      }
+    }).catchError((e) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Network Error!',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 5),
+      ));
+    });
   }
 
   @override
@@ -181,6 +198,18 @@ class _LoginScreenState extends State<LoginScreen> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(hintText: 'Enter OTP'),
           ),
+          SizedBox(height: 15.0),
+          GestureDetector(
+            onTap: () => _resend(),
+            child: Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: Text(
+                'Didn\'t receive OTP? Send Again',
+                style: TextStyle(color: Colors.grey[400]),
+              ),
+            ),
+          ),
           SizedBox(height: 20.0),
           Align(
             alignment: Alignment.bottomRight,
@@ -209,31 +238,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ));
                   } else {
                     _handler
-                        .verifyOTP(_mobileController.text, _otpController.text)
-                        .then((bool verified) {
-                      print(verified);
-                      if (!verified) {
-                        // TODO - Change to verified once we get transactionam OTP
-                        _handler
-                            .loginUser(_mobileController.text)
-                            .then((User user) {
-                          _storeData(user.token, _checkedValue, user);
-                          Navigator.of(context).popAndPushNamed(
-                            CategoriesScreen.routeName,
-                            arguments: user,
-                          );
-                        }).catchError((e) {
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                              'Network error! Try again later.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Color(0xff6c757d),
-                            duration: Duration(seconds: 5),
-                          ));
-                          status = ForgotPassword.forgotAndNotVerified;
-                          setState(() {});
-                        });
+                        .verifyOTPLogin(
+                            _mobileController.text, _otpController.text)
+                        .then((User user) {
+                      if (user != null) {
+                        print(user.name);
+                        _storeData(user.token, _checkedValue, user);
+                        Navigator.of(context).popAndPushNamed(
+                          CategoriesScreen.routeName,
+                          arguments: user,
+                        );
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
@@ -320,7 +334,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
-                    _handler.sendOTP(_mobileController.text).then((bool uid) {
+                    _handler
+                        .sendOTP(_mobileController.text, 'login')
+                        .then((bool uid) {
                       if (!uid) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
@@ -335,6 +351,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {});
                       }
                     }).catchError((e) {
+                      print(e);
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text(
                           'Network error!',

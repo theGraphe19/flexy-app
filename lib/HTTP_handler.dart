@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './credentials.dart';
 import './providers/product_provider.dart';
 import './models/user.dart';
 import './models/product.dart';
@@ -213,10 +210,11 @@ class HTTPHandler {
     }
   }
 
-  Future<bool> sendOTP(String mobileNo) async {
+  Future<bool> sendOTP(String mobileNo, String purpose) async {
     try {
       FormData formData = FormData.fromMap({
         'mobileNo': int.parse(mobileNo),
+        'purpose': purpose,
       });
       print(int.parse(mobileNo));
 
@@ -227,7 +225,28 @@ class HTTPHandler {
 
       print(response.data);
 
-      if (json.decode(response.data)['type'].contains('success')) {
+      if (response.data['status'].contains('success'))
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<bool> verifyOTPRegister(String mobileNo, String otp) async {
+    print(mobileNo + ' => ' + otp);
+    try {
+      Response response = await _dio.post('$baseURL/verifyOTP',
+          data: FormData.fromMap({
+            'mobileNo': mobileNo,
+            'otp': otp,
+          }));
+
+      print(response.runtimeType);
+
+      if (response.data['status'].contains('success')) {
         return true;
       } else {
         return false;
@@ -238,18 +257,24 @@ class HTTPHandler {
     }
   }
 
-  Future<bool> verifyOTP(String mobileNo, String otp) async {
+  Future<User> verifyOTPLogin(String mobileNo, String otp) async {
     print(mobileNo + ' => ' + otp);
     try {
-      Response response =
-          await _dio.post('$verifyOTPUrl&mobile=$mobileNo&otp=$otp');
+      User user = User();
 
-      print(response);
+      Response response = await _dio.post('$baseURL/login',
+          data: FormData.fromMap({
+            'mobileNo': mobileNo,
+            'otp': otp,
+          }));
 
-      if (json.decode(response.data)['type'].contains('success')) {
-        return true;
+      print(response.runtimeType);
+
+      if (response.data['status'].contains('success')) {
+        user.mapToUser(response.data['user']);
+        return user;
       } else {
-        return false;
+        return null;
       }
     } catch (e) {
       print(e);
@@ -304,6 +329,8 @@ class HTTPHandler {
     try {
       Response response =
           await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
+
+      print('$baseURL/proddetails/$productId?api_token=$token');
 
       print(response.data);
       ProductDetails details =
