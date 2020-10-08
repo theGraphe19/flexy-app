@@ -71,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _stayLoggedIn = prefs.getBool('loggedIn') ?? false;
 
     if (_stayLoggedIn) {
+      print('staying');
       final encodedUser = prefs.getString('loggedInUser');
       User user = User();
       user.mapToUser(json.decode(encodedUser));
@@ -79,29 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
       Duration timeDiff = DateTime.now()
           .difference(DateTime.fromMillisecondsSinceEpoch(timeStamp));
       if (timeDiff.inHours < 24) {
-        _handler.loginUser(user.mobileNo).then((User value) {
-          print(value.name);
-          _storeData(
-            value.token,
-            true,
-            value,
-          );
-          Navigator.of(context).popAndPushNamed(
-            CategoriesScreen.routeName,
-            arguments: value,
-          );
-        }).catchError((e) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text(
-              'Network error! Try again later.',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Color(0xff6c757d),
-            duration: Duration(seconds: 5),
-          ));
-          status = ForgotPassword.forgotAndNotVerified;
-          setState(() {});
-        });
+        Navigator.of(context).popAndPushNamed(
+          CategoriesScreen.routeName,
+          arguments: user,
+        );
       } else {
         _stayLoggedIn = false;
         Toast.show(
