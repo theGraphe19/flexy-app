@@ -237,10 +237,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
+                    await progressDialog.show();
                     _handler
                         .verifyOTPLogin(
                             _mobileController.text, _otpController.text)
-                        .then((User user) {
+                        .then((User user) async {
+                      await progressDialog.hide();
                       if (user != null) {
                         print(user.name);
                         _storeData(user.token, _checkedValue, user);
@@ -334,9 +336,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
+                    await progressDialog.show();
                     _handler
                         .sendOTP(_mobileController.text, 'login')
-                        .then((bool uid) {
+                        .then((bool uid) async {
+                      await progressDialog.hide();
                       if (!uid) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
