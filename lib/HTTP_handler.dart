@@ -69,7 +69,7 @@ class HTTPHandler {
     }
   }
 
-  Future<String> registerUser(User user) async {
+  Future<List<dynamic>> registerUser(User user) async {
     print(user.photoLocation);
     print(user.visitingCardLocation);
     try {
@@ -108,7 +108,10 @@ class HTTPHandler {
       print(response.statusCode);
       if (response.data['status']
           .contains('success')) if (response.data['user']['api_token'] != null)
-        return response.data['user']['api_token'];
+        return [
+          response.data['user']['api_token'],
+          response.data['user']['id'],
+        ];
       else
         return null;
       else

@@ -17,14 +17,10 @@ class OTPVerificationScreen extends StatefulWidget {
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   User currentUser;
-
   HTTPHandler _handler = HTTPHandler();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   var _otpController = TextEditingController();
-
   VerificationStatus status = VerificationStatus.notVerified;
-
   ProgressDialog progressDialog;
 
   void _confirmUser() async {
@@ -32,6 +28,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     _handler.registerUser(currentUser).then((value) async {
       if (value != null) {
         currentUser.status = 0;
+        currentUser.token = value[0];
+        currentUser.id = value[1];
         await progressDialog.hide();
         Navigator.of(context).popAndPushNamed(
           CategoriesScreen.routeName,

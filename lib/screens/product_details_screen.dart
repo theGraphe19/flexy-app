@@ -819,7 +819,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
               ),
             ),
-            SizedBox(width: 20.0),
+            SizedBox(width: 10.0),
             GestureDetector(
               onTap: () {
                 if (isAnUpdate == false) {

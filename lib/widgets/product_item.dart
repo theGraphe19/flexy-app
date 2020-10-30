@@ -48,11 +48,17 @@ class _ProductItemState extends State<ProductItem> {
       favouriteList = [];
     if (!_productProvider.productsList[widget.productIndex].isFav) {
       favouriteList.add(_productProvider.productsList[widget.productIndex].id);
+      setState(() {
+        _productProvider.productsList[widget.productIndex].isFav = true;
+      });
       await prefs.setString(
           'favourites-${widget.categoryId}', json.encode(favouriteList));
     } else {
       favouriteList
           .remove(_productProvider.productsList[widget.productIndex].id);
+      setState(() {
+        _productProvider.productsList[widget.productIndex].isFav = false;
+      });
       await prefs.setString(
           'favourites-${widget.categoryId}', json.encode(favouriteList));
       print('removing data from prefs');
@@ -62,17 +68,15 @@ class _ProductItemState extends State<ProductItem> {
     }
     widget.scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
-        (_productProvider.productsList[widget.productIndex].isFav)
-            ? 'Removed from wishlist!'
-            : 'Added to wishlist!',
+        'Added to wishlist!',
         style: TextStyle(color: Colors.white),
       ),
       backgroundColor: Color(0xff6c757d),
       duration: Duration(seconds: 2),
     ));
     setState(() {
-      _productProvider.productsList[widget.productIndex].isFav =
-          !_productProvider.productsList[widget.productIndex].isFav;
+      // _productProvider.productsList[widget.productIndex].isFav =
+      //     !_productProvider.productsList[widget.productIndex].isFav;
     });
   }
 
@@ -135,7 +139,12 @@ class _ProductItemState extends State<ProductItem> {
                   Padding(
                     padding: EdgeInsets.only(top: 5.0),
                     child: Text(
-                      _productProvider.productsList[widget.productIndex].name,
+                      (_productProvider.productsList[widget.productIndex].name
+                                  .length >
+                              12)
+                          ? '${_productProvider.productsList[widget.productIndex].name.substring(0, 12)}...'
+                          : _productProvider
+                              .productsList[widget.productIndex].name,
                       style: TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,
