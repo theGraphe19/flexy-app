@@ -33,6 +33,17 @@ class HTTPHandler {
     }
   }
 
+  Future<String> getLegalDetails() async {
+    try {
+      Response response = await _dio.get('$baseURL/api_v_1.0/legal_details');
+
+      return response.data['legal_details'];
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   Future<List<String>> getEmails() async {
     try {
       List<String> emails = [];
