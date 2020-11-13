@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
 import './registration_form_page1.dart';
@@ -54,6 +55,13 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         duration: Duration(seconds: 3),
       ));
     });
+  }
+
+  void saveOTP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('mobile', currentUser.mobileNo);
+    prefs.setString('otp', _otpController.text);
   }
 
   @override
@@ -227,6 +235,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         .then((bool otpVerified) async {
                       await progressDialog.hide();
                       if (otpVerified) {
+                        saveOTP();
                         _confirmUser();
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(

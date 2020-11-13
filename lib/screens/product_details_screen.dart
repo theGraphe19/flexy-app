@@ -3,6 +3,7 @@ import 'package:toast/toast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -613,7 +614,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10.0),
-                                  child: Text(product.description),
+                                  child: Html(data: product.description),
                                 ),
                               ],
                             ),

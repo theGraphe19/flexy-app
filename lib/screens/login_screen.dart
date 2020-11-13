@@ -80,10 +80,27 @@ class _LoginScreenState extends State<LoginScreen> {
       Duration timeDiff = DateTime.now()
           .difference(DateTime.fromMillisecondsSinceEpoch(timeStamp));
       if (timeDiff.inHours < 24) {
-        Navigator.of(context).popAndPushNamed(
-          CategoriesScreen.routeName,
-          arguments: user,
-        );
+        _handler
+            .verifyOTPLogin(prefs.getString('mobile'), prefs.getString('otp'))
+            .then((User user) {
+          print(user.name);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            CategoriesScreen.routeName,
+            (Route<dynamic> route) => false,
+            arguments: user,
+          );
+        }).catchError((e) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+              'Network error! Try again later.',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 5),
+          ));
+          status = ForgotPassword.forgotAndNotVerified;
+          setState(() {});
+        });
       } else {
         _stayLoggedIn = false;
         Toast.show(
@@ -133,6 +150,13 @@ class _LoginScreenState extends State<LoginScreen> {
         duration: Duration(seconds: 5),
       ));
     });
+  }
+
+  void saveOTP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('mobile', _mobileController.text);
+    prefs.setString('otp', _otpController.text);
   }
 
   @override
@@ -246,9 +270,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       await progressDialog.hide();
                       if (user != null) {
                         print(user.name);
+                        saveOTP();
                         _storeData(user.token, _checkedValue, user);
-                        Navigator.of(context).popAndPushNamed(
+                        Navigator.of(context).pushNamedAndRemoveUntil(
                           CategoriesScreen.routeName,
+                          (Route<dynamic> route) => false,
                           arguments: user,
                         );
                       } else {

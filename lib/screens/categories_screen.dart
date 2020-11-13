@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import './products_screen.dart';
 import '../models/user.dart';
@@ -207,28 +208,33 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               : Container(
                   color: Colors.white,
                   width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 20.0),
-                      Image.asset(
-                        'assets/icon/icon.png',
-                        height: 180.0,
-                        width: 180.0,
-                      ),
-                      SizedBox(height: 30.0),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10.0,
-                          horizontal: 20.0,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20.0),
+                        Image.asset(
+                          'assets/icon/icon.png',
+                          height: 180.0,
+                          width: 180.0,
                         ),
-                        child: Text(
-                          (adminDetails == null) ? '' : adminDetails['about'],
-                          style: TextStyle(fontSize: 13.0),
+                        SizedBox(height: 30.0),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 400.0),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10.0,
+                            horizontal: 20.0,
+                          ),
+                          child: Html(
+                            data: (adminDetails == null)
+                                ? ''
+                                : adminDetails['about'],
+                            // style: TextStyle(fontSize: 13.0),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )),
     );

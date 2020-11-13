@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot_callback/screenshot_callback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 
 import './screens/start_screen.dart';
 import './screens/registration_form_page1.dart';
@@ -47,6 +48,12 @@ class _MyAppState extends State<MyApp> {
 
   String text = "Ready..";
 
+  _getSignatureCode() async {
+    String signature = await SmsRetrieved.getAppSignature();
+    print("signature $signature");
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -72,6 +79,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    _getSignatureCode();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
