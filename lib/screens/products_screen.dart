@@ -244,58 +244,60 @@ class _ProductsScreenState extends State<ProductsScreen> {
           height: 350.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('FILTER BY'),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              Divider(),
-              Container(
-                height: 30.0,
-                child: RadioListTile(
-                  title: Text(
-                    'All Products',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  value: 0,
-                  groupValue: _radioValue1,
-                  onChanged: _handleRadioValueChange2,
-                ),
-              ),
-              Column(
-                children: category.subCategories.map((subCat) {
-                  return Container(
-                    height: 30.0,
-                    child: RadioListTile(
-                      title: Text(
-                        subCat,
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 15.0,
-                        ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text('FILTER BY'),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.black87,
                       ),
-                      value: (category.subCategories.indexOf(subCat, 0) + 1),
-                      groupValue: _radioValue1,
-                      onChanged: _handleRadioValueChange2,
                     ),
-                  );
-                }).toList(),
-              ),
-            ],
+                  ],
+                ),
+                Divider(),
+                Container(
+                  height: 30.0,
+                  child: RadioListTile(
+                    title: Text(
+                      'All Products',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                    value: 0,
+                    groupValue: _radioValue1,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                ),
+                Column(
+                  children: category.subCategories.map((subCat) {
+                    return Container(
+                      height: 30.0,
+                      child: RadioListTile(
+                        title: Text(
+                          subCat,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        value: (category.subCategories.indexOf(subCat, 0) + 1),
+                        groupValue: _radioValue1,
+                        onChanged: _handleRadioValueChange2,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         );
       });

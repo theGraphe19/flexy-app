@@ -14,7 +14,7 @@ class FormValidator {
   }
 
   String validateLandLine(String value) {
-    if (value.length != 10)
+    if (value.length != 11)
       return 'StateCode - Number';
     else
       return null;

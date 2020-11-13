@@ -810,7 +810,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
                 child: Text(
-                  'Order Now',
+                  'Add to Wishlist',
                   style: TextStyle(
                     color: Colors.black87,
                     fontWeight: FontWeight.w500,
@@ -984,7 +984,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 color: Colors.red[600],
                 alignment: Alignment.center,
                 child: Text(
-                  'Add Now',
+                  (isAnUpdate) ? 'Update Cart' : 'Add to Cart',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,

@@ -183,6 +183,7 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
                 : null,
             decoration: const InputDecoration(
               labelText: 'Phone Number',
+              prefixText: '+91 ',
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.number,
