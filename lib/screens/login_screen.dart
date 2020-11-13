@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 
 import './categories_screen.dart';
 import '../HTTP_handler.dart';
@@ -35,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _stayLoggedIn;
   List<String> mobiles;
   var status = ForgotPassword.forgotAndNotVerified;
+  String _otpCode = '';
 
   bool _chechNumber(String inputNumber) {
     for (var i = 0; i < mobiles.length; i++) {
@@ -156,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString('mobile', _mobileController.text);
-    prefs.setString('otp', _otpController.text);
+    prefs.setString('otp', _otpCode);
   }
 
   @override
@@ -218,10 +220,32 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget otpCheck() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          TextField(
-            controller: _otpController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter OTP'),
+          // TextField(
+          //   controller: _otpController,
+          //   keyboardType: TextInputType.number,
+          //   decoration: InputDecoration(hintText: 'Enter OTP'),
+          // ),
+          TextFieldPin(
+            borderStyeAfterTextChange: UnderlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide(color: Colors.black87),
+            ),
+            borderStyle: UnderlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide(color: Colors.black87),
+            ),
+            codeLength: 6,
+            boxSize: 40,
+            textStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 20.0,
+            ),
+            filledAfterTextChange: true,
+            filledColor: Colors.white,
+            onOtpCallback: (code, isAutofill) {
+              print(code);
+              this._otpCode = code;
+            },
           ),
           SizedBox(height: 15.0),
           GestureDetector(
@@ -252,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: () async {
                   print('verify otp');
-                  if (_otpController.text == '') {
+                  if (_otpCode.length <= 6) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text(
                         'Enter OTP first',
@@ -264,8 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     await progressDialog.show();
                     _handler
-                        .verifyOTPLogin(
-                            _mobileController.text, _otpController.text)
+                        .verifyOTPLogin(_mobileController.text, _otpCode)
                         .then((User user) async {
                       await progressDialog.hide();
                       if (user != null) {
@@ -313,7 +336,10 @@ class _LoginScreenState extends State<LoginScreen> {
           TextField(
             controller: _mobileController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter Mobile Number'),
+            decoration: InputDecoration(
+              labelText: 'Enter Mobile Number',
+              prefixText: '+91 ',
+            ),
           ),
           SizedBox(height: 20.0),
           CheckboxListTile(
