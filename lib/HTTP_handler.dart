@@ -298,6 +298,7 @@ class HTTPHandler {
 
   Future<List<Category>> getCategoriesList(String token) async {
     try {
+      print('$baseURL/categories?api_token=$token');
       Response response =
           await _dio.get('$baseURL/categories?api_token=$token');
 
@@ -317,6 +318,7 @@ class HTTPHandler {
       BuildContext context, String token, String categoryId) async {
     try {
       productList.clear();
+      print('$baseURL/prodpercategory/$categoryId?api_token=$token');
       Response response = await _dio
           .get('$baseURL/prodpercategory/$categoryId?api_token=$token');
 
@@ -527,6 +529,7 @@ class HTTPHandler {
     try {
       List<CartOverView> cartItems = [];
 
+      print('$baseURL/viewcart?api_token=$token');
       Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
 
       print(response.data);

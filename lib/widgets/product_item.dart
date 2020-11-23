@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-import '../models/product.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
 import '../models/product_color.dart';
@@ -137,14 +136,14 @@ class _ProductItemState extends State<ProductItem> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0),
+                    padding: EdgeInsets.only(
+                      top: 5.0,
+                      left: 10.0,
+                      right: 10.0,
+                    ),
                     child: Text(
-                      (_productProvider.productsList[widget.productIndex].name
-                                  .length >
-                              12)
-                          ? '${_productProvider.productsList[widget.productIndex].name.substring(0, 12)}...'
-                          : _productProvider
-                              .productsList[widget.productIndex].name,
+                      _productProvider.productsList[widget.productIndex].name,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,
@@ -152,9 +151,14 @@ class _ProductItemState extends State<ProductItem> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.only(
+                      top: 5.0,
+                      left: 10.0,
+                      right: 10.0,
+                    ),
                     child: Text(
                       '${_productProvider.productsList[widget.productIndex].tagline}',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
                       ),

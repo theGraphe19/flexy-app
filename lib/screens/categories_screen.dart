@@ -192,7 +192,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               child: Column(
                                 children: [
                                   Image.network(
-                                    'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
+                                    'https://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
                                     height:
                                         MediaQuery.of(context).size.height / 3 -
                                             5,

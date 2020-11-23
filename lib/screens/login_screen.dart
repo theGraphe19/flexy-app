@@ -86,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .verifyOTPLogin(prefs.getString('mobile'), prefs.getString('otp'))
             .then((User user) {
           print(user.name);
+          _storeData(user.token, true, user);
           Navigator.of(context).pushNamedAndRemoveUntil(
             CategoriesScreen.routeName,
             (Route<dynamic> route) => false,
@@ -161,6 +162,11 @@ class _LoginScreenState extends State<LoginScreen> {
     prefs.setString('otp', _otpCode);
   }
 
+  _getSignatureCode() async {
+    String signature = await SmsRetrieved.getAppSignature();
+    print("signature $signature");
+  }
+
   @override
   void initState() {
     super.initState();
@@ -178,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     //_retreiveData();
+    _getSignatureCode();
     if (status == ForgotPassword.forgotAndNotVerified) {
       _handler.getMobiles().then((value) {
         print(value);
@@ -276,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: () async {
                   print('verify otp');
-                  if (_otpCode.length <= 6) {
+                  if (_otpCode.length < 6) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text(
                         'Enter OTP first',
