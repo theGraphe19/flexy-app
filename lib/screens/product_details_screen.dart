@@ -408,7 +408,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 SizedBox(height: 10.0),
                                 (product.productColors[0].color != null)
                                     ? Container(
-                                        height: 90.0,
+                                        height: 95.0,
                                         margin:
                                             const EdgeInsets.only(bottom: 5.0),
                                         child: ListView(
@@ -482,13 +482,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                           ),
                                                         ),
                                                         SizedBox(height: 10.0),
-                                                        Text(product
-                                                            .productColors[product
-                                                                .productColors
-                                                                .indexOf(
-                                                                    productColor,
-                                                                    0)]
-                                                            .colorName),
+                                                        Text(
+                                                          '${product.productColors[product.productColors.indexOf(productColor, 0)].colorName.split(' ')[0]}\n${product.productColors[product.productColors.indexOf(productColor, 0)].colorName.split(' ').length > 1 ? product.productColors[product.productColors.indexOf(productColor, 0)].colorName.split(' ')[1] : " "}',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
