@@ -3,6 +3,7 @@ import 'package:toast/toast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../models/product.dart';
 import '../models/product_details.dart';
@@ -165,488 +166,501 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
               child: Stack(
                 children: <Widget>[
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.only(bottom: 70.0),
-                    controller: scrollController,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        //IMAGE
-                        Container(
-                          padding: const EdgeInsets.all(10.0),
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          color: Colors.white,
-                          child: Stack(
-                            children: <Widget>[
-                              Center(
-                                child: (product.productImages.length > 0)
-                                    ? imagePageView()
-                                    : PhotoView(
-                                        backgroundDecoration:
-                                            BoxDecoration(color: Colors.white),
-                                        imageProvider: NetworkImage(
-                                            'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
-                                      ),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      for (var i = 0;
-                                          i < product.productImages.length;
-                                          i++)
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 5.0,
-                                            vertical: 10.0,
-                                          ),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: (currentActiveIndex == i)
-                                                  ? Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary
-                                                  : Colors.grey,
-                                            ),
-                                          ),
-                                        )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
+                  Container(
+                    height: MediaQuery.of(context).size.height - 70,
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          //IMAGE
+                          Container(
+                            padding: const EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            color: Colors.white,
+                            child: Stack(
+                              children: <Widget>[
+                                Center(
+                                  child: (product.productImages.length > 0)
+                                      ? imagePageView()
+                                      : PhotoView(
+                                          backgroundDecoration: BoxDecoration(
+                                              color: Colors.white),
+                                          imageProvider: NetworkImage(
+                                              'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+                                        ),
+                                ),
+                                Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: <Widget>[
-                                    Image.asset(
-                                      'assets/images/search-outline.png',
-                                      frameBuilder: (
-                                        BuildContext context,
-                                        Widget child,
-                                        int frame,
-                                        bool wasSynchronouslyLoaded,
-                                      ) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            print('search');
-                                            Navigator.of(context)
-                                                .push(_createRoute());
-                                          },
-                                          child: Container(
-                                            height: 30.0,
-                                            width: 30.0,
-                                            padding: const EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: Theme.of(context)
-                                                      .primaryColorLight),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        for (var i = 0;
+                                            i < product.productImages.length;
+                                            i++)
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 5.0,
+                                              vertical: 10.0,
                                             ),
-                                            child: child,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    SizedBox(width: 10.0),
-                                    Image.asset(
-                                      'assets/images/cart-outline.png',
-                                      frameBuilder: (
-                                        BuildContext context,
-                                        Widget child,
-                                        int frame,
-                                        bool wasSynchronouslyLoaded,
-                                      ) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                              CartScreen.routeName,
-                                              arguments: user,
-                                            );
-                                          },
-                                          child: Container(
-                                            height: 30.0,
-                                            width: 30.0,
-                                            padding: const EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: Theme.of(context)
-                                                      .primaryColorLight),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: (currentActiveIndex == i)
+                                                    ? Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary
+                                                    : Colors.grey,
+                                              ),
                                             ),
-                                            child: child,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    SizedBox(width: 10.0),
-                                    Image.asset(
-                                      'assets/images/wishlist-outline.png',
-                                      frameBuilder: (
-                                        BuildContext context,
-                                        Widget child,
-                                        int frame,
-                                        bool wasSynchronouslyLoaded,
-                                      ) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            print('return to favs');
-                                            _wishlistBottomSheet.fireWishlist();
-                                          },
-                                          child: Container(
-                                            height: 30.0,
-                                            width: 30.0,
-                                            padding: const EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: Theme.of(context)
-                                                      .primaryColorLight),
-                                            ),
-                                            child: child,
-                                          ),
-                                        );
-                                      },
+                                          )
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ),
-                              if ((product.productImages[currentActiveIndex]
-                                      .split('.'))
-                                  .contains('mp4'))
-                                Center(
-                                  child: Opacity(
-                                    opacity: 0.75,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (_controller.value.isPlaying) {
-                                            _controller.pause();
-                                          } else {
-                                            _controller.play();
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 50.0,
-                                        width: 50.0,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          _controller.value.isPlaying
-                                              ? Icons.pause
-                                              : Icons.play_arrow,
-                                          color: Colors.red,
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Image.asset(
+                                        'assets/images/search-outline.png',
+                                        frameBuilder: (
+                                          BuildContext context,
+                                          Widget child,
+                                          int frame,
+                                          bool wasSynchronouslyLoaded,
+                                        ) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              print('search');
+                                              Navigator.of(context)
+                                                  .push(_createRoute());
+                                            },
+                                            child: Container(
+                                              height: 30.0,
+                                              width: 30.0,
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .primaryColorLight),
+                                              ),
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(width: 10.0),
+                                      Image.asset(
+                                        'assets/images/cart-outline.png',
+                                        frameBuilder: (
+                                          BuildContext context,
+                                          Widget child,
+                                          int frame,
+                                          bool wasSynchronouslyLoaded,
+                                        ) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                CartScreen.routeName,
+                                                arguments: user,
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 30.0,
+                                              width: 30.0,
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .primaryColorLight),
+                                              ),
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(width: 10.0),
+                                      Image.asset(
+                                        'assets/images/wishlist-outline.png',
+                                        frameBuilder: (
+                                          BuildContext context,
+                                          Widget child,
+                                          int frame,
+                                          bool wasSynchronouslyLoaded,
+                                        ) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              print('return to favs');
+                                              _wishlistBottomSheet
+                                                  .fireWishlist();
+                                            },
+                                            child: Container(
+                                              height: 30.0,
+                                              width: 30.0,
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .primaryColorLight),
+                                              ),
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if ((product.productImages[currentActiveIndex]
+                                        .split('.'))
+                                    .contains('mp4'))
+                                  Center(
+                                    child: Opacity(
+                                      opacity: 0.75,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            if (_controller.value.isPlaying) {
+                                              _controller.pause();
+                                            } else {
+                                              _controller.play();
+                                            }
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 50.0,
+                                          width: 50.0,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            _controller.value.isPlaying
+                                                ? Icons.pause
+                                                : Icons.play_arrow,
+                                            color: Colors.red,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(10.0),
-                          width: double.infinity,
-                          child: Text(
-                            '${product.name}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
+                                  )
+                              ],
                             ),
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          width: double.infinity,
-                          child: Text(
-                            '${String.fromCharCodes(input)} ${product.productSizes[selectedSize].price}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 15.0,
+                          Container(
+                            padding: const EdgeInsets.all(10.0),
+                            width: double.infinity,
+                            child: Text(
+                              '${product.name}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                        Divider(),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Text(
-                                  'Available Colors : ',
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
+                          Container(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            width: double.infinity,
+                            child: Text(
+                              '${String.fromCharCodes(input)} ${product.productSizes[selectedSize].price}',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Text(
+                                    'Available Colors : ',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 10.0),
-                              (product.productColors[0].color != null)
-                                  ? Container(
-                                      height: 90.0,
-                                      margin:
-                                          const EdgeInsets.only(bottom: 5.0),
-                                      child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: product.productColors
-                                              .map(
-                                                (ProductColor productColor) =>
-                                                    GestureDetector(
-                                                  onTap: () {
-                                                    colorSelected = product
-                                                        .productColors
-                                                        .indexOf(
-                                                            productColor, 0);
+                                SizedBox(height: 10.0),
+                                (product.productColors[0].color != null)
+                                    ? Container(
+                                        height: 95.0,
+                                        margin:
+                                            const EdgeInsets.only(bottom: 5.0),
+                                        child: ListView(
+                                            scrollDirection: Axis.horizontal,
+                                            children: product.productColors
+                                                .map(
+                                                  (ProductColor productColor) =>
+                                                      GestureDetector(
+                                                    onTap: () {
+                                                      colorSelected = product
+                                                          .productColors
+                                                          .indexOf(
+                                                              productColor, 0);
 
-                                                    quantities = [];
-                                                    for (var i = 0;
-                                                        i <
-                                                            product
-                                                                .productColors[
-                                                                    colorSelected]
-                                                                .sizes
-                                                                .length;
-                                                        i++) quantities.add(0);
-                                                    setState(() {});
-                                                  },
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        width: 50.0,
-                                                        height: 50.0,
-                                                        margin: const EdgeInsets
-                                                                .symmetric(
-                                                            horizontal: 10.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          border: Border.all(
-                                                            color: Colors.grey,
+                                                      quantities = [];
+                                                      for (var i = 0;
+                                                          i <
+                                                              product
+                                                                  .productColors[
+                                                                      colorSelected]
+                                                                  .sizes
+                                                                  .length;
+                                                          i++)
+                                                        quantities.add(0);
+                                                      setState(() {});
+                                                    },
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          width: 50.0,
+                                                          height: 50.0,
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      10.0),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            border: Border.all(
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                            color: Color(int.parse(
+                                                                    product
+                                                                        .productColors[product
+                                                                            .productColors
+                                                                            .indexOf(productColor,
+                                                                                0)]
+                                                                        .color
+                                                                        .substring(
+                                                                            1,
+                                                                            7),
+                                                                    radix: 16) +
+                                                                0xFF000000),
                                                           ),
-                                                          color: Color(int.parse(
-                                                                  product
-                                                                      .productColors[product
+                                                          child: Center(
+                                                            child: Icon(
+                                                              Icons.done,
+                                                              color: (colorSelected ==
+                                                                      product
                                                                           .productColors
                                                                           .indexOf(
                                                                               productColor,
-                                                                              0)]
-                                                                      .color
-                                                                      .substring(
-                                                                          1, 7),
-                                                                  radix: 16) +
-                                                              0xFF000000),
-                                                        ),
-                                                        child: Center(
-                                                          child: Icon(
-                                                            Icons.done,
-                                                            color: (colorSelected ==
-                                                                    product
-                                                                        .productColors
-                                                                        .indexOf(
-                                                                            productColor,
-                                                                            0))
-                                                                ? Colors.white
-                                                                : Colors
-                                                                    .transparent,
+                                                                              0))
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .transparent,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 10.0),
-                                                      Text(product
-                                                          .productColors[product
-                                                              .productColors
-                                                              .indexOf(
-                                                                  productColor,
-                                                                  0)]
-                                                          .colorName),
-                                                    ],
+                                                        SizedBox(height: 10.0),
+                                                        Text(
+                                                          '${product.productColors[product.productColors.indexOf(productColor, 0)].colorName.split(' ')[0]}\n${product.productColors[product.productColors.indexOf(productColor, 0)].colorName.split(' ').length > 1 ? product.productColors[product.productColors.indexOf(productColor, 0)].colorName.split(' ')[1] : " "}',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                              .toList()),
-                                    )
-                                  : Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15.0),
-                                      width: double.infinity,
-                                      child: Text(
-                                        'No Color',
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    )
-                            ],
+                                                )
+                                                .toList()),
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15.0),
+                                        width: double.infinity,
+                                        child: Text(
+                                          'No Color',
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      )
+                              ],
+                            ),
                           ),
-                        ),
-                        Divider(),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Text(
-                                  'Select Quantity : ',
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
+                          Divider(),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Text(
+                                    'Select Quantity : ',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 10.0),
-                              Column(
-                                children: product
-                                    .productColors[colorSelected].sizes
-                                    .map((ProductSize productSize) {
-                                  int index = product
+                                SizedBox(height: 10.0),
+                                Column(
+                                  children: product
                                       .productColors[colorSelected].sizes
-                                      .indexOf(productSize, 0);
-                                  print(index);
-                                  return Container(
-                                    height: 50.0,
-                                    margin: const EdgeInsets.only(bottom: 5.0),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Container(
-                                          child: Text(
-                                            productSize.size,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 15.0,
-                                              fontWeight: FontWeight.bold,
+                                      .map((ProductSize productSize) {
+                                    int index = product
+                                        .productColors[colorSelected].sizes
+                                        .indexOf(productSize, 0);
+                                    print(index);
+                                    return Container(
+                                      height: 50.0,
+                                      margin:
+                                          const EdgeInsets.only(bottom: 5.0),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Container(
+                                            child: Text(
+                                              productSize.size,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(width: 5.0),
-                                        Row(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  if (quantities[index] > 0)
-                                                    quantities[index]--;
-                                                });
-                                              },
-                                              child: Icon(
-                                                Icons.indeterminate_check_box,
-                                                size: 40.0,
+                                          SizedBox(width: 5.0),
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (quantities[index] > 0)
+                                                      quantities[index]--;
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  Icons.indeterminate_check_box,
+                                                  size: 40.0,
+                                                ),
                                               ),
-                                            ),
-                                            SizedBox(width: 10.0),
-                                            Text(quantities[index].toString()),
-                                            SizedBox(width: 10.0),
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  quantities[index]++;
-                                                });
-                                              },
-                                              child: Icon(
-                                                Icons.add_box,
-                                                size: 40.0,
+                                              SizedBox(width: 10.0),
+                                              Text(
+                                                  quantities[index].toString()),
+                                              SizedBox(width: 10.0),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    quantities[index]++;
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  Icons.add_box,
+                                                  size: 40.0,
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Divider(),
-                        Container(
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Text(
-                                  'Product Details : ',
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
-                              ),
-                              SizedBox(height: 10.0),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Text(product.description),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Divider(),
-                        Container(
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Text(
-                                  'Suggested Products :',
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 10.0),
-                        Container(
-                          height: 360.0,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            primary: false,
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(10.0),
-                            itemCount: productDetails.relatedProducts.length,
-                            itemBuilder: (BuildContext context, int index) =>
+                          Divider(),
+                          Container(
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
                                 Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: ProductItemUnrelated(
-                                productDetails.relatedProducts[index],
-                                user,
-                                categoryId,
-                                scaffoldKey,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Text(
+                                    'Product Details : ',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10.0),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Html(data: product.description),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(),
+                          Container(
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Text(
+                                    'Suggested Products :',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10.0),
+                          Container(
+                            height: 360.0,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              primary: false,
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.all(10.0),
+                              itemCount: productDetails.relatedProducts.length,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: ProductItemUnrelated(
+                                  productDetails.relatedProducts[index],
+                                  user,
+                                  categoryId,
+                                  scaffoldKey,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Align(
@@ -736,14 +750,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       );
 
   Widget orderButton() => Container(
-        margin: const EdgeInsets.only(
-          left: 15.0,
-          right: 15.0,
-          bottom: 10.0,
-        ),
+        // margin: const EdgeInsets.only(
+        //   left: 15.0,
+        //   right: 15.0,
+        //   bottom: 10.0,
+        // ),
+        padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -784,23 +798,27 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.only(
-                  top: 12.0,
-                  bottom: 12.0,
-                  right: 25.0,
-                  left: 30.0,
+                height: 50.0,
+                width: 150.0,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  border: Border.all(
+                    width: 0.5,
+                    color: Colors.grey[300],
+                  ),
                 ),
                 child: Text(
-                  'Order Now',
-                  textAlign: TextAlign.center,
+                  'Add to Wishlist',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
                     fontSize: 18.0,
                   ),
                 ),
               ),
             ),
+            SizedBox(width: 10.0),
             GestureDetector(
               onTap: () {
                 if (isAnUpdate == false) {
@@ -960,25 +978,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 }
               },
               child: Container(
-                margin: const EdgeInsets.only(left: 25.0),
-                padding: const EdgeInsets.only(
-                  top: 12.0,
-                  bottom: 12.0,
-                  left: 30.0,
-                  right: 20.0,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
-                  ),
-                ),
+                height: 50.0,
+                width: 170.0,
+                color: Colors.red[600],
+                alignment: Alignment.center,
                 child: Text(
-                  isAnUpdate ? 'Update Cart' : 'Add To Cart',
-                  textAlign: TextAlign.center,
+                  (isAnUpdate) ? 'Update Cart' : 'Add to Cart',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
                     fontSize: 18.0,
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../HTTP_handler.dart';
 import '../models/chat_overview.dart';
@@ -134,14 +135,7 @@ class _ChatItemState extends State<ChatItem> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                c.message,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              )
+                              Html(data: c.message)
                             ],
                           ),
                         ),

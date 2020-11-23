@@ -107,6 +107,7 @@ class WishlistBottomSheet {
                         child: ProductItem(
                           // _favouriteProducts[index],
                           // index,
+                          _favouriteProductProvider.favProductsList[index],
                           _productProvider.productsList.indexOf(
                               _favouriteProductProvider.favProductsList[index]),
                           user,

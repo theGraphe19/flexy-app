@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 
 import './categories_screen.dart';
 import '../HTTP_handler.dart';
@@ -35,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _stayLoggedIn;
   List<String> mobiles;
   var status = ForgotPassword.forgotAndNotVerified;
+  String _otpCode = '';
 
   bool _chechNumber(String inputNumber) {
     for (var i = 0; i < mobiles.length; i++) {
@@ -80,10 +82,28 @@ class _LoginScreenState extends State<LoginScreen> {
       Duration timeDiff = DateTime.now()
           .difference(DateTime.fromMillisecondsSinceEpoch(timeStamp));
       if (timeDiff.inHours < 24) {
-        Navigator.of(context).popAndPushNamed(
-          CategoriesScreen.routeName,
-          arguments: user,
-        );
+        _handler
+            .verifyOTPLogin(prefs.getString('mobile'), prefs.getString('otp'))
+            .then((User user) {
+          print(user.name);
+          _storeData(user.token, true, user);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            CategoriesScreen.routeName,
+            (Route<dynamic> route) => false,
+            arguments: user,
+          );
+        }).catchError((e) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+              'Network error! Try again later.',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Color(0xff6c757d),
+            duration: Duration(seconds: 5),
+          ));
+          status = ForgotPassword.forgotAndNotVerified;
+          setState(() {});
+        });
       } else {
         _stayLoggedIn = false;
         Toast.show(
@@ -135,6 +155,18 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  void saveOTP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('mobile', _mobileController.text);
+    prefs.setString('otp', _otpCode);
+  }
+
+  _getSignatureCode() async {
+    String signature = await SmsRetrieved.getAppSignature();
+    print("signature $signature");
+  }
+
   @override
   void initState() {
     super.initState();
@@ -152,8 +184,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     //_retreiveData();
+    _getSignatureCode();
     if (status == ForgotPassword.forgotAndNotVerified) {
       _handler.getMobiles().then((value) {
+        print(value);
         this.mobiles = value;
       });
     }
@@ -193,10 +227,32 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget otpCheck() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          TextField(
-            controller: _otpController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter OTP'),
+          // TextField(
+          //   controller: _otpController,
+          //   keyboardType: TextInputType.number,
+          //   decoration: InputDecoration(hintText: 'Enter OTP'),
+          // ),
+          TextFieldPin(
+            borderStyeAfterTextChange: UnderlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide(color: Colors.black87),
+            ),
+            borderStyle: UnderlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide(color: Colors.black87),
+            ),
+            codeLength: 6,
+            boxSize: 40,
+            textStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 20.0,
+            ),
+            filledAfterTextChange: true,
+            filledColor: Colors.white,
+            onOtpCallback: (code, isAutofill) {
+              print(code);
+              this._otpCode = code;
+            },
           ),
           SizedBox(height: 15.0),
           GestureDetector(
@@ -227,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: () async {
                   print('verify otp');
-                  if (_otpController.text == '') {
+                  if (_otpCode.length < 6) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text(
                         'Enter OTP first',
@@ -237,15 +293,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
+                    await progressDialog.show();
                     _handler
-                        .verifyOTPLogin(
-                            _mobileController.text, _otpController.text)
-                        .then((User user) {
+                        .verifyOTPLogin(_mobileController.text, _otpCode)
+                        .then((User user) async {
+                      await progressDialog.hide();
                       if (user != null) {
                         print(user.name);
+                        saveOTP();
                         _storeData(user.token, _checkedValue, user);
-                        Navigator.of(context).popAndPushNamed(
+                        Navigator.of(context).pushNamedAndRemoveUntil(
                           CategoriesScreen.routeName,
+                          (Route<dynamic> route) => false,
                           arguments: user,
                         );
                       } else {
@@ -284,7 +343,10 @@ class _LoginScreenState extends State<LoginScreen> {
           TextField(
             controller: _mobileController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter Mobile Number'),
+            decoration: InputDecoration(
+              labelText: 'Enter Mobile Number',
+              prefixText: '+91 ',
+            ),
           ),
           SizedBox(height: 20.0),
           CheckboxListTile(
@@ -334,9 +396,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       duration: Duration(seconds: 5),
                     ));
                   } else {
+                    await progressDialog.show();
                     _handler
                         .sendOTP(_mobileController.text, 'login')
-                        .then((bool uid) {
+                        .then((bool uid) async {
+                      await progressDialog.hide();
                       if (!uid) {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(

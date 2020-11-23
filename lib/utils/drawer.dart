@@ -89,7 +89,7 @@ class SideDrawer {
           Divider(),
           SizedBox(height: 5.0),
           _drawerTile(
-            'Chats',
+            'Messages',
             () {
               print('chat');
               Navigator.pop(context);

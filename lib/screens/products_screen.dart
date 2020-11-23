@@ -139,10 +139,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     itemCount: _productProvider.productsList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.59,
+                      childAspectRatio: 0.57,
                     ),
                     itemBuilder: (BuildContext context, int index) =>
                         ProductItem(
+                      _productProvider.productsList[index],
                       index,
                       currentUser,
                       category.id,
@@ -195,18 +196,24 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   void _handleRadioValueChange1(int value) {
+    List p = _productProvider.productsListDuplicate;
     if (value == 1) {
       print(_productProvider.productsList[0].name);
-      _productProvider.productsList.sort((p1, p2) =>
-          p1.productSizes[0].price.compareTo(p2.productSizes[0].price));
+      _productProvider.productList = p;
       print(_productProvider.productsList[0].name);
     }
     if (value == 2) {
       print(_productProvider.productsList[0].name);
-      _productProvider.productsList.sort((p1, p2) =>
+      p.sort((p1, p2) =>
           p1.productSizes[0].price.compareTo(p2.productSizes[0].price));
-      _productProvider.productList =
-          _productProvider.productsList.reversed.toList();
+      _productProvider.productList = p.reversed.toList();
+      print(_productProvider.productsList[0].name);
+    }
+    if (value == 3) {
+      print(_productProvider.productsList[0].name);
+      p.sort(
+          (p1, p2) => p1.name.toLowerCase().compareTo(p2.name.toLowerCase()));
+      _productProvider.productList = p;
       print(_productProvider.productsList[0].name);
     }
     setState(() {
@@ -244,58 +251,60 @@ class _ProductsScreenState extends State<ProductsScreen> {
           height: 350.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('FILTER BY'),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              Divider(),
-              Container(
-                height: 30.0,
-                child: RadioListTile(
-                  title: Text(
-                    'All Products',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  value: 0,
-                  groupValue: _radioValue1,
-                  onChanged: _handleRadioValueChange2,
-                ),
-              ),
-              Column(
-                children: category.subCategories.map((subCat) {
-                  return Container(
-                    height: 30.0,
-                    child: RadioListTile(
-                      title: Text(
-                        subCat,
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 15.0,
-                        ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text('FILTER BY'),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.black87,
                       ),
-                      value: (category.subCategories.indexOf(subCat, 0) + 1),
-                      groupValue: _radioValue1,
-                      onChanged: _handleRadioValueChange2,
                     ),
-                  );
-                }).toList(),
-              ),
-            ],
+                  ],
+                ),
+                Divider(),
+                Container(
+                  height: 30.0,
+                  child: RadioListTile(
+                    title: Text(
+                      'All Products',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                    value: 0,
+                    groupValue: _radioValue1,
+                    onChanged: _handleRadioValueChange2,
+                  ),
+                ),
+                Column(
+                  children: category.subCategories.map((subCat) {
+                    return Container(
+                      height: 30.0,
+                      child: RadioListTile(
+                        title: Text(
+                          subCat,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        value: (category.subCategories.indexOf(subCat, 0) + 1),
+                        groupValue: _radioValue1,
+                        onChanged: _handleRadioValueChange2,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         );
       });
@@ -305,7 +314,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          height: 150.0,
+          height: 200.0,
           margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -353,6 +362,22 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     ),
                   ),
                   value: 2,
+                  groupValue: _radioValue,
+                  onChanged: _handleRadioValueChange1,
+                ),
+              ),
+              SizedBox(height: 15.0),
+              SizedBox(
+                height: 30.0,
+                child: RadioListTile(
+                  title: Text(
+                    'By Name (A - Z)',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  value: 3,
                   groupValue: _radioValue,
                   onChanged: _handleRadioValueChange1,
                 ),

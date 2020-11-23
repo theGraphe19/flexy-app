@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 import '../models/cart_overview.dart';
+import '../models/cart.dart';
 import '../models/product_details.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
@@ -18,13 +19,19 @@ class CheckOutItem extends StatelessWidget {
   int prize = 0;
   ProgressDialog progressDialog;
   List<ProductColor> colorsList = [];
+  int quantity;
 
   CheckOutItem(
     this.item,
     this.index,
     this.token,
     this.scaffoldKey,
-  );
+  ) {
+    this.quantity = 0;
+    for (Cart c in item.cartItems) {
+      quantity += c.quantity;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +142,7 @@ class CheckOutItem extends StatelessWidget {
                         color: Colors.grey),
                   ),
                   Text(
-                    "Total Price : ${prize.toStringAsFixed(2)}",
+                    "Total Quantity : ${this.quantity}",
                     style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15.0,

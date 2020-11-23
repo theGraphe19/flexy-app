@@ -41,8 +41,7 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
             grandTotal = 0;
             for (CartOverView cart in items) {
               for (var i = 0; i < cart.cartItems.length; i++)
-                grandTotal +=
-                    cart.cartItems[i].productPrice * cart.cartItems[i].quantity;
+                grandTotal += cart.cartItems[i].quantity;
             }
           });
         }).catchError((e) {
@@ -75,8 +74,8 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
               width: MediaQuery.of(context).size.width,
               child: ListView.builder(
                 itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) => CheckOutItem(
-                    items[index], index, token, scaffoldKey),
+                itemBuilder: (BuildContext context, int index) =>
+                    CheckOutItem(items[index], index, token, scaffoldKey),
               ),
             ),
       floatingActionButton: FloatingActionButton.extended(
@@ -191,7 +190,7 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
             );
           });
         },
-        label: Text('Confirm Order for : Rs. $grandTotal'),
+        label: Text('Confirm Order for : $grandTotal Pc.'),
         icon: Icon(Icons.done),
       ),
     );

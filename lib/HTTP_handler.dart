@@ -33,6 +33,17 @@ class HTTPHandler {
     }
   }
 
+  Future<String> getLegalDetails() async {
+    try {
+      Response response = await _dio.get('$baseURL/api_v_1.0/legal_details');
+
+      return response.data['legal_details'];
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   Future<List<String>> getEmails() async {
     try {
       List<String> emails = [];
@@ -69,7 +80,7 @@ class HTTPHandler {
     }
   }
 
-  Future<String> registerUser(User user) async {
+  Future<List<dynamic>> registerUser(User user) async {
     print(user.photoLocation);
     print(user.visitingCardLocation);
     try {
@@ -108,7 +119,10 @@ class HTTPHandler {
       print(response.statusCode);
       if (response.data['status']
           .contains('success')) if (response.data['user']['api_token'] != null)
-        return response.data['user']['api_token'];
+        return [
+          response.data['user']['api_token'],
+          response.data['user']['id'],
+        ];
       else
         return null;
       else
@@ -284,6 +298,7 @@ class HTTPHandler {
 
   Future<List<Category>> getCategoriesList(String token) async {
     try {
+      print('$baseURL/categories?api_token=$token');
       Response response =
           await _dio.get('$baseURL/categories?api_token=$token');
 
@@ -303,6 +318,7 @@ class HTTPHandler {
       BuildContext context, String token, String categoryId) async {
     try {
       productList.clear();
+      print('$baseURL/prodpercategory/$categoryId?api_token=$token');
       Response response = await _dio
           .get('$baseURL/prodpercategory/$categoryId?api_token=$token');
 
@@ -513,6 +529,7 @@ class HTTPHandler {
     try {
       List<CartOverView> cartItems = [];
 
+      print('$baseURL/viewcart?api_token=$token');
       Response response = await _dio.get('$baseURL/viewcart?api_token=$token');
 
       print(response.data);

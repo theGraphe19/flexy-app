@@ -17,13 +17,17 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _chatsHandler = false;
   List<ChatOverView> _chats;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isLoaded = false;
 
   void _getChats() {
     _chatsHandler = true;
     HTTPHandler().getChats(token).then((value) {
       this._chats = value;
-      setState(() {});
+      setState(() {
+        isLoaded = true;
+      });
     }).catchError((e) {
+      print(e);
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
           'Network error!',
@@ -48,15 +52,37 @@ class _ChatScreenState extends State<ChatScreen> {
         height: double.infinity,
         width: double.infinity,
         alignment: Alignment.topCenter,
-        child: (_chats == null)
+        child: (_chats == null && !isLoaded)
             ? LoadingBody()
-            : ListView.builder(
-                itemCount: _chats.length,
-                itemBuilder: (BuildContext context, int index) => ChatItem(token,
-                  _chats[index],
-                  _scaffoldKey,
-                ),
-              ),
+            : (_chats.length == 0 && isLoaded)
+                ? Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          height: 70.0,
+                          width: 70.0,
+                          decoration: BoxDecoration(shape: BoxShape.circle),
+                          child: Image.asset('assets/images/wait.png'),
+                        ),
+                        Text(
+                          'No chats yet!',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _chats.length,
+                    itemBuilder: (BuildContext context, int index) => ChatItem(
+                      token,
+                      _chats[index],
+                      _scaffoldKey,
+                    ),
+                  ),
       ),
     );
   }

@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
-import '../models/product.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
+import '../models/product.dart';
 import '../models/product_color.dart';
 import '../models/product_size.dart';
 import '../providers/product_provider.dart';
 import '../providers/favourite_product_provider.dart';
 
 class ProductItem extends StatefulWidget {
+  final Product product;
   final int productIndex;
   final User user;
   final int categoryId;
@@ -21,6 +22,7 @@ class ProductItem extends StatefulWidget {
   final bool isWishList;
 
   ProductItem(
+    this.product,
     this.productIndex,
     this.user,
     this.categoryId,
@@ -48,11 +50,17 @@ class _ProductItemState extends State<ProductItem> {
       favouriteList = [];
     if (!_productProvider.productsList[widget.productIndex].isFav) {
       favouriteList.add(_productProvider.productsList[widget.productIndex].id);
+      setState(() {
+        _productProvider.productsList[widget.productIndex].isFav = true;
+      });
       await prefs.setString(
           'favourites-${widget.categoryId}', json.encode(favouriteList));
     } else {
       favouriteList
           .remove(_productProvider.productsList[widget.productIndex].id);
+      setState(() {
+        _productProvider.productsList[widget.productIndex].isFav = false;
+      });
       await prefs.setString(
           'favourites-${widget.categoryId}', json.encode(favouriteList));
       print('removing data from prefs');
@@ -62,17 +70,15 @@ class _ProductItemState extends State<ProductItem> {
     }
     widget.scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
-        (_productProvider.productsList[widget.productIndex].isFav)
-            ? 'Removed from wishlist!'
-            : 'Added to wishlist!',
+        'Added to wishlist!',
         style: TextStyle(color: Colors.white),
       ),
       backgroundColor: Color(0xff6c757d),
       duration: Duration(seconds: 2),
     ));
     setState(() {
-      _productProvider.productsList[widget.productIndex].isFav =
-          !_productProvider.productsList[widget.productIndex].isFav;
+      // _productProvider.productsList[widget.productIndex].isFav =
+      //     !_productProvider.productsList[widget.productIndex].isFav;
     });
   }
 
@@ -114,7 +120,7 @@ class _ProductItemState extends State<ProductItem> {
               Navigator.of(context).pushNamed(
                 ProductDetailsScreen.routeName,
                 arguments: <dynamic>[
-                  _productProvider.productsList[widget.productIndex],
+                  widget.product,
                   widget.user.token,
                   widget.categoryId,
                   widget.user
@@ -133,9 +139,14 @@ class _ProductItemState extends State<ProductItem> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0),
+                    padding: EdgeInsets.only(
+                      top: 5.0,
+                      left: 10.0,
+                      right: 10.0,
+                    ),
                     child: Text(
                       _productProvider.productsList[widget.productIndex].name,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,
@@ -143,9 +154,14 @@ class _ProductItemState extends State<ProductItem> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.only(
+                      top: 5.0,
+                      left: 10.0,
+                      right: 10.0,
+                    ),
                     child: Text(
                       '${_productProvider.productsList[widget.productIndex].tagline}',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
                       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
 import './registration_form_page1.dart';
@@ -17,14 +18,10 @@ class OTPVerificationScreen extends StatefulWidget {
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   User currentUser;
-
   HTTPHandler _handler = HTTPHandler();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   var _otpController = TextEditingController();
-
   VerificationStatus status = VerificationStatus.notVerified;
-
   ProgressDialog progressDialog;
 
   void _confirmUser() async {
@@ -32,6 +29,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     _handler.registerUser(currentUser).then((value) async {
       if (value != null) {
         currentUser.status = 0;
+        currentUser.token = value[0];
+        currentUser.id = value[1];
         await progressDialog.hide();
         Navigator.of(context).popAndPushNamed(
           CategoriesScreen.routeName,
@@ -56,6 +55,13 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         duration: Duration(seconds: 3),
       ));
     });
+  }
+
+  void saveOTP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('mobile', currentUser.mobileNo);
+    prefs.setString('otp', _otpController.text);
   }
 
   @override
@@ -229,6 +235,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         .then((bool otpVerified) async {
                       await progressDialog.hide();
                       if (otpVerified) {
+                        saveOTP();
                         _confirmUser();
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(

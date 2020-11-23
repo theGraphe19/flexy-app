@@ -16,6 +16,8 @@ class FavouriteProductProvider with ChangeNotifier {
   }
 
   void removeItem(Product product) {
+    print(_favProductList);
+    print(product);
     int index = _favProductList.indexOf(product);
     _favProductList.removeAt(index);
     notifyListeners();

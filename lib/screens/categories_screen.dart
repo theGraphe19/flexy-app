@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import './products_screen.dart';
 import '../models/user.dart';
@@ -23,64 +26,78 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   HTTPHandler _handler = HTTPHandler();
   String mobileNo;
   bool _controller = false;
+  Map adminDetails;
+  SharedPreferences prefs;
 
-  void _showAbout(BuildContext context, String about) {
-    Future.delayed(Duration(seconds: 3), () {
-      print('now');
-      return showModalBottomSheet(
-        context: context,
-        barrierColor: Colors.black.withAlpha(1),
-        backgroundColor: Colors.transparent,
-        builder: (context) => Stack(
-          children: <Widget>[
-            Opacity(
-              opacity: 0.45,
-              child: Container(
-                height: 250,
-                color: Colors.black,
+  void _showAbout(BuildContext context) {
+    _scaffoldKey.currentState.showBottomSheet(
+      (context) => Container(
+        height: MediaQuery.of(context).size.height * 1 / 2 - 20.0,
+        color: Colors.grey[300],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: 3.0,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.red,
               ),
-            ),
-            Container(
-              height: 250,
-              margin: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'About Us : ',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  ),
-                  Divider(),
-                  SizedBox(height: 10.0),
-                  Text(
-                    about,
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+              SizedBox(height: 20.0),
+              Image.asset('assets/images/pending.png'),
+              SizedBox(height: 15.0),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 20.0,
+                ),
+                child: Text(
+                  'Thank You for registering and providing us your details. Your account is under review and will be accepted for trade soon.\n\n Meanwhile You can get in touch with us through Call/Whatsapp us at:',
+                  style: TextStyle(fontSize: 13.0),
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 15.0),
+              Text(
+                mobileNo,
+                style: TextStyle(
+                  color: Colors.red[600],
+                  fontSize: 26.0,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.1,
+                ),
+              ),
+              SizedBox(height: 15.0),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 20.0,
+                ),
+                child: Text(
+                  'Please relaunch to check if your account has been activated!',
+                  style: TextStyle(fontSize: 13.0),
+                ),
+              ),
+              SizedBox(height: 15.0),
+              RaisedButton(
+                color: Color(0xffbf1e2e),
+                child: Text(
+                  'RELAUNCH',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () async {
+                  prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('loggedIn');
+                  await prefs.remove('token');
+                  await prefs.remove('loginTime');
+                  await prefs.remove('loggedInUser');
+                  Phoenix.rebirth(context);
+                },
+              ),
+              SizedBox(height: 35.0),
+            ],
+          ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   @override
@@ -111,29 +128,29 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     if (_currentUser.status != 1 && !_controller) {
       _controller = true;
       _handler.getAdminContactDetails().then((Map value) {
+        adminDetails = value;
         mobileNo = value['phone'];
         setState(() {
-          _showAbout(context, value['about']);
+          Future.delayed(Duration(seconds: 1), () => _showAbout(context));
         });
       });
     }
 
-    if (!categoryListHandler) {
+    if (_currentUser.status == 1) if (!categoryListHandler) {
       categoryListHandler = true;
-      if (_currentUser.status == 1)
-        _handler.getCategoriesList(_currentUser.token).then((cat) {
-          categoriesList = cat;
-          setState(() {});
-        }).catchError((e) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text(
-              'Network error!',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Color(0xff6c757d),
-            duration: Duration(seconds: 3),
-          ));
-        });
+      _handler.getCategoriesList(_currentUser.token).then((cat) {
+        categoriesList = cat;
+        setState(() {});
+      }).catchError((e) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+            'Network error!',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff6c757d),
+          duration: Duration(seconds: 3),
+        ));
+      });
     }
 
     return Scaffold(
@@ -146,76 +163,80 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             _scaffoldKey.currentState.openDrawer();
           },
         ),
-        title: Text('Categories'),
+        title: Text((_currentUser.status == 1) ? 'Categories' : 'Flexy'),
       ),
       drawer: SideDrawer(_currentUser, _scaffoldKey).drawer(context),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: (_currentUser.status == 1)
-            ? (categoriesList == null)
-                ? LoadingBody()
-                : Container(
-                    height: double.infinity,
-                    child: ListView.builder(
-                      itemCount: categoriesList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              ProductsScreen.routeName,
-                              arguments: <String, dynamic>{
-                                'user': _currentUser,
-                                'category': categoriesList[index],
-                              },
-                            );
-                          },
-                          child: Container(
-                            height: MediaQuery.of(context).size.height / 3,
-                            width: double.infinity,
-                            child: Column(
-                              children: [
-                                Image.network(
-                                  'http://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
-                                  height:
-                                      MediaQuery.of(context).size.height / 3 -
-                                          5,
-                                  fit: BoxFit.fitHeight,
-                                ),
-                              ],
+          padding: const EdgeInsets.all(10.0),
+          child: (_currentUser.status == 1)
+              ? (categoriesList == null)
+                  ? LoadingBody()
+                  : Container(
+                      height: double.infinity,
+                      child: ListView.builder(
+                        itemCount: categoriesList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                ProductsScreen.routeName,
+                                arguments: <String, dynamic>{
+                                  'user': _currentUser,
+                                  'category': categoriesList[index],
+                                },
+                              );
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height / 3,
+                              width: double.infinity,
+                              child: Column(
+                                children: [
+                                  Image.network(
+                                    'https://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
+                                    height:
+                                        MediaQuery.of(context).size.height / 3 -
+                                            5,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-            : Container(
-                height: double.infinity,
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                        'Thank You for registering and providing us your details. Your account is under review and will be accepted for trade soon. Meanwhile You can get in touch with us through Call/Whatsapp us at: $mobileNo'),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            (_currentUser.status == 0)
-                                ? 'assets/images/pending.png'
-                                : 'assets/images/rejected.png',
-                            height: 70.0,
-                            width: 70.0,
-                          ),
-                          Text((_currentUser.status == 0)
-                              ? 'Please wait until allowed by Admin!'
-                              : 'You have been banned by admin!'),
-                        ],
+                          );
+                        },
                       ),
+                    )
+              : Container(
+                  color: Colors.white,
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20.0),
+                        Image.asset(
+                          'assets/icon/icon.png',
+                          height: 180.0,
+                          width: 180.0,
+                        ),
+                        SizedBox(height: 30.0),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 400.0),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10.0,
+                            horizontal: 20.0,
+                          ),
+                          child: Html(
+                            data: (adminDetails == null)
+                                ? ''
+                                : adminDetails['about'],
+                            // style: TextStyle(fontSize: 13.0),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-      ),
+                  ),
+                )),
     );
   }
 }
