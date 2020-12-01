@@ -144,11 +144,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     itemBuilder: (BuildContext context, int index) =>
                         ProductItem(
                       _productProvider.productsList[index],
-                      index,
                       currentUser,
                       category,
                       scaffoldKey,
-                      false,
                     ),
                   ),
           ),
