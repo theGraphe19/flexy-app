@@ -1,10 +1,10 @@
-import 'dart:convert';
-
 import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
+import '../HTTP_handler.dart';
+import '../models/category.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
 import '../models/product.dart';
@@ -17,7 +17,7 @@ class ProductItem extends StatefulWidget {
   final Product product;
   final int productIndex;
   final User user;
-  final int categoryId;
+  final Category category;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final bool isWishList;
 
@@ -25,7 +25,7 @@ class ProductItem extends StatefulWidget {
     this.product,
     this.productIndex,
     this.user,
-    this.categoryId,
+    this.category,
     this.scaffoldKey,
     this.isWishList,
   );
@@ -38,77 +38,10 @@ class _ProductItemState extends State<ProductItem> {
   SharedPreferences prefs;
   bool retreiveDataHandler = false;
   ProductProvider _productProvider;
-  FavouriteProductProvider _favouriteProductProvider;
-
-  void addDataToPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-    String favs = prefs.getString('favourites-${widget.categoryId}');
-    List<dynamic> favouriteList;
-    if (favs != null)
-      favouriteList = json.decode(favs);
-    else
-      favouriteList = [];
-    if (!_productProvider.productsList[widget.productIndex].isFav) {
-      favouriteList.add(_productProvider.productsList[widget.productIndex].id);
-      setState(() {
-        _productProvider.productsList[widget.productIndex].isFav = true;
-      });
-      await prefs.setString(
-          'favourites-${widget.categoryId}', json.encode(favouriteList));
-    } else {
-      favouriteList
-          .remove(_productProvider.productsList[widget.productIndex].id);
-      setState(() {
-        _productProvider.productsList[widget.productIndex].isFav = false;
-      });
-      await prefs.setString(
-          'favourites-${widget.categoryId}', json.encode(favouriteList));
-      print('removing data from prefs');
-      _favouriteProductProvider
-          .removeItem(_productProvider.productsList[widget.productIndex]);
-      widget.scaffoldKey.currentState.setState(() {});
-    }
-    widget.scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        'Added to wishlist!',
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Color(0xff6c757d),
-      duration: Duration(seconds: 2),
-    ));
-    setState(() {
-      // _productProvider.productsList[widget.productIndex].isFav =
-      //     !_productProvider.productsList[widget.productIndex].isFav;
-    });
-  }
-
-  void retreiveDataFromPrefs() async {
-    retreiveDataHandler = true;
-    prefs = await SharedPreferences.getInstance();
-    String favs = prefs.getString('favourites-${widget.categoryId}');
-    print(favs);
-    List<dynamic> favouriteList;
-    if (favs != null)
-      favouriteList = json.decode(favs);
-    else
-      favouriteList = [];
-
-    if (favouriteList.length == 0) {
-      _productProvider.productsList[widget.productIndex].isFav = false;
-    } else {
-      if (favouriteList
-          .contains(_productProvider.productsList[widget.productIndex].id)) {
-        _productProvider.productsList[widget.productIndex].isFav = true;
-      }
-    }
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
     _productProvider = Provider.of<ProductProvider>(context);
-    _favouriteProductProvider = Provider.of<FavouriteProductProvider>(context);
-    if (!retreiveDataHandler) retreiveDataFromPrefs();
 
     return (widget.isWishList &&
             !(_productProvider.productsList[widget.productIndex].isFav))
@@ -122,7 +55,7 @@ class _ProductItemState extends State<ProductItem> {
                 arguments: <dynamic>[
                   widget.product,
                   widget.user.token,
-                  widget.categoryId,
+                  widget.category,
                   widget.user
                 ],
               );
@@ -167,6 +100,10 @@ class _ProductItemState extends State<ProductItem> {
                       ),
                     ),
                   ),
+                  if (_productProvider
+                          .productsList[widget.productIndex].tagline.length <=
+                      15)
+                    SizedBox(height: 50.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -213,7 +150,29 @@ class _ProductItemState extends State<ProductItem> {
                         ),
                         onPressed: () {
                           print('pressed');
-                          addDataToPrefs();
+                          HTTPHandler()
+                              .addFavourite(widget.user.id.toString(),
+                                  widget.product.productId.toString())
+                              .then((value) {
+                            print(value);
+                            if (value) {
+                              _productProvider.productsList[widget.productIndex]
+                                  .isFav = true;
+                              widget.scaffoldKey.currentState
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  'Added to wishlist!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 2),
+                              ));
+                              setState(() {});
+                              widget.scaffoldKey.currentState.setState(() {});
+                            }
+                          }).catchError((e) {
+                            print(e);
+                          });
                         },
                       ),
                     ],

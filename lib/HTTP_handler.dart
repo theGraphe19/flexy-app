@@ -646,4 +646,26 @@ class HTTPHandler {
       throw e;
     }
   }
+
+  Future<bool> addFavourite(String userId, String productId) async {
+    try {
+      Response response = await _dio.post(
+        'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+        data: FormData.fromMap({
+          'user_id': userId,
+          'product_id': productId,
+        }),
+      );
+
+      print(response.data);
+
+      if (response.data['success'] == '1')
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
 }

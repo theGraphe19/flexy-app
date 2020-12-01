@@ -59,14 +59,17 @@ class _RegistrationFormPart2State extends State<RegistrationFormPart2> {
       appBar: AppBar(
         title: Text('Flexy - Register'),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(15.0),
-          padding: const EdgeInsets.all(10.0),
-          child: Form(
-            key: _formKey,
-            autovalidate: _autoValidate,
-            child: formUI(),
+      body: Hero(
+        tag: 'rtyu',
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(10.0),
+            child: Form(
+              key: _formKey,
+              autovalidate: _autoValidate,
+              child: formUI(),
+            ),
           ),
         ),
       ),

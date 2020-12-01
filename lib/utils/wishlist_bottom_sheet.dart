@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
+import '../models/category.dart';
 import '../widgets/product_item.dart';
 import '../providers/product_provider.dart';
 import '../providers/favourite_product_provider.dart';
@@ -13,7 +14,7 @@ import '../models/user.dart';
 class WishlistBottomSheet {
   BuildContext context;
   GlobalKey<ScaffoldState> scaffoldKey;
-  int categoryId;
+  Category category;
   User user;
   ProductProvider _productProvider;
   FavouriteProductProvider _favouriteProductProvider;
@@ -22,7 +23,7 @@ class WishlistBottomSheet {
   WishlistBottomSheet({
     @required this.context,
     @required this.scaffoldKey,
-    @required this.categoryId,
+    @required this.category,
     @required this.user,
   }) {
     _productProvider = Provider.of<ProductProvider>(context);
@@ -32,7 +33,7 @@ class WishlistBottomSheet {
 
   void _getFavouriteList() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String favs = _prefs.getString('favourites-$categoryId') ?? null;
+    String favs = _prefs.getString('favourites-${category.id}') ?? null;
     List<dynamic> favouriteList;
     if (favs != null) {
       favouriteList = json.decode(favs);
@@ -111,7 +112,7 @@ class WishlistBottomSheet {
                           _productProvider.productsList.indexOf(
                               _favouriteProductProvider.favProductsList[index]),
                           user,
-                          categoryId,
+                          category,
                           scaffoldKey,
                           true,
                         ),

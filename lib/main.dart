@@ -23,6 +23,7 @@ import './screens/my_order_details_screen.dart';
 import './screens/check_out_screen.dart';
 import './screens/chat_screen.dart';
 import './screens/legal_details_screen.dart';
+import './screens/image_zoom_screen.dart';
 
 import './providers/product_provider.dart';
 import './providers/favourite_product_provider.dart';
@@ -52,7 +53,6 @@ class _MyAppState extends State<MyApp> {
     String signature = await SmsRetrieved.getAppSignature();
     print("signature $signature");
   }
-
 
   @override
   void initState() {
@@ -131,6 +131,7 @@ class _MyAppState extends State<MyApp> {
           MyOrderDetailsScreen.routeName: (ctx) => MyOrderDetailsScreen(),
           ChatScreen.routeName: (ctx) => ChatScreen(),
           LegalDetailsScreen.routeName: (ctx) => LegalDetailsScreen(),
+          ImageZoomScreen.routeName: (ctx) => ImageZoomScreen(),
         },
       ),
     );

@@ -85,7 +85,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     _wishlistBottomSheet = WishlistBottomSheet(
       context: context,
       scaffoldKey: scaffoldKey,
-      categoryId: category.id,
+      category: category,
       user: currentUser,
     );
 
@@ -102,7 +102,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             scaffoldKey.currentState.openDrawer();
           },
         ),
-        title: Text('Products'),
+        title: Text(category.name),
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -146,7 +146,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       _productProvider.productsList[index],
                       index,
                       currentUser,
-                      category.id,
+                      category,
                       scaffoldKey,
                       false,
                     ),
@@ -167,9 +167,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     print('sort products');
                     _sortOptions(context);
                   },
-                  child: Text(
-                    'Sort',
-                    style: TextStyle(color: Colors.black),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2 - 11.0,
+                    height: 25.0,
+                    alignment: Alignment.center,
+                    color: Colors.pink.withOpacity(0),
+                    child: Text(
+                      'Sort',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
                 Container(
@@ -182,9 +188,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     print('filter pressed');
                     _filterOptions(context);
                   },
-                  child: Text(
-                    'Filter',
-                    style: TextStyle(color: Colors.black),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2 - 11.0,
+                    height: 25.0,
+                    alignment: Alignment.center,
+                    color: Colors.pink.withOpacity(0),
+                    child: Text(
+                      'Filter',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 )
               ],
@@ -249,7 +261,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
         return Container(
           width: double.infinity,
           height: 350.0,
-          margin: const EdgeInsets.all(10.0),
+          margin: const EdgeInsets.only(
+            top: 10.0,
+            left: 10.0,
+            right: 10.0,
+          ),
           padding: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
             child: Column(
@@ -303,6 +319,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     );
                   }).toList(),
                 ),
+                SizedBox(height: 15.0),
               ],
             ),
           ),

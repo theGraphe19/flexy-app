@@ -5,6 +5,7 @@ import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+import '../models/category.dart';
 import '../models/product.dart';
 import '../models/product_details.dart';
 import '../HTTP_handler.dart';
@@ -18,6 +19,7 @@ import '../models/user.dart';
 import './search_screen.dart';
 import '../utils/wishlist_bottom_sheet.dart';
 import '../providers/product_provider.dart';
+import '../screens/image_zoom_screen.dart';
 
 /*
 <a target="_blank" href="https://icons8.com/icons/set/like">Heart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -34,7 +36,7 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Product product;
   String token;
-  int categoryId;
+  Category category;
   User user;
   HTTPHandler _handler = HTTPHandler();
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -118,7 +120,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     _productProvider = Provider.of<ProductProvider>(context);
     _wishlistBottomSheet = WishlistBottomSheet(
       context: context,
-      categoryId: categoryId,
+      category: category,
       scaffoldKey: scaffoldKey,
       user: user,
     );
@@ -127,7 +129,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     product = arguments[0] as Product;
     token = arguments[1] as String;
     user = arguments[3] as User;
-    categoryId = arguments[2];
+    category = arguments[2];
     if (arguments.length > 4) {
       isAnUpdate = arguments[4] as bool;
       _changeCartState = arguments[5] as CartScreenState;
@@ -381,7 +383,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             width: double.infinity,
                             child: Text(
-                              '${String.fromCharCodes(input)} ${product.productSizes[selectedSize].price}',
+                              (category.name
+                                          .toLowerCase()
+                                          .contains('bottomwear') ||
+                                      category.name
+                                          .toLowerCase()
+                                          .contains('bottomwears'))
+                                  ? 'MRP: ${String.fromCharCodes(input)} ${product.productSizes[selectedSize].price}'
+                                  : 'WSP: ${String.fromCharCodes(input)} ${product.productSizes[selectedSize].price}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                 color: Colors.black87,
@@ -653,7 +662,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 child: ProductItemUnrelated(
                                   productDetails.relatedProducts[index],
                                   user,
-                                  categoryId,
+                                  category.id,
                                   scaffoldKey,
                                 ),
                               ),
@@ -733,15 +742,27 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               },
             );
           } else
-            return Container(
-              width: double.infinity,
-              height: 400.0,
-              color: Colors.white,
-              child: Center(
-                child: PhotoView(
-                  backgroundDecoration: BoxDecoration(color: Colors.white),
-                  imageProvider: NetworkImage(
-                    'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}',
+            return GestureDetector(
+              onTap: () {
+                print('tapped');
+                Navigator.of(context).pushNamed(
+                  ImageZoomScreen.routeName,
+                  arguments: product.productImages[currentActiveIndex],
+                );
+              },
+              child: Hero(
+                tag: product.productImages[currentActiveIndex],
+                child: Container(
+                  width: double.infinity,
+                  height: 400.0,
+                  color: Colors.white,
+                  child: Center(
+                    child: Image(
+                      // backgroundDecoration: BoxDecoration(color: Colors.white),
+                      image: NetworkImage(
+                        'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}',
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -809,7 +830,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
                 child: Text(
-                  'Add to Wishlist',
+                  'Buy Now',
                   style: TextStyle(
                     color: Colors.black87,
                     fontWeight: FontWeight.w500,

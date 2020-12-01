@@ -10,6 +10,7 @@ import '../HTTP_handler.dart';
 import '../utils/drawer.dart';
 import '../widgets/loading_body.dart';
 import '../models/category.dart';
+import './search_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';
@@ -100,6 +101,26 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          SearchScreen(_currentUser),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     final fbm = FirebaseMessaging();
@@ -164,6 +185,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           },
         ),
         title: Text((_currentUser.status == 1) ? 'Categories' : 'Flexy'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              print('search');
+              Navigator.of(context).push(_createRoute());
+            },
+          ),
+        ],
       ),
       drawer: SideDrawer(_currentUser, _scaffoldKey).drawer(context),
       body: Padding(
