@@ -14,6 +14,11 @@ class WishlistProvider with ChangeNotifier {
     print('wishlist saved');
   }
 
+  void removeItem(Item.Wishlist wishList) {
+    _wishList.remove(wishList);
+    notifyListeners();
+  }
+
   void clear() {
     _wishList = [];
     notifyListeners();

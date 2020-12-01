@@ -147,6 +147,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       currentUser,
                       category,
                       scaffoldKey,
+                      false,
                     ),
                   ),
           ),

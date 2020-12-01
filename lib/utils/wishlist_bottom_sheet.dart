@@ -95,6 +95,7 @@ class WishlistBottomSheet {
                             user,
                             category,
                             scaffoldKey,
+                            true,
                           ),
                         );
                       },
