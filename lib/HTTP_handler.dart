@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './providers/product_provider.dart';
+import './providers/wishlist_provider.dart';
 import './models/user.dart';
 import './models/product.dart';
 import './models/product_details.dart';
@@ -12,6 +13,7 @@ import './models/category.dart';
 import './models/cart_overview.dart';
 import './models/order_details.dart';
 import './models/chat_overview.dart';
+import './models/wishlist.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -663,6 +665,36 @@ class HTTPHandler {
         return true;
       else
         return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<Wishlist>> getWishListItems(
+      BuildContext context, String userId) async {
+    try {
+      List<Wishlist> items = [];
+
+      Response response = await _dio.post(
+          'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+          data: FormData.fromMap({
+            'buyer_id': userId,
+          }));
+
+      print(response.data);
+
+      for (var i = 0; i < response.data.length; i++) {
+        items.add(Wishlist.fromMap(response.data[i]));
+      }
+
+      final wishlistProvider =
+          Provider.of<WishlistProvider>(context, listen: false);
+
+      wishlistProvider.clear();
+      wishlistProvider.addItems(items);
+
+      return items;
     } catch (e) {
       print(e);
       throw e;

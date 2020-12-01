@@ -3,7 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/wishlist_provider.dart';
 import './products_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
@@ -159,6 +161,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
     if (_currentUser.status == 1) if (!categoryListHandler) {
       categoryListHandler = true;
+
+      _handler.getWishListItems(context, _currentUser.id.toString());
+
       _handler.getCategoriesList(_currentUser.token).then((cat) {
         categoriesList = cat;
         setState(() {});

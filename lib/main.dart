@@ -27,6 +27,7 @@ import './screens/image_zoom_screen.dart';
 
 import './providers/product_provider.dart';
 import './providers/favourite_product_provider.dart';
+import './providers/wishlist_provider.dart';
 import './HTTP_handler.dart';
 
 void main() {
@@ -87,6 +88,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           builder: (_) => FavouriteProductProvider(),
+        ),
+        ChangeNotifierProvider(
+          builder: (_) => WishlistProvider(),
         ),
       ],
       child: MaterialApp(
