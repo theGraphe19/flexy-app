@@ -120,7 +120,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     _productProvider = Provider.of<ProductProvider>(context);
     _wishlistBottomSheet = WishlistBottomSheet(
       context: context,
-      category: category,
       scaffoldKey: scaffoldKey,
       user: user,
     );

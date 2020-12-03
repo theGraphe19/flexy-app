@@ -13,7 +13,6 @@ import '../models/user.dart';
 class WishlistBottomSheet {
   BuildContext context;
   GlobalKey<ScaffoldState> scaffoldKey;
-  Category category;
   User user;
   ProductProvider _productProvider;
   FavouriteProductProvider _favouriteProductProvider;
@@ -24,7 +23,6 @@ class WishlistBottomSheet {
   WishlistBottomSheet({
     @required this.context,
     @required this.scaffoldKey,
-    @required this.category,
     @required this.user,
   }) {
     _productProvider = Provider.of<ProductProvider>(context);
@@ -93,7 +91,7 @@ class WishlistBottomSheet {
                           child: ProductItem(
                             _wishlistProvider.wishList[index].product.product,
                             user,
-                            category,
+                            _wishlistProvider.wishList[index].category,
                             scaffoldKey,
                             true,
                           ),

@@ -345,6 +345,7 @@ class HTTPHandler {
 
   Future<ProductDetails> getProductDetails(int productId, String token) async {
     try {
+      print('$baseURL/proddetails/$productId?api_token=$token');
       Response response =
           await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
 

@@ -115,8 +115,6 @@ class _ProductItemState extends State<ProductItem> {
                       ),
                     ),
                   ),
-                  if (widget.product.tagline.length <= 15)
-                    SizedBox(height: 50.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[

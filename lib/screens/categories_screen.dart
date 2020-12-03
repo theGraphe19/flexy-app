@@ -3,9 +3,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:provider/provider.dart';
 
-import '../providers/wishlist_provider.dart';
+import '../utils/wishlist_bottom_sheet.dart';
 import './products_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
@@ -31,6 +30,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   bool _controller = false;
   Map adminDetails;
   SharedPreferences prefs;
+  WishlistBottomSheet _wishlistBottomSheet;
 
   void _showAbout(BuildContext context) {
     _scaffoldKey.currentState.showBottomSheet(
@@ -179,6 +179,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       });
     }
 
+    _wishlistBottomSheet = WishlistBottomSheet(
+      context: context,
+      scaffoldKey: _scaffoldKey,
+      user: _currentUser,
+    );
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -201,6 +207,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               Navigator.of(context).push(_createRoute());
             },
           ),
+          Padding(
+            padding: const EdgeInsets.only(right: 5.0),
+            child: IconButton(
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _wishlistBottomSheet.fireWishlist();
+              },
+            ),
+          )
         ],
       ),
       drawer: SideDrawer(_currentUser, _scaffoldKey).drawer(context),
