@@ -1,33 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
-import '../models/category.dart';
 import '../widgets/product_item.dart';
-import '../providers/product_provider.dart';
-import '../providers/favourite_product_provider.dart';
-import '../models/product.dart';
 import '../models/user.dart';
 
 class WishlistBottomSheet {
   BuildContext context;
   GlobalKey<ScaffoldState> scaffoldKey;
   User user;
-  ProductProvider _productProvider;
-  FavouriteProductProvider _favouriteProductProvider;
-  List<Product> _favouriteProducts;
   WishlistProvider _wishlistProvider;
-  List<Wishlist> _wishlistItems;
 
   WishlistBottomSheet({
     @required this.context,
     @required this.scaffoldKey,
     @required this.user,
   }) {
-    _productProvider = Provider.of<ProductProvider>(context);
-    _favouriteProductProvider =
-        Provider.of<FavouriteProductProvider>(context, listen: true);
     _wishlistProvider = Provider.of<WishlistProvider>(context);
   }
 

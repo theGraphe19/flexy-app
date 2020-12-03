@@ -26,7 +26,6 @@ import './screens/legal_details_screen.dart';
 import './screens/image_zoom_screen.dart';
 
 import './providers/product_provider.dart';
-import './providers/favourite_product_provider.dart';
 import './providers/wishlist_provider.dart';
 import './HTTP_handler.dart';
 
@@ -85,9 +84,6 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           builder: (_) => ProductProvider(),
-        ),
-        ChangeNotifierProvider(
-          builder: (_) => FavouriteProductProvider(),
         ),
         ChangeNotifierProvider(
           builder: (_) => WishlistProvider(),
