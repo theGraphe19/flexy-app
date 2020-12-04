@@ -120,128 +120,130 @@ class CartScreenState extends State<CartScreen> {
                                       Flexible(
                                         child: GestureDetector(
                                           onTap: () {
-                                            print(items[index]
-                                                .cartItems[0]
-                                                .color);
-                                            List<int> quantity = [];
-                                            print(quantity.toString());
-                                            _handler
-                                                .getProductDetails(
-                                                    items[index]
-                                                        .cartItems[0]
-                                                        .productId,
-                                                    token)
-                                                .then((value) {
-                                              productDetails = value;
-                                              print(
-                                                  productDetails.product.name);
-                                              if (productDetails.product
-                                                      .productColors[0].color ==
-                                                  null)
-                                                colorSelected = 0;
-                                              else
-                                                for (var i = 0;
-                                                    i <
-                                                        productDetails
-                                                            .product
-                                                            .productColors
-                                                            .length;
-                                                    i++) {
-                                                  if (productDetails
-                                                          .product
-                                                          .productColors[i]
-                                                          .color
-                                                          .contains(items[index]
-                                                              .cartItems[0]
-                                                              .color) &&
-                                                      items[index]
-                                                          .cartItems[0]
-                                                          .color
-                                                          .contains(
-                                                              productDetails
-                                                                  .product
-                                                                  .productColors[
-                                                                      i]
-                                                                  .color)) {
-                                                    colorSelected = i;
-                                                    break;
-                                                  }
-                                                }
-                                              print(productDetails
-                                                  .product
-                                                  .productColors[colorSelected]
-                                                  .color);
-                                              int flag;
-                                              for (var i = 0;
-                                                  i <
-                                                      productDetails
-                                                          .product
-                                                          .productColors[
-                                                              colorSelected]
-                                                          .sizes
-                                                          .length;
-                                                  i++) {
-                                                flag = 0;
-                                                for (var j = 0;
-                                                    j <
-                                                        items[index]
-                                                            .cartItems
-                                                            .length;
-                                                    j++) {
-                                                  if (productDetails
-                                                      .product
-                                                      .productColors[
-                                                          colorSelected]
-                                                      .sizes[i]
-                                                      .size
-                                                      .contains(items[index]
-                                                          .cartItems[j]
-                                                          .productSize)) {
-                                                    quantity.add(items[index]
-                                                        .cartItems[j]
-                                                        .quantity);
-                                                    flag = 1;
-                                                    break;
-                                                  }
-                                                }
-                                                if (flag == 0) quantity.add(0);
-                                              }
+                                            // print(items[index]
+                                            //     .cartItems[0]
+                                            //     .color);
+                                            // List<int> quantity = [];
+                                            // print(quantity.toString());
+                                            // _handler
+                                            //     .getProductDetails(
+                                            //         items[index]
+                                            //             .cartItems[0]
+                                            //             .productId,
+                                            //         token)
+                                            //     .then((value) {
+                                            //   productDetails = value;
+                                            //   print(
+                                            //       productDetails.product.name);
+                                            //   if (productDetails.product
+                                            //           .productColors[0].color ==
+                                            //       null)
+                                            //     colorSelected = 0;
+                                            //   else
+                                            //     for (var i = 0;
+                                            //         i <
+                                            //             productDetails
+                                            //                 .product
+                                            //                 .productColors
+                                            //                 .length;
+                                            //         i++) {
+                                            //       if (productDetails
+                                            //               .product
+                                            //               .productColors[i]
+                                            //               .color
+                                            //               .contains(items[index]
+                                            //                   .cartItems[0]
+                                            //                   .color) &&
+                                            //           items[index]
+                                            //               .cartItems[0]
+                                            //               .color
+                                            //               .contains(
+                                            //                   productDetails
+                                            //                       .product
+                                            //                       .productColors[
+                                            //                           i]
+                                            //                       .color)) {
+                                            //         colorSelected = i;
+                                            //         break;
+                                            //       }
+                                            //     }
+                                            //   print(productDetails
+                                            //       .product
+                                            //       .productColors[colorSelected]
+                                            //       .color);
+                                            //   int flag;
+                                            //   for (var i = 0;
+                                            //       i <
+                                            //           productDetails
+                                            //               .product
+                                            //               .productColors[
+                                            //                   colorSelected]
+                                            //               .sizes
+                                            //               .length;
+                                            //       i++) {
+                                            //     flag = 0;
+                                            //     for (var j = 0;
+                                            //         j <
+                                            //             items[index]
+                                            //                 .cartItems
+                                            //                 .length;
+                                            //         j++) {
+                                            //       if (productDetails
+                                            //           .product
+                                            //           .productColors[
+                                            //               colorSelected]
+                                            //           .sizes[i]
+                                            //           .size
+                                            //           .contains(items[index]
+                                            //               .cartItems[j]
+                                            //               .productSize)) {
+                                            //         quantity.add(items[index]
+                                            //             .cartItems[j]
+                                            //             .quantity);
+                                            //         flag = 1;
+                                            //         break;
+                                            //       }
+                                            //     }
+                                            //     if (flag == 0) quantity.add(0);
+                                            //   }
 
-                                              print(quantity.toString());
-                                              Navigator.of(context).pushNamed(
-                                                ProductDetailsScreen.routeName,
-                                                arguments: <dynamic>[
-                                                  productDetails.product,
-                                                  token,
-                                                  items[index]
-                                                      .cartItems[0]
-                                                      .categoryId,
-                                                  currentUser,
-                                                  true,
-                                                  this,
-                                                  quantity,
-                                                  items[index]
-                                                      .cartItems[0]
-                                                      .color,
-                                                  items[index].id,
-                                                ],
-                                              ).then((_) {
-                                                itemsHandler = false;
-                                                setState(() {});
-                                              });
-                                            }).catchError((e) {
-                                              scaffoldKey.currentState
-                                                  .showSnackBar(SnackBar(
-                                                content: Text(
-                                                  'Network error!',
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                                backgroundColor:
-                                                    Color(0xff6c757d),
-                                                duration: Duration(seconds: 3),
-                                              ));
-                                            });
+                                            //   print(quantity.toString());
+                                            //   Navigator.of(context).pushNamed(
+                                            //     ProductDetailsScreen.routeName,
+                                            //     arguments: <dynamic>[
+                                            //       productDetails.product,
+                                            //       token,
+                                            //       items[index]
+                                            //           .cartItems[0]
+                                            //           .categoryId,
+                                            //       currentUser,
+                                            //       true,
+                                            //       this,
+                                            //       quantity,
+                                            //       items[index]
+                                            //           .cartItems[0]
+                                            //           .color,
+                                            //       items[index].id,
+                                            //     ],
+                                            //   ).then((_) {
+                                            //     itemsHandler = false;
+                                            //     setState(() {});
+                                            //   });
+                                            // }).catchError((e) {
+                                            //   scaffoldKey.currentState
+                                            //       .showSnackBar(SnackBar(
+                                            //     content: Text(
+                                            //       'Network error!',
+                                            //       style: TextStyle(
+                                            //           color: Colors.white),
+                                            //     ),
+                                            //     backgroundColor:
+                                            //         Color(0xff6c757d),
+                                            //     duration: Duration(seconds: 3),
+                                            //   ));
+                                            // });
+                                            print('pressed updat');
+                                            _showModal(items[index]);
                                           },
                                           child: Container(
                                             height: 40.0,
@@ -383,6 +385,149 @@ class CartScreenState extends State<CartScreen> {
         label: Text('CheckOut From Cart'),
         icon: Icon(Icons.payment),
       ),
+    );
+  }
+
+  void _showModal(CartOverView item) async {
+    showModalBottomSheet(
+      context: scaffoldKey.currentContext,
+      builder: (BuildContext context) {
+        return BottomSheet(
+          onClosing: () {},
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: double.maxFinite,
+                  padding: const EdgeInsets.all(10.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image(
+                                  height: 80.0,
+                                  width: 80.0,
+                                  image: NetworkImage(
+                                    'https://developers.thegraphe.com/flexy/storage/app/product_images/${item.cartItems[0].productImages[0]}',
+                                  ),
+                                ),
+                                Text(item.cartItems[0].productName),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.of(context).pop(),
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: Icon(Icons.close),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(),
+                        SizedBox(height: 10.0),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: item.cartItems.map((e) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    e.productSize,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 20.0,
+                                        width: 40.0,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0)),
+                                          color: Color(int.parse(
+                                                  e.color.substring(1, 7),
+                                                  radix: 16) +
+                                              0xFF000000),
+                                        ),
+                                      ),
+                                      SizedBox(width: 5.0),
+                                      Text(e.colorName),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            if (e.quantity >= 2)
+                                              e.quantity -= 1;
+                                            print(e.quantity);
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.indeterminate_check_box,
+                                          size: 30.0,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10.0),
+                                      Text(e.quantity.toString()),
+                                      SizedBox(width: 10.0),
+                                      Icon(
+                                        Icons.add_box,
+                                        size: 30.0,
+                                      ),
+                                      SizedBox(width: 15.0),
+                                      Icon(
+                                        Icons.delete,
+                                        size: 25.0,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        SizedBox(height: 10.0),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(10.0),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: Text(
+                            'Update',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 }
