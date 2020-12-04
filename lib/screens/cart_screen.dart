@@ -245,6 +245,7 @@ class CartScreenState extends State<CartScreen> {
                                           },
                                           child: Container(
                                             height: 40.0,
+                                            color: Colors.pink.withOpacity(0),
                                             child: Center(
                                               child: Text(
                                                 "Update Order",
@@ -315,6 +316,7 @@ class CartScreenState extends State<CartScreen> {
                                           },
                                           child: Container(
                                             height: 40.0,
+                                            color: Colors.pink.withOpacity(0),
                                             child: Center(
                                               child: Text(
                                                 "Delete",
