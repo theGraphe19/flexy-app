@@ -12,6 +12,8 @@ import '../utils/drawer.dart';
 import '../widgets/loading_body.dart';
 import '../models/category.dart';
 import './search_screen.dart';
+import '../models/chat_overview.dart';
+import '../models/chat.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';
@@ -31,6 +33,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Map adminDetails;
   SharedPreferences prefs;
   WishlistBottomSheet _wishlistBottomSheet;
+  var hasUnread = false;
 
   void _showAbout(BuildContext context) {
     _scaffoldKey.currentState.showBottomSheet(
@@ -144,6 +147,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     super.initState();
   }
 
+  void checkUnreadMsgs() {
+    _handler.getChats(_currentUser.token).then((value) {
+      for (Chat c in value[0].chats) {
+        if (c.status == 0) {
+          print("for chats ");
+          setState(() {
+            hasUnread = true;
+          });
+          break;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _currentUser = ModalRoute.of(context).settings.arguments as User;
@@ -161,6 +178,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
     if (_currentUser.status == 1) if (!categoryListHandler) {
       categoryListHandler = true;
+
+      checkUnreadMsgs();
 
       _handler.getWishListItems(context, _currentUser.id.toString());
 
@@ -221,7 +240,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(_currentUser, _scaffoldKey).drawer(context),
+      drawer: SideDrawer(_currentUser, _scaffoldKey, hasUnread).drawer(context),
       body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: (_currentUser.status == 1)

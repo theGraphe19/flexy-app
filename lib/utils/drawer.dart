@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
+import '../models/chat_overview.dart';
+import '../models/chat.dart';
 import '../screens/my_orders_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/view_update_profile_screen.dart';
@@ -25,8 +27,14 @@ class SideDrawer {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   HTTPHandler _handler = HTTPHandler();
   Map details;
+  var hasUnread;
 
-  SideDrawer(this.user, this.scaffoldKey) {
+  SideDrawer(
+    this.user,
+    this.scaffoldKey,
+    this.hasUnread,
+  ) {
+    print('from within the drawer => $hasUnread');
     _handler.getAdminContactDetails().then((value) {
       this.details = value;
     });
@@ -88,9 +96,17 @@ class SideDrawer {
           ),
           Divider(),
           SizedBox(height: 5.0),
-          _drawerTile(
-            'Messages',
-            () {
+          ListTile(
+            leading: Container(
+              height: 60.0,
+              width: 60.0,
+              child: Image.asset(
+                'assets/images/chatnot.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            title: Text('Messages'),
+            onTap: () {
               print('chat');
               Navigator.pop(context);
               Navigator.of(context).pushNamed(
@@ -98,7 +114,15 @@ class SideDrawer {
                 arguments: user.token,
               );
             },
-            'assets/images/chatnot.png',
+            trailing: (this.hasUnread)
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      radius: 5.0,
+                    ),
+                  )
+                : SizedBox(),
           ),
           Divider(),
           SizedBox(height: 5.0),

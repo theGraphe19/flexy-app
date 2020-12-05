@@ -619,6 +619,7 @@ class HTTPHandler {
 
   Future<List<ChatOverView>> getChats(String token) async {
     try {
+      print('$baseURL/myinbox?api_token=$token');
       Response response = await _dio.get('$baseURL/myinbox?api_token=$token');
 
       List<ChatOverView> chats = [];

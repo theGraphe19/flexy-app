@@ -11,6 +11,8 @@ import '../utils/drawer.dart';
 import '../utils/wishlist_bottom_sheet.dart';
 import './search_screen.dart';
 import '../models/category.dart';
+import '../models/chat_overview.dart';
+import '../models/chat.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -32,6 +34,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   var _radioValue = 1;
   var _radioValue1 = 0;
+
+  var hasUnread = false;
 
   Route _createRoute() {
     return PageRouteBuilder(
@@ -73,6 +77,20 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
+  void checkUnreadMsgs() {
+    _handler.getChats(currentUser.token).then((value) {
+      for (Chat c in value[0].chats) {
+        if (c.status == 0) {
+          print("for chats ");
+          setState(() {
+            hasUnread = true;
+          });
+          break;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var data =
@@ -88,7 +106,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
       user: currentUser,
     );
 
-    if (!prodListCounterCalled) getList();
+    if (!prodListCounterCalled) {
+      getList();
+      checkUnreadMsgs();
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -127,7 +148,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(currentUser, scaffoldKey).drawer(context),
+      drawer: SideDrawer(currentUser, scaffoldKey, hasUnread).drawer(context),
       body: Column(
         children: <Widget>[
           Divider(),
