@@ -1,9 +1,10 @@
-import 'package:flexy/models/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:intl/intl.dart';
 
+import '../models/product_details.dart';
+import '../models/cart.dart';
 import '../HTTP_handler.dart';
 import '../models/cart_overview.dart';
 import '../widgets/loading_body.dart';
@@ -33,25 +34,30 @@ class CartScreenState extends State<CartScreen> {
     return prefs.getString('token');
   }
 
+  getCart() {
+    _handler.getCartItems(token).then((value) {
+      items = value;
+      setState(() {});
+    }).catchError((e) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Network error!',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!itemsHandler) {
       currentUser = ModalRoute.of(context).settings.arguments as User;
       itemsHandler = true;
       _getToken().then((String token) {
-        _handler.getCartItems(token).then((value) {
-          items = value;
-          setState(() {});
-        }).catchError((e) {
-          scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text(
-              'Network error!',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Color(0xff6c757d),
-            duration: Duration(seconds: 3),
-          ));
-        });
+        this.token = token;
+        getCart();
       });
     }
     _getToken().then((value) {
@@ -389,6 +395,17 @@ class CartScreenState extends State<CartScreen> {
   }
 
   void _showModal(CartOverView item) async {
+    List<Map<String, dynamic>> quantityPerSIze = [];
+
+    for (Cart c in item.cartItems) {
+      quantityPerSIze.add({
+        'size': c.productSize,
+        'quantity': c.quantity,
+        'color': c.color,
+        'colorName': c.colorName
+      });
+    }
+
     showModalBottomSheet(
       context: scaffoldKey.currentContext,
       builder: (BuildContext context) {
@@ -399,7 +416,7 @@ class CartScreenState extends State<CartScreen> {
               builder: (BuildContext context, StateSetter setState) {
                 return Container(
                   width: MediaQuery.of(context).size.width,
-                  height: double.maxFinite,
+                  // height: double.maxFinite,
                   padding: const EdgeInsets.all(10.0),
                   child: SingleChildScrollView(
                     child: Column(
@@ -432,7 +449,7 @@ class CartScreenState extends State<CartScreen> {
                         SizedBox(height: 10.0),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: item.cartItems.map((e) {
+                          children: quantityPerSIze.map((e) {
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
@@ -441,7 +458,7 @@ class CartScreenState extends State<CartScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    e.productSize,
+                                    e['size'],
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16.0,
@@ -456,13 +473,13 @@ class CartScreenState extends State<CartScreen> {
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(10.0)),
                                           color: Color(int.parse(
-                                                  e.color.substring(1, 7),
+                                                  e['color'].substring(1, 7),
                                                   radix: 16) +
                                               0xFF000000),
                                         ),
                                       ),
                                       SizedBox(width: 5.0),
-                                      Text(e.colorName),
+                                      Text(e['colorName']),
                                     ],
                                   ),
                                   Row(
@@ -470,9 +487,8 @@ class CartScreenState extends State<CartScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            if (e.quantity >= 2)
-                                              e.quantity -= 1;
-                                            print(e.quantity);
+                                            if (e['quantity'] >= 2)
+                                              e['quantity'] -= 1;
                                           });
                                         },
                                         child: Icon(
@@ -481,16 +497,30 @@ class CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       SizedBox(width: 10.0),
-                                      Text(e.quantity.toString()),
+                                      Text(e['quantity'].toString()),
                                       SizedBox(width: 10.0),
-                                      Icon(
-                                        Icons.add_box,
-                                        size: 30.0,
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            e['quantity'] += 1;
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.add_box,
+                                          size: 30.0,
+                                        ),
                                       ),
                                       SizedBox(width: 15.0),
-                                      Icon(
-                                        Icons.delete,
-                                        size: 25.0,
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            quantityPerSIze.remove(e);
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.delete,
+                                          size: 25.0,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -500,22 +530,86 @@ class CartScreenState extends State<CartScreen> {
                           }).toList(),
                         ),
                         SizedBox(height: 10.0),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: const EdgeInsets.all(10.0),
-                          padding: const EdgeInsets.all(10.0),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: Text(
-                            'Update',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.bold,
+                        GestureDetector(
+                          onTap: () {
+                            _handler
+                                .removeItemFromCart(token, item.id)
+                                .then((value) {
+                              if (value) {
+                                _handler
+                                    .addToCart(
+                                  item.cartItems[0].productId,
+                                  token,
+                                  item.cartItems[0].color,
+                                  quantityPerSIze,
+                                )
+                                    .then((value) {
+                                  Navigator.of(context).pop();
+
+                                  if (value) {
+                                    getCart();
+                                  } else {
+                                    scaffoldKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        'Error! Try again.',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Color(0xff6c757d),
+                                      duration: Duration(seconds: 3),
+                                    ));
+                                  }
+                                }).catchError((e) {
+                                  print(e);
+                                  scaffoldKey.currentState
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      'Network error!',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Color(0xff6c757d),
+                                    duration: Duration(seconds: 3),
+                                  ));
+                                });
+                              } else {
+                                scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  content: Text(
+                                    'Error! Try again.',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Color(0xff6c757d),
+                                  duration: Duration(seconds: 3),
+                                ));
+                              }
+                            }).catchError((e) {
+                              print(e);
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  'Network error!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 3),
+                              ));
+                            });
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(10.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Text(
+                              'Update',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
