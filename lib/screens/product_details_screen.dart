@@ -661,7 +661,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 child: ProductItemUnrelated(
                                   productDetails.relatedProducts[index],
                                   user,
-                                  category.id,
+                                  category,
                                   scaffoldKey,
                                 ),
                               ),

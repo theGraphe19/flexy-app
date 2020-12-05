@@ -68,7 +68,7 @@ class _BillScreenState extends State<BillScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Bill'),
+        title: Text('Order Details'),
       ),
       body: (token == null)
           ? LoadingBody()

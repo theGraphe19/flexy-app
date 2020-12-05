@@ -48,7 +48,7 @@ class _ProductItemState extends State<ProductItem> {
     return false;
   }
 
-  Wishlist getWishListId() {
+  Wishlist getWishList() {
     for (Wishlist w in _wishlistProvider.wishList) {
       if (w.product.product.id == widget.product.id) return w;
     }
@@ -162,7 +162,7 @@ class _ProductItemState extends State<ProductItem> {
                         onPressed: () {
                           print('pressed');
                           if (check()) {
-                            Wishlist w = getWishListId();
+                            Wishlist w = getWishList();
                             _handler
                                 .removeItemFromWishList(
                               context,
