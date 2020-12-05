@@ -12,7 +12,6 @@ import '../utils/drawer.dart';
 import '../widgets/loading_body.dart';
 import '../models/category.dart';
 import './search_screen.dart';
-import '../models/chat_overview.dart';
 import '../models/chat.dart';
 
 class CategoriesScreen extends StatefulWidget {

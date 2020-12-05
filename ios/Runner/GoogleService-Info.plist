@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1067457461263-2j8oahfqlcdj5odn7n36b3udnodh2nps.apps.googleusercontent.com</string>
+	<string>838514546509-h62icp0sv8m2g47f6cvk9urhautrmfq0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1067457461263-2j8oahfqlcdj5odn7n36b3udnodh2nps</string>
+	<string>com.googleusercontent.apps.838514546509-h62icp0sv8m2g47f6cvk9urhautrmfq0</string>
 	<key>API_KEY</key>
-	<string>AIzaSyA-FgmzyCd1wnfsO9Y7MMtMOfoICfyht5Q</string>
+	<string>AIzaSyBonJy7I7iBsCpH-Mr-suViwLkWRlTIXcE</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1067457461263</string>
+	<string>838514546509</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.graphe.flexy</string>
 	<key>PROJECT_ID</key>
-	<string>flexyfirebase</string>
+	<string>flexy-d69fa</string>
 	<key>STORAGE_BUCKET</key>
-	<string>flexyfirebase.appspot.com</string>
+	<string>flexy-d69fa.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1067457461263:ios:6f61f7f49ce06cfe9f777a</string>
-	<key>DATABASE_URL</key>
-	<string>https://flexyfirebase.firebaseio.com</string>
+	<string>1:838514546509:ios:27a1f60d9813235ec68904</string>
 </dict>
 </plist>
