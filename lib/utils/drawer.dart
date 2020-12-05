@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
-import '../models/chat_overview.dart';
-import '../models/chat.dart';
 import '../screens/my_orders_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/view_update_profile_screen.dart';
@@ -114,7 +112,7 @@ class SideDrawer {
                 arguments: user.token,
               );
             },
-            trailing: (this.hasUnread)
+            trailing: (this.hasUnread )
                 ? Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(

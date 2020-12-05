@@ -151,13 +151,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     _handler.getChats(_currentUser.token).then((value) {
       for (Chat c in value[0].chats) {
         if (c.status == 0) {
-          print("for chats ");
           setState(() {
             hasUnread = true;
           });
           break;
         }
       }
+
+      hasUnread = false;
     });
   }
 

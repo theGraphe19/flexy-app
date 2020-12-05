@@ -20,14 +20,17 @@ class _ChatScreenState extends State<ChatScreen> {
   List<ChatOverView> _chats;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoaded = false;
+  var _handler = HTTPHandler();
 
   void _getChats() {
     _chatsHandler = true;
-    HTTPHandler().getChats(token).then((value) {
+    _handler.getChats(token).then((value) {
       this._chats = value;
       setState(() {
         isLoaded = true;
       });
+      if (value.length > 0)
+        _handler.readChats(token, value[0].chats[0].adminId);
     }).catchError((e) {
       print(e);
       _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -130,7 +133,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                DateFormat('dd-MM-yyyy').format(_chats[0].chats[index].timeStamp),
+                                DateFormat('dd-MM-yyyy')
+                                    .format(_chats[0].chats[index].timeStamp),
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.black87,
