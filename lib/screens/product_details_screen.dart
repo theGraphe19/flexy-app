@@ -758,7 +758,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 print('tapped');
                 Navigator.of(context).pushNamed(
                   ImageZoomScreen.routeName,
-                  arguments: product.productImages[currentActiveIndex],
+                  arguments: [
+                    currentActiveIndex,
+                    product.productImages,
+                  ],
                 );
               },
               child: Hero(
