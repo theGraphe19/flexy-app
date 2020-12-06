@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
 class ImageZoomScreen extends StatefulWidget {
-  static const routeName = '/image-zoon-screen';
+  static const routeName = '/image-zoom-screen';
 
   @override
   _ImageZoomScreenState createState() => _ImageZoomScreenState();
