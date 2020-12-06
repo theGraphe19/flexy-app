@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './providers/category_provider.dart';
 import './providers/product_provider.dart';
 import './providers/wishlist_provider.dart';
 import './models/user.dart';
@@ -298,15 +299,22 @@ class HTTPHandler {
     }
   }
 
-  Future<List<Category>> getCategoriesList(String token) async {
+  Future<List<Category>> getCategoriesList(
+      BuildContext context, String token) async {
     try {
       print('$baseURL/categories?api_token=$token');
       Response response =
           await _dio.get('$baseURL/categories?api_token=$token');
 
+      final categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: false);
+
       List<Category> categories = [];
       for (var i = 0; i < (response.data).length; i++)
         categories.add(Category.frommap((response.data)[i]));
+
+      categoryProvider.clear();
+      categoryProvider.categoryList = categories;
 
       print(categories);
       return categories;

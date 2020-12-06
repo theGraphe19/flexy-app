@@ -183,7 +183,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
       _handler.getWishListItems(context, _currentUser.id.toString());
 
-      _handler.getCategoriesList(_currentUser.token).then((cat) {
+      _handler.getCategoriesList(context, _currentUser.token).then((cat) {
         categoriesList = cat;
         setState(() {});
       }).catchError((e) {

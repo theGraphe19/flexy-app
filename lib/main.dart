@@ -25,6 +25,7 @@ import './screens/chat_screen.dart';
 import './screens/legal_details_screen.dart';
 import './screens/image_zoom_screen.dart';
 
+import './providers/category_provider.dart';
 import './providers/product_provider.dart';
 import './providers/wishlist_provider.dart';
 import './HTTP_handler.dart';
@@ -82,6 +83,9 @@ class _MyAppState extends State<MyApp> {
     _getSignatureCode();
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          builder: (_) => CategoryProvider(),
+        ),
         ChangeNotifierProvider(
           builder: (_) => ProductProvider(),
         ),

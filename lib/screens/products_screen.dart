@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/category_provider.dart';
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
@@ -30,9 +31,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
   bool _productsLoaded = false;
   ProductProvider _productProvider;
   WishlistBottomSheet _wishlistBottomSheet;
+  CategoryProvider _categoryProvider;
+  bool isFirstExecution = true;
 
   var _radioValue = 1;
-  var _radioValue1 = 0;
 
   var hasUnread = false;
 
@@ -98,8 +100,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     currentUser = data['user'];
     print(currentUser.token);
-    category = data['category'];
+    if (isFirstExecution) {
+      category = data['category'];
+      isFirstExecution = false;
+    }
     print(category);
+    _categoryProvider = Provider.of<CategoryProvider>(context);
     _productProvider = Provider.of<ProductProvider>(context);
     _wishlistBottomSheet = WishlistBottomSheet(
       context: context,
@@ -127,7 +133,31 @@ class _ProductsScreenState extends State<ProductsScreen> {
             scaffoldKey.currentState.openDrawer();
           },
         ),
-        title: Text(category.name),
+        // title: Text(category.name),
+
+        title: Theme(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Category>(
+              value: category,
+              items: _categoryProvider.categoryList
+                  .map(
+                    (e) => DropdownMenuItem(
+                      child: new Text(e.name),
+                      value: e,
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  this.category = value;
+                  prodListCounterCalled = false;
+                });
+              },
+            ),
+          ),
+          data: ThemeData.dark(),
+        ),
+
         actions: <Widget>[
           IconButton(
             icon: Icon(
