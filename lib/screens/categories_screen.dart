@@ -4,12 +4,15 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+import '../utils/wishlist_bottom_sheet.dart';
 import './products_screen.dart';
 import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../utils/drawer.dart';
 import '../widgets/loading_body.dart';
 import '../models/category.dart';
+import './search_screen.dart';
+import '../models/chat.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';
@@ -28,6 +31,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   bool _controller = false;
   Map adminDetails;
   SharedPreferences prefs;
+  WishlistBottomSheet _wishlistBottomSheet;
+  var hasUnread = false;
 
   void _showAbout(BuildContext context) {
     _scaffoldKey.currentState.showBottomSheet(
@@ -100,6 +105,26 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          SearchScreen(_currentUser),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     final fbm = FirebaseMessaging();
@@ -121,9 +146,25 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     super.initState();
   }
 
+  void checkUnreadMsgs() {
+    _handler.getChats(_currentUser.token).then((value) {
+      for (Chat c in value[0].chats) {
+        if (c.status == 0) {
+          setState(() {
+            hasUnread = true;
+          });
+          break;
+        }
+      }
+
+      hasUnread = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _currentUser = ModalRoute.of(context).settings.arguments as User;
+    _handler.sendFirebaseToken(_currentUser.id.toString());
 
     if (_currentUser.status != 1 && !_controller) {
       _controller = true;
@@ -138,7 +179,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
     if (_currentUser.status == 1) if (!categoryListHandler) {
       categoryListHandler = true;
-      _handler.getCategoriesList(_currentUser.token).then((cat) {
+
+      checkUnreadMsgs();
+
+      _handler.getWishListItems(context, _currentUser.id.toString());
+
+      _handler.getCategoriesList(context, _currentUser.token).then((cat) {
         categoriesList = cat;
         setState(() {});
       }).catchError((e) {
@@ -153,6 +199,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       });
     }
 
+    _wishlistBottomSheet = WishlistBottomSheet(
+      context: context,
+      scaffoldKey: _scaffoldKey,
+      user: _currentUser,
+    );
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -164,8 +216,32 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           },
         ),
         title: Text((_currentUser.status == 1) ? 'Categories' : 'Flexy'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              print('search');
+              Navigator.of(context).push(_createRoute());
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 5.0),
+            child: IconButton(
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _wishlistBottomSheet.fireWishlist();
+              },
+            ),
+          )
+        ],
       ),
-      drawer: SideDrawer(_currentUser, _scaffoldKey).drawer(context),
+      drawer: SideDrawer(_currentUser, _scaffoldKey, hasUnread).drawer(context),
       body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: (_currentUser.status == 1)

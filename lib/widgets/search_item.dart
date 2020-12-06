@@ -43,7 +43,7 @@ class SearchItem extends StatelessWidget {
       ),
       onTap: () {
         HTTPHandler()
-            .getCategoriesList(user.token)
+            .getCategoriesList(context, user.token)
             .then((List<Category> value) {
           int cId = getCategory(value);
           if (cId != -1) {

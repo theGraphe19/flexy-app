@@ -1,33 +1,32 @@
-import 'dart:convert';
-
 import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
+import '../models/wishlist.dart';
+import '../HTTP_handler.dart';
+import '../models/category.dart';
 import '../screens/product_details_screen.dart';
 import '../utils/cart_bottom_sheet.dart';
 import '../models/product.dart';
 import '../models/product_color.dart';
 import '../models/product_size.dart';
 import '../providers/product_provider.dart';
-import '../providers/favourite_product_provider.dart';
+import '../providers/wishlist_provider.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
-  final int productIndex;
   final User user;
-  final int categoryId;
+  final Category category;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final bool isWishList;
+  final bool isWishlist;
 
   ProductItem(
     this.product,
-    this.productIndex,
     this.user,
-    this.categoryId,
+    this.category,
     this.scaffoldKey,
-    this.isWishList,
+    this.isWishlist,
   );
 
   @override
@@ -38,80 +37,29 @@ class _ProductItemState extends State<ProductItem> {
   SharedPreferences prefs;
   bool retreiveDataHandler = false;
   ProductProvider _productProvider;
-  FavouriteProductProvider _favouriteProductProvider;
+  WishlistProvider _wishlistProvider;
+  HTTPHandler _handler = HTTPHandler();
 
-  void addDataToPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-    String favs = prefs.getString('favourites-${widget.categoryId}');
-    List<dynamic> favouriteList;
-    if (favs != null)
-      favouriteList = json.decode(favs);
-    else
-      favouriteList = [];
-    if (!_productProvider.productsList[widget.productIndex].isFav) {
-      favouriteList.add(_productProvider.productsList[widget.productIndex].id);
-      setState(() {
-        _productProvider.productsList[widget.productIndex].isFav = true;
-      });
-      await prefs.setString(
-          'favourites-${widget.categoryId}', json.encode(favouriteList));
-    } else {
-      favouriteList
-          .remove(_productProvider.productsList[widget.productIndex].id);
-      setState(() {
-        _productProvider.productsList[widget.productIndex].isFav = false;
-      });
-      await prefs.setString(
-          'favourites-${widget.categoryId}', json.encode(favouriteList));
-      print('removing data from prefs');
-      _favouriteProductProvider
-          .removeItem(_productProvider.productsList[widget.productIndex]);
-      widget.scaffoldKey.currentState.setState(() {});
+  bool check() {
+    for (Wishlist w in _wishlistProvider.wishList) {
+      if (w.product.product.id == widget.product.id) return true;
     }
-    widget.scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        'Added to wishlist!',
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Color(0xff6c757d),
-      duration: Duration(seconds: 2),
-    ));
-    setState(() {
-      // _productProvider.productsList[widget.productIndex].isFav =
-      //     !_productProvider.productsList[widget.productIndex].isFav;
-    });
+
+    return false;
   }
 
-  void retreiveDataFromPrefs() async {
-    retreiveDataHandler = true;
-    prefs = await SharedPreferences.getInstance();
-    String favs = prefs.getString('favourites-${widget.categoryId}');
-    print(favs);
-    List<dynamic> favouriteList;
-    if (favs != null)
-      favouriteList = json.decode(favs);
-    else
-      favouriteList = [];
-
-    if (favouriteList.length == 0) {
-      _productProvider.productsList[widget.productIndex].isFav = false;
-    } else {
-      if (favouriteList
-          .contains(_productProvider.productsList[widget.productIndex].id)) {
-        _productProvider.productsList[widget.productIndex].isFav = true;
-      }
+  Wishlist getWishList() {
+    for (Wishlist w in _wishlistProvider.wishList) {
+      if (w.product.product.id == widget.product.id) return w;
     }
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     _productProvider = Provider.of<ProductProvider>(context);
-    _favouriteProductProvider = Provider.of<FavouriteProductProvider>(context);
-    if (!retreiveDataHandler) retreiveDataFromPrefs();
+    _wishlistProvider = Provider.of<WishlistProvider>(context);
 
-    return (widget.isWishList &&
-            !(_productProvider.productsList[widget.productIndex].isFav))
+    return (widget.isWishlist && !check())
         ? SizedBox()
         : GestureDetector(
             onTap: () {
@@ -122,7 +70,7 @@ class _ProductItemState extends State<ProductItem> {
                 arguments: <dynamic>[
                   widget.product,
                   widget.user.token,
-                  widget.categoryId,
+                  widget.category,
                   widget.user
                 ],
               );
@@ -133,7 +81,7 @@ class _ProductItemState extends State<ProductItem> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      'https://developers.thegraphe.com/flexy/storage/app/product_images/${_productProvider.productsList[widget.productIndex].productImages[0]}',
+                      'https://developers.thegraphe.com/flexy/storage/app/product_images/${widget.product.productImages[0]}',
                       fit: BoxFit.contain,
                       height: 245.0,
                     ),
@@ -145,7 +93,7 @@ class _ProductItemState extends State<ProductItem> {
                       right: 10.0,
                     ),
                     child: Text(
-                      _productProvider.productsList[widget.productIndex].name,
+                      widget.product.name,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
@@ -160,7 +108,7 @@ class _ProductItemState extends State<ProductItem> {
                       right: 10.0,
                     ),
                     child: Text(
-                      '${_productProvider.productsList[widget.productIndex].tagline}',
+                      '${widget.product.tagline}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
@@ -178,8 +126,8 @@ class _ProductItemState extends State<ProductItem> {
                         onPressed: () {
                           var colorList = new List<List<String>>();
                           var qtyList = new List<List<int>>();
-                          for (ProductSize productSize in _productProvider
-                              .productsList[widget.productIndex].productSizes) {
+                          for (ProductSize productSize
+                              in widget.product.productSizes) {
                             var temp1 = new List<String>();
                             var temp2 = new List<int>();
                             for (ProductColor productColor
@@ -192,10 +140,13 @@ class _ProductItemState extends State<ProductItem> {
                             colorList.add(temp1);
                             qtyList.add(temp2);
                           }
-                          CartBottomSheet(_productProvider
-                                  .productsList[widget.productIndex])
-                              .showBottomSheet(context, widget.scaffoldKey,
-                                  colorList, qtyList, widget.user.token, false);
+                          CartBottomSheet(widget.product).showBottomSheet(
+                              context,
+                              widget.scaffoldKey,
+                              colorList,
+                              qtyList,
+                              widget.user.token,
+                              false);
                         },
                       ),
                       Container(
@@ -206,14 +157,60 @@ class _ProductItemState extends State<ProductItem> {
                       IconButton(
                         icon: Icon(
                           Icons.favorite,
-                          color: (_productProvider
-                                  .productsList[widget.productIndex].isFav)
-                              ? Colors.red
-                              : Colors.grey,
+                          color: (check()) ? Colors.red : Colors.grey,
                         ),
                         onPressed: () {
                           print('pressed');
-                          addDataToPrefs();
+                          if (check()) {
+                            Wishlist w = getWishList();
+                            _handler
+                                .removeItemFromWishList(
+                              context,
+                              widget.user.id.toString(),
+                              w.id.toString(),
+                            )
+                                .then((value) {
+                              _wishlistProvider.removeItem(w);
+                              widget.scaffoldKey.currentState
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  'Removed from wishlist!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 2),
+                              ));
+                              setState(() {});
+                              widget.scaffoldKey.currentState.setState(() {});
+                            }).catchError((e) {
+                              print(e);
+                            });
+                          } else {
+                            _handler
+                                .addFavourite(
+                              context,
+                              widget.user.id.toString(),
+                              widget.product.productId.toString(),
+                            )
+                                .then((value) {
+                              print(value);
+                              if (value) {
+                                widget.scaffoldKey.currentState
+                                    .showSnackBar(SnackBar(
+                                  content: Text(
+                                    'Added to wishlist!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Color(0xff6c757d),
+                                  duration: Duration(seconds: 2),
+                                ));
+                                setState(() {});
+                                widget.scaffoldKey.currentState.setState(() {});
+                              }
+                            }).catchError((e) {
+                              print(e);
+                            });
+                          }
                         },
                       ),
                     ],

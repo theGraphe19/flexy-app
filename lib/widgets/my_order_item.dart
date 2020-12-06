@@ -66,51 +66,52 @@ class _MyOrderItemState extends State<MyOrderItem> {
                       child: Column(
                         children: <Widget>[
                           Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Image.network(
-                                    'https://developers.thegraphe.com/flexy/storage/app/product_images/${_productDetails.product.productImages[0]}',
-                                    fit: BoxFit.fill,
-                                    height: 180.0,
-                                    width: 120.0),
-                                SizedBox(width: 10.0),
-                                Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        (widget.order.productName.length > 15)
-                                            ? "Name : ${widget.order.productName.substring(0, 17)}..."
-                                            : "Name : ${widget.order.productName}",
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 17.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Quantity : x${widget.order.quantity}",
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15.0,
-                                            color: Colors.grey),
-                                      ),
-                                      Text(
-                                        "Rate : ${widget.order.pricePerPc}",
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15.0,
-                                            color: Colors.grey),
-                                      ),
-                                      Text(
-                                        "Net Amount : Rs. ${widget.order.amount} (${widget.order.pricePerPc} * ${widget.order.quantity})",
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15.0,
-                                            color: Colors.grey),
-                                      ),
-                                    ]),
-                              ]),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.network(
+                                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${_productDetails.product.productImages[0]}',
+                                  fit: BoxFit.fill,
+                                  height: 180.0,
+                                  width: 120.0),
+                              SizedBox(width: 10.0),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    (widget.order.productName.length > 15)
+                                        ? "${widget.order.productName.substring(0, 17)}..."
+                                        : "${widget.order.productName}",
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 17.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "Product Id : ${widget.order.productId}",
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 15.0,
+                                        color: Colors.grey),
+                                  ),
+                                  Text(
+                                    "Quantity : x${widget.order.quantity}",
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 15.0,
+                                        color: Colors.grey),
+                                  ),
+                                  Text(
+                                    "Rate : ${widget.order.pricePerPc}",
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 15.0,
+                                        color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -124,41 +125,6 @@ class _MyOrderItemState extends State<MyOrderItem> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        // Column(
-                        //   mainAxisAlignment: MainAxisAlignment.end,
-                        //   crossAxisAlignment: CrossAxisAlignment.end,
-                        //   children: <Widget>[
-                        //     Container(
-                        //       child: GestureDetector(
-                        //         onTap: () {
-                        //           print('tapped : ${widget.order.id}');
-                        //           Navigator.of(context).pushNamed(
-                        //             BillScreen.routeName,
-                        //             arguments: widget.order,
-                        //           );
-                        //         },
-                        //         child: Container(
-                        //           height: 60.0,
-                        //           width: 60.0,
-                        //           decoration:
-                        //               BoxDecoration(shape: BoxShape.circle),
-                        //           child:
-                        //               Image.asset("assets/images/download.png"),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       child: Text(
-                        //         'Download',
-                        //         style: TextStyle(
-                        //           color: Colors.black,
-                        //           fontSize: 12.0,
-                        //           fontWeight: FontWeight.bold,
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
                         SizedBox(width: 10.0),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,

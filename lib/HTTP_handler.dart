@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
+import './providers/category_provider.dart';
 import './providers/product_provider.dart';
+import './providers/wishlist_provider.dart';
 import './models/user.dart';
 import './models/product.dart';
 import './models/product_details.dart';
@@ -12,6 +15,7 @@ import './models/category.dart';
 import './models/cart_overview.dart';
 import './models/order_details.dart';
 import './models/chat_overview.dart';
+import './models/wishlist.dart';
 
 class HTTPHandler {
   Dio _dio = Dio();
@@ -150,6 +154,26 @@ class HTTPHandler {
       }
 
       return user;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  // ignore: missing_return
+  Future<void> sendFirebaseToken(String userId) {
+    try {
+      final fbm = FirebaseMessaging();
+      fbm.getToken().then((token) async {
+        print(token);
+        await _dio.post(
+          'https://developers.thegraphe.com/flexy/api_v_1.0/device_token',
+          data: FormData.fromMap({
+            'user_id': userId,
+            'device_token': token,
+          }),
+        );
+      });
     } catch (e) {
       print(e);
       throw e;
@@ -296,15 +320,22 @@ class HTTPHandler {
     }
   }
 
-  Future<List<Category>> getCategoriesList(String token) async {
+  Future<List<Category>> getCategoriesList(
+      BuildContext context, String token) async {
     try {
       print('$baseURL/categories?api_token=$token');
       Response response =
           await _dio.get('$baseURL/categories?api_token=$token');
 
+      final categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: false);
+
       List<Category> categories = [];
       for (var i = 0; i < (response.data).length; i++)
         categories.add(Category.frommap((response.data)[i]));
+
+      categoryProvider.clear();
+      categoryProvider.categoryList = categories;
 
       print(categories);
       return categories;
@@ -343,6 +374,7 @@ class HTTPHandler {
 
   Future<ProductDetails> getProductDetails(int productId, String token) async {
     try {
+      print('$baseURL/proddetails/$productId?api_token=$token');
       Response response =
           await _dio.get('$baseURL/proddetails/$productId?api_token=$token');
 
@@ -616,6 +648,7 @@ class HTTPHandler {
 
   Future<List<ChatOverView>> getChats(String token) async {
     try {
+      print('$baseURL/myinbox?api_token=$token');
       Response response = await _dio.get('$baseURL/myinbox?api_token=$token');
 
       List<ChatOverView> chats = [];
@@ -641,6 +674,88 @@ class HTTPHandler {
       } else {
         return false;
       }
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<bool> addFavourite(
+    BuildContext context,
+    String userId,
+    String productId,
+  ) async {
+    try {
+      Response response = await _dio.post(
+        'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+        data: FormData.fromMap({
+          'user_id': userId,
+          'product_id': productId,
+        }),
+      );
+
+      print(response.data);
+
+      if (response.data['success'] == '1') {
+        getWishListItems(context, userId);
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<Wishlist>> getWishListItems(
+      BuildContext context, String userId) async {
+    try {
+      List<Wishlist> items = [];
+
+      Response response = await _dio.post(
+          'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+          data: FormData.fromMap({
+            'buyer_id': userId,
+          }));
+
+      print(response.data);
+
+      for (var i = 0; i < response.data.length; i++) {
+        items.add(Wishlist.fromMap(response.data[i]));
+      }
+
+      final wishlistProvider =
+          Provider.of<WishlistProvider>(context, listen: false);
+
+      wishlistProvider.clear();
+      wishlistProvider.addItems(items);
+
+      return items;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<bool> removeItemFromWishList(
+    BuildContext context,
+    String userId,
+    String wishListId,
+  ) async {
+    try {
+      Response response = await _dio.post(
+          'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+          data: FormData.fromMap({
+            'wish_id': wishListId,
+          }));
+
+      print(response.data);
+
+      if (response.data['success'] == '1') {
+        getWishListItems(context, userId);
+        return true;
+      } else
+        return false;
     } catch (e) {
       print(e);
       throw e;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/category_provider.dart';
 import '../widgets/product_item.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
@@ -11,6 +12,7 @@ import '../utils/drawer.dart';
 import '../utils/wishlist_bottom_sheet.dart';
 import './search_screen.dart';
 import '../models/category.dart';
+import '../models/chat.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -29,9 +31,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
   bool _productsLoaded = false;
   ProductProvider _productProvider;
   WishlistBottomSheet _wishlistBottomSheet;
+  CategoryProvider _categoryProvider;
+  bool isFirstExecution = true;
 
   var _radioValue = 1;
-  var _radioValue1 = 0;
+
+  var hasUnread = false;
+
+  Map<String, bool> checkboxesValues = {};
 
   Route _createRoute() {
     return PageRouteBuilder(
@@ -73,23 +80,47 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
+  void checkUnreadMsgs() {
+    _handler.getChats(currentUser.token).then((value) {
+      for (Chat c in value[0].chats) {
+        if (c.status == 0) {
+          print("for chats ");
+          setState(() {
+            hasUnread = true;
+          });
+          break;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var data =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     currentUser = data['user'];
     print(currentUser.token);
-    category = data['category'];
+    if (isFirstExecution) {
+      category = data['category'];
+      isFirstExecution = false;
+    }
     print(category);
+    _categoryProvider = Provider.of<CategoryProvider>(context);
     _productProvider = Provider.of<ProductProvider>(context);
     _wishlistBottomSheet = WishlistBottomSheet(
       context: context,
       scaffoldKey: scaffoldKey,
-      categoryId: category.id,
       user: currentUser,
     );
 
-    if (!prodListCounterCalled) getList();
+    if (!prodListCounterCalled) {
+      getList();
+      checkUnreadMsgs();
+
+      for (String s in category.subCategories) {
+        checkboxesValues[s] = false;
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -102,7 +133,31 @@ class _ProductsScreenState extends State<ProductsScreen> {
             scaffoldKey.currentState.openDrawer();
           },
         ),
-        title: Text('Products'),
+        // title: Text(category.name),
+
+        title: Theme(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Category>(
+              value: category,
+              items: _categoryProvider.categoryList
+                  .map(
+                    (e) => DropdownMenuItem(
+                      child: new Text(e.name),
+                      value: e,
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  this.category = value;
+                  prodListCounterCalled = false;
+                });
+              },
+            ),
+          ),
+          data: ThemeData.dark(),
+        ),
+
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -128,7 +183,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(currentUser, scaffoldKey).drawer(context),
+      drawer: SideDrawer(currentUser, scaffoldKey, hasUnread).drawer(context),
       body: Column(
         children: <Widget>[
           Divider(),
@@ -139,14 +194,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     itemCount: _productProvider.productsList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.57,
+                      childAspectRatio: 0.55,
                     ),
                     itemBuilder: (BuildContext context, int index) =>
                         ProductItem(
                       _productProvider.productsList[index],
-                      index,
                       currentUser,
-                      category.id,
+                      category,
                       scaffoldKey,
                       false,
                     ),
@@ -167,9 +221,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     print('sort products');
                     _sortOptions(context);
                   },
-                  child: Text(
-                    'Sort',
-                    style: TextStyle(color: Colors.black),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2 - 11.0,
+                    height: 25.0,
+                    alignment: Alignment.center,
+                    color: Colors.pink.withOpacity(0),
+                    child: Text(
+                      'Sort',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
                 Container(
@@ -182,9 +242,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     print('filter pressed');
                     _filterOptions(context);
                   },
-                  child: Text(
-                    'Filter',
-                    style: TextStyle(color: Colors.black),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2 - 11.0,
+                    height: 25.0,
+                    alignment: Alignment.center,
+                    color: Colors.pink.withOpacity(0),
+                    child: Text(
+                      'Filter',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 )
               ],
@@ -222,92 +288,114 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
-  void _handleRadioValueChange2(int value) {
-    List<Product> newList = [];
-    _productProvider.productList = _productProvider.productsListDuplicate;
-    if (value != 0) {
-      for (var i = 0; i < _productProvider.productsList.length; i++) {
-        if (_productProvider.productsList[i].subCategory
-                .contains(category.subCategories[value - 1]) &&
-            category.subCategories[value - 1]
-                .contains(_productProvider.productsList[i].subCategory)) {
-          newList.add(_productProvider.productsList[i]);
-        }
-      }
-      _productProvider.productList = newList;
-    }
-    print(value);
-    setState(() {
-      _radioValue1 = value;
-      Navigator.of(context).pop();
-    });
-  }
-
-  void _filterOptions(BuildContext context) => showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          width: double.infinity,
-          height: 350.0,
-          margin: const EdgeInsets.all(10.0),
-          padding: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('FILTER BY'),
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Container(
-                  height: 30.0,
-                  child: RadioListTile(
-                    title: Text(
-                      'All Products',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 15.0,
-                      ),
-                    ),
-                    value: 0,
-                    groupValue: _radioValue1,
-                    onChanged: _handleRadioValueChange2,
-                  ),
-                ),
-                Column(
-                  children: category.subCategories.map((subCat) {
-                    return Container(
-                      height: 30.0,
-                      child: RadioListTile(
-                        title: Text(
-                          subCat,
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 15.0,
-                          ),
-                        ),
-                        value: (category.subCategories.indexOf(subCat, 0) + 1),
-                        groupValue: _radioValue1,
-                        onChanged: _handleRadioValueChange2,
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
+  void _filterOptions(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            width: double.infinity,
+            height: 350.0,
+            margin: const EdgeInsets.only(
+              top: 10.0,
+              left: 10.0,
+              right: 10.0,
             ),
-          ),
-        );
-      });
+            padding: const EdgeInsets.all(10.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('FILTER BY'),
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(),
+                  // Container(
+                  //   height: 30.0,
+                  //   child: RadioListTile(
+                  //     title: Text(
+                  //       'All Products',
+                  //       style: TextStyle(
+                  //         color: Colors.black87,
+                  //         fontSize: 15.0,
+                  //       ),
+                  //     ),
+                  //     value: 0,
+                  //     groupValue: _radioValue1,
+                  //     onChanged: _handleRadioValueChange2,
+                  //   ),
+                  // ),
+                  Column(
+                    children: category.subCategories.map((subCat) {
+                      return Container(
+                        child: CheckboxListTile(
+                          title: Text(
+                            subCat,
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 15.0,
+                            ),
+                          ),
+                          value: checkboxesValues[subCat],
+                          // onChanged: (value) {
+                          //   print(value);
+                          // },
+                          // value: (category.subCategories.indexOf(subCat, 0) + 1),
+                          // groupValue: _radioValue1,
+                          onChanged: (value) {
+                            checkboxesValues[subCat] = value;
+
+                            List<Product> newList = [];
+                            _productProvider.productList =
+                                _productProvider.productsListDuplicate;
+
+                            var allFalse = false;
+
+                            for (var s in checkboxesValues.keys) {
+                              if (checkboxesValues[s]) {
+                                allFalse = true;
+                                break;
+                              }
+                            }
+
+                            if (allFalse) {
+                              for (var s in checkboxesValues.keys) {
+                                if (checkboxesValues[s]) {
+                                  for (var p in _productProvider.productsList) {
+                                    if (p.subCategory.contains(s) ||
+                                        s.contains(p.subCategory)) {
+                                      newList.add(p);
+                                    }
+                                  }
+                                }
+                              }
+
+                              _productProvider.productList = newList;
+                            }
+
+                            setState(() {});
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  SizedBox(height: 15.0),
+                ],
+              ),
+            ),
+          );
+        });
+  }
 
   void _sortOptions(BuildContext context) => showModalBottomSheet(
       context: context,

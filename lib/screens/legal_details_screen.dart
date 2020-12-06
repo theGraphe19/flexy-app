@@ -37,12 +37,15 @@ class _LegalDetailsScreenState extends State<LegalDetailsScreen> {
               ),
             )
           : SingleChildScrollView(
-              child: Html(
-                data: details,
-                onLinkTap: (url) {
-                  print("Opening $url...");
-                  launch(url);
-                },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Html(
+                  data: details,
+                  onLinkTap: (url) {
+                    print("Opening $url...");
+                    launch(url);
+                  },
+                ),
               ),
             ),
     );

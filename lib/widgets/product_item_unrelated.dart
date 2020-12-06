@@ -1,19 +1,20 @@
 import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
 
+import '../models/category.dart';
 import '../models/product.dart';
 import '../screens/product_details_screen.dart';
 
 class ProductItemUnrelated extends StatefulWidget {
   final Product product;
   final User user;
-  final int categoryId;
+  final Category category;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   ProductItemUnrelated(
     this.product,
     this.user,
-    this.categoryId,
+    this.category,
     this.scaffoldKey,
   );
 
@@ -31,7 +32,7 @@ class _ProductItemUnrelatedState extends State<ProductItemUnrelated> {
           arguments: <dynamic>[
             widget.product,
             widget.user.token,
-            widget.categoryId,
+            widget.category,
             widget.user
           ],
         );
