@@ -396,9 +396,11 @@ class CartScreenState extends State<CartScreen> {
 
   void _showModal(CartOverView item) async {
     List<Map<String, dynamic>> quantityPerSIze = [];
+    List<String> deletedIds = [];
 
     for (Cart c in item.cartItems) {
       quantityPerSIze.add({
+        'id': c.id,
         'size': c.productSize,
         'quantity': c.quantity,
         'color': c.color,
@@ -522,6 +524,7 @@ class CartScreenState extends State<CartScreen> {
                                         onTap: () {
                                           setState(() {
                                             quantityPerSIze.remove(e);
+                                            deletedIds.add(e['id'].toString());
                                           });
                                         },
                                         child: Icon(
@@ -539,66 +542,85 @@ class CartScreenState extends State<CartScreen> {
                         SizedBox(height: 10.0),
                         GestureDetector(
                           onTap: () {
-                            _handler
-                                .removeItemFromCart(token, item.id)
-                                .then((value) {
-                              if (value) {
-                                _handler
-                                    .addToCart(
-                                  item.cartItems[0].productId,
-                                  token,
-                                  item.cartItems[0].color,
-                                  quantityPerSIze,
-                                )
-                                    .then((value) {
-                                  Navigator.of(context).pop();
-
-                                  if (value) {
-                                    getCart();
-                                  } else {
-                                    scaffoldKey.currentState
-                                        .showSnackBar(SnackBar(
-                                      content: Text(
-                                        'Error! Try again.',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      backgroundColor: Color(0xff6c757d),
-                                      duration: Duration(seconds: 3),
-                                    ));
-                                  }
-                                }).catchError((e) {
-                                  print(e);
-                                  scaffoldKey.currentState
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                      'Network error!',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    backgroundColor: Color(0xff6c757d),
-                                    duration: Duration(seconds: 3),
-                                  ));
-                                });
-                              } else {
-                                scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text(
-                                    'Error! Try again.',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  backgroundColor: Color(0xff6c757d),
-                                  duration: Duration(seconds: 3),
-                                ));
+                            String deleteParam = '';
+                            if (deletedIds.isNotEmpty) {
+                              for (var i = 0; i < deletedIds.length; i++) {
+                                if (i == (deletedIds.length - 1))
+                                  deleteParam += deletedIds[i];
+                                else
+                                  deleteParam += deletedIds[i] + '* ';
                               }
-                            }).catchError((e) {
-                              print(e);
-                              scaffoldKey.currentState.showSnackBar(SnackBar(
-                                content: Text(
-                                  'Network error!',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                backgroundColor: Color(0xff6c757d),
-                                duration: Duration(seconds: 3),
-                              ));
-                            });
+
+                              _handler
+                                  .deleteItemFromCartItem(deleteParam)
+                                  .then((value) {
+                                Navigator.of(context).pop();
+                                getCart();
+                              }).catchError((e) {
+                                print(e);
+                              });
+                            }
+
+                            // _handler
+                            //     .removeItemFromCart(token, item.id)
+                            //     .then((value) {
+                            //   if (value) {
+                            //     _handler
+                            //         .addToCart(
+                            //       item.cartItems[0].productId,
+                            //       token,
+                            //       item.cartItems[0].color,
+                            //       quantityPerSIze,
+                            //     )
+                            //         .then((value) {
+                            //       Navigator.of(context).pop();
+
+                            //       if (value) {
+                            //         getCart();
+                            //       } else {
+                            //         scaffoldKey.currentState
+                            //             .showSnackBar(SnackBar(
+                            //           content: Text(
+                            //             'Error! Try again.',
+                            //             style: TextStyle(color: Colors.white),
+                            //           ),
+                            //           backgroundColor: Color(0xff6c757d),
+                            //           duration: Duration(seconds: 3),
+                            //         ));
+                            //       }
+                            //     }).catchError((e) {
+                            //       print(e);
+                            //       scaffoldKey.currentState
+                            //           .showSnackBar(SnackBar(
+                            //         content: Text(
+                            //           'Network error!',
+                            //           style: TextStyle(color: Colors.white),
+                            //         ),
+                            //         backgroundColor: Color(0xff6c757d),
+                            //         duration: Duration(seconds: 3),
+                            //       ));
+                            //     });
+                            //   } else {
+                            //     scaffoldKey.currentState.showSnackBar(SnackBar(
+                            //       content: Text(
+                            //         'Error! Try again.',
+                            //         style: TextStyle(color: Colors.white),
+                            //       ),
+                            //       backgroundColor: Color(0xff6c757d),
+                            //       duration: Duration(seconds: 3),
+                            //     ));
+                            //   }
+                            // }).catchError((e) {
+                            //   print(e);
+                            //   scaffoldKey.currentState.showSnackBar(SnackBar(
+                            //     content: Text(
+                            //       'Network error!',
+                            //       style: TextStyle(color: Colors.white),
+                            //     ),
+                            //     backgroundColor: Color(0xff6c757d),
+                            //     duration: Duration(seconds: 3),
+                            //   ));
+                            // });
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width,
