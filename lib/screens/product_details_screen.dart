@@ -559,9 +559,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(width: 5.0),
                                           Row(
                                             children: [
+                                              Text(
+                                                (category.name
+                                                            .toLowerCase()
+                                                            .contains(
+                                                                'bottomwear') ||
+                                                        category.name
+                                                            .toLowerCase()
+                                                            .contains(
+                                                                'bottomwears'))
+                                                    ? 'MRP: ${String.fromCharCodes(input)} ${productSize.price}'
+                                                    : 'WSP: ${String.fromCharCodes(input)} ${productSize.price}',
+                                              ),
+                                              SizedBox(width: 10.0),
                                               GestureDetector(
                                                 onTap: () {
                                                   setState(() {

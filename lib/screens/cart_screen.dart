@@ -464,7 +464,9 @@ class CartScreenState extends State<CartScreen> {
                                       fontSize: 16.0,
                                     ),
                                   ),
-                                  Row(
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         height: 20.0,
@@ -479,7 +481,12 @@ class CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       SizedBox(width: 5.0),
-                                      Text(e['colorName']),
+                                      Text(
+                                        e['colorName'],
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                        ),
+                                      )
                                     ],
                                   ),
                                   Row(

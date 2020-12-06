@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../models/order.dart';
 import './my_order_details_screen.dart';
-import '../widgets/my_order_item.dart';
+import './categories_screen.dart';
 
 /*
   <a target="_blank" href="https://icons8.com/icons/set/bill">Bill icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -21,12 +22,11 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
   List<Order> myOrders;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var orderController = false;
-
-  String token;
+  User _currentUser;
 
   void _getMyOrders() {
     orderController = true;
-    HTTPHandler().getMyOrders(token).then((value) {
+    HTTPHandler().getMyOrders(_currentUser.token).then((value) {
       myOrders = value;
       setState(() {});
     }).catchError((e) {
@@ -43,8 +43,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    token = ModalRoute.of(context).settings.arguments;
-    print('Token : $token');
+    _currentUser = ModalRoute.of(context).settings.arguments as User;
+    print('Token : ${_currentUser.token}');
 
     if (orderController == false) _getMyOrders();
 
@@ -53,6 +53,22 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       backgroundColor: Colors.grey[350],
       appBar: AppBar(
         title: Text('My Orders'),
+        actions: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
+              CategoriesScreen.routeName,
+              (Route<dynamic> route) => false,
+              arguments: _currentUser,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15.0),
+              child: Icon(
+                Icons.home,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -81,7 +97,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                       onPressed: () => Navigator.of(context).pushNamed(
                           MyOrderDetailsScreen.routeName,
                           arguments: <dynamic>[
-                            token,
+                            _currentUser,
                             myOrders[index].id,
                           ]),
                     ),

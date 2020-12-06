@@ -112,7 +112,7 @@ class SideDrawer {
                 arguments: user.token,
               );
             },
-            trailing: (this.hasUnread )
+            trailing: (this.hasUnread)
                 ? Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
@@ -144,7 +144,7 @@ class SideDrawer {
               print('view orders');
               Navigator.pop(context);
               Navigator.of(context)
-                  .pushNamed(MyOrdersScreen.routeName, arguments: user.token);
+                  .pushNamed(MyOrdersScreen.routeName, arguments: user);
             },
             'assets/images/order.png',
           ),
@@ -172,8 +172,9 @@ class SideDrawer {
                   await prefs.remove('loggedIn');
                   await prefs.remove('loggedInUser');
                   await prefs.remove('token');
-                  Navigator.of(context).popAndPushNamed(
+                  Navigator.of(context).pushNamedAndRemoveUntil(
                     StartScreen.routeName,
+                    (Route<dynamic> route) => false,
                   );
                 } else
                   scaffoldKey.currentState.showSnackBar(SnackBar(

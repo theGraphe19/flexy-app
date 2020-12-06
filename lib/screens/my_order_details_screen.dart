@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../models/user.dart';
 import '../HTTP_handler.dart';
 import '../models/order_details.dart';
 import '../widgets/loading_body.dart';
 import '../widgets/my_order_item.dart';
 import './bill_screen.dart';
+import './categories_screen.dart';
 
 class MyOrderDetailsScreen extends StatefulWidget {
   static const routeName = '/my-order-details-screen';
@@ -17,12 +19,12 @@ class _MyOrderDetailsScreenState extends State<MyOrderDetailsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int orderId;
   bool orderController = false;
-  String token;
   List<OrderDetails> orders;
+  User _currentUser;
 
   void _getOrderDetails() {
     orderController = true;
-    HTTPHandler().getOrderDetails(token, orderId).then((value) {
+    HTTPHandler().getOrderDetails(_currentUser.token, orderId).then((value) {
       this.orders = value;
       setState(() {});
     }).catchError((e) {
@@ -40,7 +42,7 @@ class _MyOrderDetailsScreenState extends State<MyOrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     var data = ModalRoute.of(context).settings.arguments as List<dynamic>;
-    token = data[0];
+    _currentUser = data[0];
     orderId = data[1];
 
     if (!orderController) _getOrderDetails();
@@ -49,6 +51,22 @@ class _MyOrderDetailsScreenState extends State<MyOrderDetailsScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Order Details'),
+        actions: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
+              CategoriesScreen.routeName,
+              (Route<dynamic> route) => false,
+              arguments: _currentUser,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15.0),
+              child: Icon(
+                Icons.home,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
       body: (orders == null)
           ? LoadingBody()
@@ -65,7 +83,7 @@ class _MyOrderDetailsScreenState extends State<MyOrderDetailsScreen> {
                     return MyOrderItem(
                       orders[index],
                       _scaffoldKey,
-                      token,
+                      _currentUser.token,
                     );
                   else
                     return Container();
