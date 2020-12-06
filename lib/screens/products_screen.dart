@@ -13,6 +13,7 @@ import '../utils/wishlist_bottom_sheet.dart';
 import './search_screen.dart';
 import '../models/category.dart';
 import '../models/chat.dart';
+import './cart_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -164,6 +165,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
             onPressed: () {
               print('search');
               Navigator.of(context).push(_createRoute());
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              print('view cart');
+              Navigator.of(context).pushNamed(
+                CartScreen.routeName,
+                arguments: currentUser,
+              );
             },
           ),
           Padding(

@@ -129,12 +129,8 @@ class CheckOutFromCartState extends State<CheckOutFromCart> {
                                 ));
                                 Navigator.of(context).popAndPushNamed(
                                   MyOrdersScreen.routeName,
-                                  arguments: token,
+                                  arguments: _currentUser,
                                 );
-                                // setState(() {
-                                //   itemsHandler = false;
-                                //   items = null;
-                                // });
                               } else {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
                                   content: Text(

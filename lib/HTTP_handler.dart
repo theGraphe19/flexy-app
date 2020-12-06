@@ -583,6 +583,7 @@ class HTTPHandler {
 
   Future<List<Order>> getMyOrders(String token) async {
     try {
+      print('$baseURL/myorders?api_token=$token');
       List<Order> orderedItems = [];
       Response response = await _dio.get("$baseURL/myorders?api_token=$token");
 
