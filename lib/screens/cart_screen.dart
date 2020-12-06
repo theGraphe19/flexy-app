@@ -542,24 +542,77 @@ class CartScreenState extends State<CartScreen> {
                         SizedBox(height: 10.0),
                         GestureDetector(
                           onTap: () {
-                            String deleteParam = '';
-                            if (deletedIds.isNotEmpty) {
-                              for (var i = 0; i < deletedIds.length; i++) {
-                                if (i == (deletedIds.length - 1))
-                                  deleteParam += deletedIds[i];
-                                else
-                                  deleteParam += deletedIds[i] + '* ';
-                              }
-
-                              _handler
-                                  .deleteItemFromCartItem(deleteParam)
-                                  .then((value) {
-                                Navigator.of(context).pop();
-                                getCart();
-                              }).catchError((e) {
-                                print(e);
-                              });
+                            String updateParam = '';
+                            for (var i = 0; i < quantityPerSIze.length; i++) {
+                              print('id here');
+                              if (i == (quantityPerSIze.length - 1))
+                                updateParam += quantityPerSIze[i]['id'].toString() +
+                                    '* ' +
+                                    quantityPerSIze[i]['quantity'].toString();
+                              else
+                                updateParam += quantityPerSIze[i]['id'].toString() +
+                                    '* ' +
+                                    quantityPerSIze[i]['quantity'].toString() +
+                                    '** **';
                             }
+
+                            print(updateParam);
+
+                            _handler
+                                .updateItemFromCartItem(updateParam)
+                                .then((value) {
+                              if (value) {
+                                String deleteParam = '';
+                                for (var i = 0; i < deletedIds.length; i++) {
+                                  if (i == (deletedIds.length - 1))
+                                    deleteParam += deletedIds[i];
+                                  else
+                                    deleteParam += deletedIds[i] + '* ';
+                                }
+
+                                if (deleteParam == '') {
+                                  Navigator.of(context).pop();
+                                  getCart();
+                                } else {
+                                  _handler
+                                      .deleteItemFromCartItem(deleteParam)
+                                      .then((value) {
+                                    Navigator.of(context).pop();
+                                    getCart();
+                                  }).catchError((e) {
+                                    print(e);
+                                    scaffoldKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        'Network error!',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Color(0xff6c757d),
+                                      duration: Duration(seconds: 3),
+                                    ));
+                                  });
+                                }
+                              } else {
+                                scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  content: Text(
+                                    'Error! Try again.',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor: Color(0xff6c757d),
+                                  duration: Duration(seconds: 3),
+                                ));
+                              }
+                            }).catchError((e) {
+                              print(e);
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  'Network error!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 3),
+                              ));
+                            });
 
                             // _handler
                             //     .removeItemFromCart(token, item.id)

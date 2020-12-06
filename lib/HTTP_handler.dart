@@ -776,4 +776,23 @@ class HTTPHandler {
       throw e;
     }
   }
+
+  Future<bool> updateItemFromCartItem(String param) async {
+    try {
+      Response response = await _dio.post(
+        'https://developers.thegraphe.com/flexy/api_v_1.0/cart',
+        data: FormData.fromMap({
+          'sizes': param,
+        }),
+      );
+
+      if (response.data['success'] == '1')
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
 }
