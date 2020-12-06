@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import './providers/category_provider.dart';
 import './providers/product_provider.dart';
@@ -153,6 +154,26 @@ class HTTPHandler {
       }
 
       return user;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  // ignore: missing_return
+  Future<void> sendFirebaseToken(String userId) {
+    try {
+      final fbm = FirebaseMessaging();
+      fbm.getToken().then((token) async {
+        print(token);
+        await _dio.post(
+          'https://developers.thegraphe.com/flexy/api_v_1.0/device_token',
+          data: FormData.fromMap({
+            'user_id': userId,
+            'device_token': token,
+          }),
+        );
+      });
     } catch (e) {
       print(e);
       throw e;

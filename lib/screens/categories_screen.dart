@@ -164,6 +164,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     _currentUser = ModalRoute.of(context).settings.arguments as User;
+    _handler.sendFirebaseToken(_currentUser.id.toString());
 
     if (_currentUser.status != 1 && !_controller) {
       _controller = true;
