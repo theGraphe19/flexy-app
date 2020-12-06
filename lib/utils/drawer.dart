@@ -59,7 +59,7 @@ class SideDrawer {
                     ),
                   ),
                   Container(
-                    height: 50.0,
+                    height: 70.0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
@@ -75,6 +75,7 @@ class SideDrawer {
                           user.email,
                           textAlign: TextAlign.start,
                         ),
+                        _getStatusWidget(),
                       ],
                     ),
                   )
@@ -250,6 +251,43 @@ class SideDrawer {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _getStatusWidget() {
+    String text;
+    Color color;
+
+    switch (user.category) {
+      case 0:
+        text = 'Bronze';
+        color = Color(0xffcd7f32);
+        break;
+
+      case 1:
+        text = 'Silver';
+        color = Color(0xffc0c0c0);
+        break;
+
+      case 2:
+        text = 'Gold';
+        color = Color(0xffffd700);
+        break;
+
+      case 3:
+        text = 'Platinum';
+        color = Color(0xffe5e4e2);
+        break;
+
+      default:
+        text = 'No Level';
+        color = Colors.black;
+    }
+
+    return Text(
+      text,
+      textAlign: TextAlign.start,
+      style: TextStyle(color: color),
     );
   }
 
