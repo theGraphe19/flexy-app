@@ -19,6 +19,7 @@ class User {
   String state;
   String pincode;
   String agentName;
+  String ageentMobileNo;
   String purchasePerson;
   String password;
   String token;
@@ -46,6 +47,7 @@ class User {
     this.city,
     this.pincode,
     this.agentName,
+    this.ageentMobileNo,
     this.purchasePerson,
     this.password,
     this.token,
@@ -75,6 +77,7 @@ class User {
     this.state = map['state'];
     this.pincode = map['pincode'];
     this.agentName = map['agentName'];
+    this.ageentMobileNo = map['agentPhone'].toString();
     this.purchasePerson = map['purchasePerson'];
     this.status = int.parse(map['status']);
     this.category = int.parse(map['mem']);

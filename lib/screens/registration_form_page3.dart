@@ -184,6 +184,18 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
           ),
           SizedBox(height: 10.0),
           TextFormField(
+            initialValue: (currentUser.ageentMobileNo != null)
+                ? currentUser.ageentMobileNo
+                : '',
+            decoration: const InputDecoration(
+              labelText: 'Agent Mobile Number',
+            ),
+            onEditingComplete: _validateInput,
+            keyboardType: TextInputType.number,
+            onSaved: (String val) => currentUser.ageentMobileNo = val,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
             initialValue: (currentUser.purchasePerson != null)
                 ? currentUser.purchasePerson
                 : '',

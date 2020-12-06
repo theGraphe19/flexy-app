@@ -112,6 +112,7 @@ class HTTPHandler {
         'state': user.state,
         'pincode': user.pincode,
         'agentName': user.agentName,
+        'agentPhone': user.ageentMobileNo,
         'purchasePerson': user.purchasePerson,
       });
 
@@ -217,6 +218,7 @@ class HTTPHandler {
         'state': user.state,
         'pincode': user.pincode,
         'agentName': user.agentName,
+        'agentPhone': user.ageentMobileNo,
         'purchasePerson': user.purchasePerson,
         'password': user.password,
       };

@@ -462,7 +462,6 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.number,
-            validator: (value) => _validator.validateLandLine(value),
             onSaved: (String val) => currentUser.landlineNo = val,
           ),
           SizedBox(height: 10.0),
@@ -473,7 +472,6 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.number,
-            validator: (value) => _validator.validateGST(value),
             onSaved: (String val) => currentUser.gstNo = val,
           ),
           SizedBox(height: 10.0),
@@ -534,8 +532,19 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.text,
-            validator: (value) => _validator.validateName('Name', value),
             onSaved: (String val) => currentUser.agentName = val,
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            initialValue: (currentUser.ageentMobileNo != null)
+                ? currentUser.ageentMobileNo
+                : '',
+            decoration: const InputDecoration(
+              labelText: 'Agent Mobile Number',
+            ),
+            onEditingComplete: _validateInput,
+            keyboardType: TextInputType.number,
+            onSaved: (String val) => currentUser.ageentMobileNo = val,
           ),
           SizedBox(height: 10.0),
           TextFormField(
@@ -547,7 +556,6 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.text,
-            validator: (value) => _validator.validateName('Name', value),
             onSaved: (String val) => currentUser.purchasePerson = val,
           ),
           SizedBox(height: 50.0),
