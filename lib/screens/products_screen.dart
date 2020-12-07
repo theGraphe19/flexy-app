@@ -13,6 +13,7 @@ import '../utils/wishlist_bottom_sheet.dart';
 import './search_screen.dart';
 import '../models/category.dart';
 import '../models/chat.dart';
+import './cart_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -133,8 +134,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
             scaffoldKey.currentState.openDrawer();
           },
         ),
-        // title: Text(category.name),
-
         title: Theme(
           child: DropdownButtonHideUnderline(
             child: DropdownButton<Category>(
@@ -157,7 +156,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
           data: ThemeData.dark(),
         ),
-
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -167,6 +165,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
             onPressed: () {
               print('search');
               Navigator.of(context).push(_createRoute());
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              print('view cart');
+              Navigator.of(context).pushNamed(
+                CartScreen.routeName,
+                arguments: currentUser,
+              );
             },
           ),
           Padding(
@@ -288,111 +299,136 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
+  void serveOptions() {
+    List<Product> newList = [];
+    _productProvider.productList = _productProvider.productsListDuplicate;
+
+    var allFalse = false;
+
+    for (var s in checkboxesValues.keys) {
+      if (checkboxesValues[s]) {
+        allFalse = true;
+        break;
+      }
+    }
+
+    if (allFalse) {
+      for (var s in checkboxesValues.keys) {
+        if (checkboxesValues[s]) {
+          for (var p in _productProvider.productsList) {
+            if (p.subCategory.contains(s) || s.contains(p.subCategory)) {
+              newList.add(p);
+            }
+          }
+        }
+      }
+
+      _productProvider.productList = newList;
+    }
+
+    setState(() {});
+  }
+
   void _filterOptions(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            width: double.infinity,
-            height: 350.0,
-            margin: const EdgeInsets.only(
-              top: 10.0,
-              left: 10.0,
-              right: 10.0,
-            ),
-            padding: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text('FILTER BY'),
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
+          return BottomSheet(
+            onClosing: () {},
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: double.infinity,
+                  height: 350.0,
+                  margin: const EdgeInsets.only(
+                    top: 10.0,
+                    left: 10.0,
+                    right: 10.0,
                   ),
-                  Divider(),
-                  // Container(
-                  //   height: 30.0,
-                  //   child: RadioListTile(
-                  //     title: Text(
-                  //       'All Products',
-                  //       style: TextStyle(
-                  //         color: Colors.black87,
-                  //         fontSize: 15.0,
-                  //       ),
-                  //     ),
-                  //     value: 0,
-                  //     groupValue: _radioValue1,
-                  //     onChanged: _handleRadioValueChange2,
-                  //   ),
-                  // ),
-                  Column(
-                    children: category.subCategories.map((subCat) {
-                      return Container(
-                        child: CheckboxListTile(
-                          title: Text(
-                            subCat,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 15.0,
+                  padding: const EdgeInsets.all(10.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('FILTER BY'),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                serveOptions();
+                              },
+                              child: Text(
+                                'APPLY',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
                             ),
-                          ),
-                          value: checkboxesValues[subCat],
-                          // onChanged: (value) {
-                          //   print(value);
-                          // },
-                          // value: (category.subCategories.indexOf(subCat, 0) + 1),
-                          // groupValue: _radioValue1,
-                          onChanged: (value) {
-                            checkboxesValues[subCat] = value;
+                          ],
+                        ),
+                        Divider(),
+                        Column(
+                          children: category.subCategories.map((subCat) {
+                            return Container(
+                              child: CheckboxListTile(
+                                title: Text(
+                                  subCat,
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                                value: checkboxesValues[subCat],
+                                onChanged: (value) {
+                                  checkboxesValues[subCat] = value;
 
-                            List<Product> newList = [];
-                            _productProvider.productList =
-                                _productProvider.productsListDuplicate;
+                                  List<Product> newList = [];
+                                  _productProvider.productList =
+                                      _productProvider.productsListDuplicate;
 
-                            var allFalse = false;
+                                  var allFalse = false;
 
-                            for (var s in checkboxesValues.keys) {
-                              if (checkboxesValues[s]) {
-                                allFalse = true;
-                                break;
-                              }
-                            }
-
-                            if (allFalse) {
-                              for (var s in checkboxesValues.keys) {
-                                if (checkboxesValues[s]) {
-                                  for (var p in _productProvider.productsList) {
-                                    if (p.subCategory.contains(s) ||
-                                        s.contains(p.subCategory)) {
-                                      newList.add(p);
+                                  for (var s in checkboxesValues.keys) {
+                                    if (checkboxesValues[s]) {
+                                      allFalse = true;
+                                      break;
                                     }
                                   }
-                                }
-                              }
 
-                              _productProvider.productList = newList;
-                            }
+                                  if (allFalse) {
+                                    for (var s in checkboxesValues.keys) {
+                                      if (checkboxesValues[s]) {
+                                        for (var p
+                                            in _productProvider.productsList) {
+                                          if (p.subCategory.contains(s) ||
+                                              s.contains(p.subCategory)) {
+                                            newList.add(p);
+                                          }
+                                        }
+                                      }
+                                    }
 
-                            setState(() {});
-                            Navigator.of(context).pop();
-                          },
+                                    _productProvider.productList = newList;
+                                  }
+
+                                  setState(() {});
+                                  scaffoldKey.currentState.setState(() {});
+                                },
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      );
-                    }).toList(),
+                        SizedBox(height: 15.0),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 15.0),
-                ],
-              ),
-            ),
+                );
+              });
+            },
           );
         });
   }

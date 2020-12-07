@@ -396,9 +396,11 @@ class CartScreenState extends State<CartScreen> {
 
   void _showModal(CartOverView item) async {
     List<Map<String, dynamic>> quantityPerSIze = [];
+    List<String> deletedIds = [];
 
     for (Cart c in item.cartItems) {
       quantityPerSIze.add({
+        'id': c.id,
         'size': c.productSize,
         'quantity': c.quantity,
         'color': c.color,
@@ -464,7 +466,9 @@ class CartScreenState extends State<CartScreen> {
                                       fontSize: 16.0,
                                     ),
                                   ),
-                                  Row(
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         height: 20.0,
@@ -479,7 +483,12 @@ class CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       SizedBox(width: 5.0),
-                                      Text(e['colorName']),
+                                      Text(
+                                        e['colorName'],
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                        ),
+                                      )
                                     ],
                                   ),
                                   Row(
@@ -515,6 +524,7 @@ class CartScreenState extends State<CartScreen> {
                                         onTap: () {
                                           setState(() {
                                             quantityPerSIze.remove(e);
+                                            deletedIds.add(e['id'].toString());
                                           });
                                         },
                                         child: Icon(
@@ -532,45 +542,56 @@ class CartScreenState extends State<CartScreen> {
                         SizedBox(height: 10.0),
                         GestureDetector(
                           onTap: () {
+                            String updateParam = '';
+                            for (var i = 0; i < quantityPerSIze.length; i++) {
+                              print('id here');
+                              if (i == (quantityPerSIze.length - 1))
+                                updateParam += quantityPerSIze[i]['id'].toString() +
+                                    '* ' +
+                                    quantityPerSIze[i]['quantity'].toString();
+                              else
+                                updateParam += quantityPerSIze[i]['id'].toString() +
+                                    '* ' +
+                                    quantityPerSIze[i]['quantity'].toString() +
+                                    '** **';
+                            }
+
+                            print(updateParam);
+
                             _handler
-                                .removeItemFromCart(token, item.id)
+                                .updateItemFromCartItem(updateParam)
                                 .then((value) {
                               if (value) {
-                                _handler
-                                    .addToCart(
-                                  item.cartItems[0].productId,
-                                  token,
-                                  item.cartItems[0].color,
-                                  quantityPerSIze,
-                                )
-                                    .then((value) {
-                                  Navigator.of(context).pop();
+                                String deleteParam = '';
+                                for (var i = 0; i < deletedIds.length; i++) {
+                                  if (i == (deletedIds.length - 1))
+                                    deleteParam += deletedIds[i];
+                                  else
+                                    deleteParam += deletedIds[i] + '* ';
+                                }
 
-                                  if (value) {
+                                if (deleteParam == '') {
+                                  Navigator.of(context).pop();
+                                  getCart();
+                                } else {
+                                  _handler
+                                      .deleteItemFromCartItem(deleteParam)
+                                      .then((value) {
+                                    Navigator.of(context).pop();
                                     getCart();
-                                  } else {
+                                  }).catchError((e) {
+                                    print(e);
                                     scaffoldKey.currentState
                                         .showSnackBar(SnackBar(
                                       content: Text(
-                                        'Error! Try again.',
+                                        'Network error!',
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       backgroundColor: Color(0xff6c757d),
                                       duration: Duration(seconds: 3),
                                     ));
-                                  }
-                                }).catchError((e) {
-                                  print(e);
-                                  scaffoldKey.currentState
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                      'Network error!',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    backgroundColor: Color(0xff6c757d),
-                                    duration: Duration(seconds: 3),
-                                  ));
-                                });
+                                  });
+                                }
                               } else {
                                 scaffoldKey.currentState.showSnackBar(SnackBar(
                                   content: Text(
@@ -592,6 +613,67 @@ class CartScreenState extends State<CartScreen> {
                                 duration: Duration(seconds: 3),
                               ));
                             });
+
+                            // _handler
+                            //     .removeItemFromCart(token, item.id)
+                            //     .then((value) {
+                            //   if (value) {
+                            //     _handler
+                            //         .addToCart(
+                            //       item.cartItems[0].productId,
+                            //       token,
+                            //       item.cartItems[0].color,
+                            //       quantityPerSIze,
+                            //     )
+                            //         .then((value) {
+                            //       Navigator.of(context).pop();
+
+                            //       if (value) {
+                            //         getCart();
+                            //       } else {
+                            //         scaffoldKey.currentState
+                            //             .showSnackBar(SnackBar(
+                            //           content: Text(
+                            //             'Error! Try again.',
+                            //             style: TextStyle(color: Colors.white),
+                            //           ),
+                            //           backgroundColor: Color(0xff6c757d),
+                            //           duration: Duration(seconds: 3),
+                            //         ));
+                            //       }
+                            //     }).catchError((e) {
+                            //       print(e);
+                            //       scaffoldKey.currentState
+                            //           .showSnackBar(SnackBar(
+                            //         content: Text(
+                            //           'Network error!',
+                            //           style: TextStyle(color: Colors.white),
+                            //         ),
+                            //         backgroundColor: Color(0xff6c757d),
+                            //         duration: Duration(seconds: 3),
+                            //       ));
+                            //     });
+                            //   } else {
+                            //     scaffoldKey.currentState.showSnackBar(SnackBar(
+                            //       content: Text(
+                            //         'Error! Try again.',
+                            //         style: TextStyle(color: Colors.white),
+                            //       ),
+                            //       backgroundColor: Color(0xff6c757d),
+                            //       duration: Duration(seconds: 3),
+                            //     ));
+                            //   }
+                            // }).catchError((e) {
+                            //   print(e);
+                            //   scaffoldKey.currentState.showSnackBar(SnackBar(
+                            //     content: Text(
+                            //       'Network error!',
+                            //       style: TextStyle(color: Colors.white),
+                            //     ),
+                            //     backgroundColor: Color(0xff6c757d),
+                            //     duration: Duration(seconds: 3),
+                            //   ));
+                            // });
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width,

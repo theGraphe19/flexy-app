@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/category_provider.dart';
 import '../HTTP_handler.dart';
 import '../models/product.dart';
 import '../models/user.dart';
@@ -10,6 +12,7 @@ class SearchItem extends StatelessWidget {
   final Product product;
   final User user;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  CategoryProvider categoryProvider;
 
   SearchItem(
     this.product,
@@ -17,19 +20,20 @@ class SearchItem extends StatelessWidget {
     this.scaffoldKey,
   );
 
-  int getCategory(List<Category> categories) {
-    for (var i = 0; i < categories.length; i++) {
-      if (categories[i].name.contains(product.category) &&
-          product.category.contains(categories[i].name)) {
-        return categories[i].id;
+  Category getCategory() {
+    for (var i = 0; i < categoryProvider.categoryList.length; i++) {
+      if (categoryProvider.categoryList[i].name.contains(product.category) &&
+          product.category.contains(categoryProvider.categoryList[i].name)) {
+        return categoryProvider.categoryList[i];
       }
     }
 
-    return -1;
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    categoryProvider = Provider.of<CategoryProvider>(context);
     return ListTile(
       leading: Image.network(
         'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[0]}',
@@ -42,40 +46,27 @@ class SearchItem extends StatelessWidget {
         color: Theme.of(context).primaryColor,
       ),
       onTap: () {
-        HTTPHandler()
-            .getCategoriesList(context, user.token)
-            .then((List<Category> value) {
-          int cId = getCategory(value);
-          if (cId != -1) {
-            Navigator.of(context).popAndPushNamed(
-              ProductDetailsScreen.routeName,
-              arguments: <dynamic>[
-                product,
-                user.token,
-                cId,
-                user,
-              ],
-            );
-          } else {
-            scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text(
-                'Something went wrong! Pleease contact admin.',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Color(0xff6c757d),
-              duration: Duration(seconds: 3),
-            ));
-          }
-        }).catchError((e) {
+        var c = getCategory();
+        if (c != null) {
+          Navigator.of(context).popAndPushNamed(
+            ProductDetailsScreen.routeName,
+            arguments: <dynamic>[
+              product,
+              user.token,
+              c,
+              user,
+            ],
+          );
+        } else {
           scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
-              'Network error!',
+              'Something went wrong! Pleease contact admin.',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Color(0xff6c757d),
             duration: Duration(seconds: 3),
           ));
-        });
+        }
       },
     );
   }

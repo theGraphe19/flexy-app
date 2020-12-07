@@ -13,6 +13,7 @@ import '../widgets/loading_body.dart';
 import '../models/category.dart';
 import './search_screen.dart';
 import '../models/chat.dart';
+import './cart_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';
@@ -225,6 +226,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             onPressed: () {
               print('search');
               Navigator.of(context).push(_createRoute());
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              print('view cart');
+              Navigator.of(context).pushNamed(
+                CartScreen.routeName,
+                arguments: _currentUser,
+              );
             },
           ),
           Padding(

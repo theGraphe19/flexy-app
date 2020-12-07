@@ -112,6 +112,7 @@ class HTTPHandler {
         'state': user.state,
         'pincode': user.pincode,
         'agentName': user.agentName,
+        'agentPhone': user.ageentMobileNo,
         'purchasePerson': user.purchasePerson,
       });
 
@@ -217,6 +218,7 @@ class HTTPHandler {
         'state': user.state,
         'pincode': user.pincode,
         'agentName': user.agentName,
+        'agentPhone': user.ageentMobileNo,
         'purchasePerson': user.purchasePerson,
         'password': user.password,
       };
@@ -581,6 +583,7 @@ class HTTPHandler {
 
   Future<List<Order>> getMyOrders(String token) async {
     try {
+      print('$baseURL/myorders?api_token=$token');
       List<Order> orderedItems = [];
       Response response = await _dio.get("$baseURL/myorders?api_token=$token");
 
@@ -755,6 +758,40 @@ class HTTPHandler {
         getWishListItems(context, userId);
         return true;
       } else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<bool> deleteItemFromCartItem(String id) async {
+    try {
+      Response response = await _dio.delete(
+          'https://developers.thegraphe.com/flexy/api_v_1.0/cart?cart_id=$id');
+
+      if (response.data['success'] == '1')
+        return true;
+      else
+        return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<bool> updateItemFromCartItem(String param) async {
+    try {
+      Response response = await _dio.post(
+        'https://developers.thegraphe.com/flexy/api_v_1.0/cart',
+        data: FormData.fromMap({
+          'sizes': param,
+        }),
+      );
+
+      if (response.data['success'] == '1')
+        return true;
+      else
         return false;
     } catch (e) {
       print(e);

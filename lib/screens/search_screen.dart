@@ -39,12 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return (result.length == 0) ? null : result;
   }
-
-  // Prod(
-  //       "Title : $search $index",
-  //       "Description :$search $index",
-  //     );
-
+  
   @override
   Widget build(BuildContext context) {
     if (!productsController) {
