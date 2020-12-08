@@ -121,7 +121,7 @@ class HTTPHandler {
         data: formData,
       );
 
-      print(response.statusCode);
+      print(response);
       if (response.data['status']
           .contains('success')) if (response.data['user']['api_token'] != null)
         return [

@@ -44,15 +44,6 @@ class _ImageZoomScreenState extends State<ImageZoomScreen> {
     _pageController = PageController(initialPage: imageIndex, keepPage: false);
 
     return Scaffold(
-      // body: Hero(
-      //   tag: image,
-      //   child: PhotoView(
-      //     backgroundDecoration: BoxDecoration(color: Colors.white),
-      //     imageProvider: NetworkImage(
-      //       'https://developers.thegraphe.com/flexy/storage/app/product_images/$image',
-      //     ),
-      //   ),
-      // ),
       body: PageView.builder(
         controller: _pageController,
         itemCount: images.length,
@@ -89,9 +80,9 @@ class _ImageZoomScreenState extends State<ImageZoomScreen> {
                 height: 400.0,
                 color: Colors.white,
                 child: Center(
-                  child: Image(
-                    // backgroundDecoration: BoxDecoration(color: Colors.white),
-                    image: NetworkImage(
+                  child: PhotoView(
+                    backgroundDecoration: BoxDecoration(color: Colors.white),
+                    imageProvider: NetworkImage(
                       'https://developers.thegraphe.com/flexy/storage/app/product_images/${images[currentActiveIndex]}',
                     ),
                   ),
