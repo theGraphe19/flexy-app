@@ -271,10 +271,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         ) {
                                           return GestureDetector(
                                             onTap: () {
-                                              // Navigator.of(context).pushNamed(
-                                              //   CartScreen.routeName,
-                                              //   arguments: user,
-                                              // );
                                               Navigator.of(context)
                                                   .pushNamedAndRemoveUntil(
                                                 CategoriesScreen.routeName,
