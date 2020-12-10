@@ -285,9 +285,8 @@ class SideDrawer {
     }
 
     return Text(
-      text,
+      'Mem Level - $text',
       textAlign: TextAlign.start,
-      style: TextStyle(color: color),
     );
   }
 

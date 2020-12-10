@@ -315,16 +315,16 @@ class _MyOrderItemState extends State<MyOrderItem> {
       case -1:
         text = 'REJECTED';
         break;
-      case 0:
+      case 1:
         text = 'PENDING';
         break;
-      case 1:
+      case 2:
         text = 'ACCEPTED';
         break;
-      case 2:
+      case 3:
         text = 'DISPATCHED';
         break;
-      case 3:
+      case 4:
         text = 'COMPLETED';
         break;
     }
@@ -345,16 +345,16 @@ class _MyOrderItemState extends State<MyOrderItem> {
       case -1:
         someVal += "rejected.png";
         break;
-      case 0:
+      case 1:
         someVal += "pending.png";
         break;
-      case 1:
+      case 2:
         someVal += "accepted.png";
         break;
-      case 2:
+      case 3:
         someVal += "dispatched.png";
         break;
-      case 3:
+      case 4:
         someVal += "completed.png";
         break;
     }

@@ -218,11 +218,13 @@ class DialogUtils {
   Widget orderDescriptiontile(String title, String value) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(title),
-          Text(
-            value.toUpperCase(),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+          Expanded(child: Text(title)),
+          Flexible(
+            child: Text(
+              value.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

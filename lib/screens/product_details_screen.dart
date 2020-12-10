@@ -13,13 +13,13 @@ import '../widgets/loading_body.dart';
 import '../widgets/product_item_unrelated.dart';
 import '../models/product_size.dart';
 import '../models/product_color.dart';
-import '../utils/dialog_utils.dart';
 import './cart_screen.dart';
 import '../models/user.dart';
 import './search_screen.dart';
 import '../utils/wishlist_bottom_sheet.dart';
 import '../providers/product_provider.dart';
 import '../screens/image_zoom_screen.dart';
+import './categories_screen.dart';
 
 /*
 <a target="_blank" href="https://icons8.com/icons/set/like">Heart icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -262,7 +262,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       ),
                                       SizedBox(width: 10.0),
                                       Image.asset(
-                                        'assets/images/cart-outline.png',
+                                        'assets/images/home.png',
                                         frameBuilder: (
                                           BuildContext context,
                                           Widget child,
@@ -271,8 +271,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         ) {
                                           return GestureDetector(
                                             onTap: () {
-                                              Navigator.of(context).pushNamed(
-                                                CartScreen.routeName,
+                                              Navigator.of(context)
+                                                  .pushNamedAndRemoveUntil(
+                                                CategoriesScreen.routeName,
+                                                (route) => false,
                                                 arguments: user,
                                               );
                                             },
@@ -785,122 +787,153 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       );
 
   Widget orderButton() => Container(
-        // margin: const EdgeInsets.only(
-        //   left: 15.0,
-        //   right: 15.0,
-        //   bottom: 10.0,
-        // ),
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           color: Colors.white,
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GestureDetector(
-              onTap: () {
-                List<ProductColor> colorList = [];
-                int prize = 0;
-                for (int i = 0; i < quantities.length; i++) {
-                  if (quantities[i] != 0) {
-                    prize +=
-                        product.productColors[colorSelected].sizes[i].price *
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (isAnUpdate == false) {
+                    int prize = 0;
+                    for (int i = 0; i < quantities.length; i++) {
+                      if (quantities[i] != 0)
+                        prize += product
+                                .productColors[colorSelected].sizes[i].price *
                             quantities[i];
-                    colorList.add(product.productColors[colorSelected]);
-                  }
-                }
-                if (prize == 0) {
-                  Toast.show(
-                    'Please select quantity',
-                    context,
-                    gravity: Toast.CENTER,
-                  );
-                } else {
-                  if (product.productColors[0].color == null) colorSelected = 0;
-                  DialogUtils().showCustomDialog(
-                    context,
-                    title: 'Confirm Order Details',
-                    productDetails: productDetails,
-                    product: product,
-                    size: product.productColors[colorSelected].sizes,
-                    quantity: quantities,
-                    color: product.productColors[colorSelected],
-                    price: prize,
-                    token: token,
-                    scaffoldKey: scaffoldKey,
-                    colors: colorList,
-                  );
-                }
-              },
-              child: Container(
-                height: 50.0,
-                width: 150.0,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  border: Border.all(
-                    width: 0.5,
-                    color: Colors.grey[300],
-                  ),
-                ),
-                child: Text(
-                  'Buy Now',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 10.0),
-            GestureDetector(
-              onTap: () {
-                if (isAnUpdate == false) {
-                  int prize = 0;
-                  for (int i = 0; i < quantities.length; i++) {
-                    if (quantities[i] != 0)
-                      prize +=
-                          product.productColors[colorSelected].sizes[i].price *
-                              quantities[i];
-                  }
-                  if (prize == 0) {
-                    Toast.show(
-                      'Please select quantity',
-                      context,
-                      gravity: Toast.CENTER,
-                    );
-                  } else {
-                    List<Map<String, dynamic>> orderList = [];
-                    for (var i = 0; i < quantities.length; i++) {
-                      orderList.add({
-                        'size':
-                            product.productColors[colorSelected].sizes[i].size,
-                        'quantity': quantities[i],
-                      });
-                      print(orderList.toString());
                     }
-                    _handler
-                        .addToCart(
-                      product.productId,
-                      token,
-                      product.productColors[colorSelected].color,
-                      orderList,
-                    )
-                        .then((value) {
-                      if (value == true) {
+                    if (prize == 0) {
+                      Toast.show(
+                        'Please select quantity',
+                        context,
+                        gravity: Toast.CENTER,
+                      );
+                    } else {
+                      List<Map<String, dynamic>> orderList = [];
+                      for (var i = 0; i < quantities.length; i++) {
+                        orderList.add({
+                          'size': product
+                              .productColors[colorSelected].sizes[i].size,
+                          'quantity': quantities[i],
+                        });
+                        print(orderList.toString());
+                      }
+                      _handler
+                          .addToCart(
+                        product.productId,
+                        token,
+                        product.productColors[colorSelected].color,
+                        orderList,
+                      )
+                          .then((value) {
+                        if (value == true) {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                              'Product Added to Your Cart',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xff6c757d),
+                            duration: Duration(seconds: 3),
+                          ));
+                        } else {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                              'Failed to Add the Product to the Cart',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xff6c757d),
+                            duration: Duration(seconds: 3),
+                          ));
+                        }
+                      }).catchError((e) {
                         scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
-                            'Product Added to Your Cart',
+                            'Network error!',
                             style: TextStyle(color: Colors.white),
                           ),
                           backgroundColor: Color(0xff6c757d),
                           duration: Duration(seconds: 3),
                         ));
+                      });
+                    }
+                  } else {
+                    _handler
+                        .removeItemFromCart(
+                      token,
+                      cartId,
+                    )
+                        .then((value) {
+                      print('removed');
+                      if (value) {
+                        int prize = 0;
+                        for (int i = 0; i < quantities.length; i++) {
+                          if (quantities[i] != 0)
+                            prize += product.productColors[colorSelected]
+                                    .sizes[i].price *
+                                quantities[i];
+                        }
+                        if (prize == 0) {
+                          Toast.show(
+                            'Please select quantity',
+                            context,
+                            gravity: Toast.CENTER,
+                          );
+                        } else {
+                          List<Map<String, dynamic>> orderList = [];
+                          for (var i = 0; i < quantities.length; i++) {
+                            if (quantities[i] != 0)
+                              orderList.add({
+                                'size': product
+                                    .productColors[colorSelected].sizes[i].size,
+                                'quantity': quantities[i],
+                              });
+                            print(orderList.toString());
+                          }
+                          _handler
+                              .addToCart(
+                            product.productId,
+                            token,
+                            product.productSizes[selectedSize]
+                                .colors[colorSelected].color,
+                            orderList,
+                          )
+                              .then((value) {
+                            if (value == true) {
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  'Product Updated in Your Cart',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 3),
+                              ));
+                            } else {
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  'Failed to Add the Product to the Cart',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 3),
+                              ));
+                            }
+                          }).catchError((e) {
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                'Network error!',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Color(0xff6c757d),
+                              duration: Duration(seconds: 3),
+                            ));
+                          });
+                        }
                       } else {
                         scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
-                            'Failed to Add the Product to the Cart',
+                            'Error! Please try again.',
                             style: TextStyle(color: Colors.white),
                           ),
                           backgroundColor: Color(0xff6c757d),
@@ -918,116 +951,112 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ));
                     });
                   }
-                } else {
-                  _handler
-                      .removeItemFromCart(
-                    token,
-                    cartId,
-                  )
-                      .then((value) {
-                    print('removed');
-                    if (value) {
-                      int prize = 0;
-                      for (int i = 0; i < quantities.length; i++) {
-                        if (quantities[i] != 0)
-                          prize += product
-                                  .productColors[colorSelected].sizes[i].price *
-                              quantities[i];
-                      }
-                      if (prize == 0) {
-                        Toast.show(
-                          'Please select quantity',
-                          context,
-                          gravity: Toast.CENTER,
-                        );
-                      } else {
-                        List<Map<String, dynamic>> orderList = [];
-                        for (var i = 0; i < quantities.length; i++) {
-                          if (quantities[i] != 0)
-                            orderList.add({
-                              'size': product
-                                  .productColors[colorSelected].sizes[i].size,
-                              'quantity': quantities[i],
-                            });
-                          print(orderList.toString());
-                        }
-                        _handler
-                            .addToCart(
-                          product.productId,
-                          token,
-                          product.productSizes[selectedSize]
-                              .colors[colorSelected].color,
-                          orderList,
-                        )
-                            .then((value) {
-                          if (value == true) {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                'Product Updated in Your Cart',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Color(0xff6c757d),
-                              duration: Duration(seconds: 3),
-                            ));
-                          } else {
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                'Failed to Add the Product to the Cart',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Color(0xff6c757d),
-                              duration: Duration(seconds: 3),
-                            ));
-                          }
-                        }).catchError((e) {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                              'Network error!',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Color(0xff6c757d),
-                            duration: Duration(seconds: 3),
-                          ));
-                        });
-                      }
-                    } else {
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          'Error! Please try again.',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
-                      ));
-                    }
-                  }).catchError((e) {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Network error!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 3),
-                    ));
-                  });
-                }
-              },
-              child: Container(
-                height: 50.0,
-                width: 170.0,
-                color: Colors.red[600],
-                alignment: Alignment.center,
-                child: Text(
-                  (isAnUpdate) ? 'Update Cart' : 'Add to Cart',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18.0,
+                },
+                child: Container(
+                  height: 50.0,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: Theme.of(context).primaryColor,
                   ),
+                  child: Text(
+                    (isAnUpdate) ? 'Update Cart' : 'Add to Cart',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 10.0),
+            GestureDetector(
+              onTap: () => Navigator.of(context).pushNamed(
+                CartScreen.routeName,
+                arguments: user,
+              ),
+              child: Container(
+                width: 60.0,
+                height: 50.0,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Icon(
+                  Icons.shopping_cart,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
           ],
         ),
+        // child: Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     // GestureDetector(
+        //     //   onTap: () {
+        //     //     List<ProductColor> colorList = [];
+        //     //     int prize = 0;
+        //     //     for (int i = 0; i < quantities.length; i++) {
+        //     //       if (quantities[i] != 0) {
+        //     //         prize +=
+        //     //             product.productColors[colorSelected].sizes[i].price *
+        //     //                 quantities[i];
+        //     //         colorList.add(product.productColors[colorSelected]);
+        //     //       }
+        //     //     }
+        //     //     if (prize == 0) {
+        //     //       Toast.show(
+        //     //         'Please select quantity',
+        //     //         context,
+        //     //         gravity: Toast.CENTER,
+        //     //       );
+        //     //     } else {
+        //     //       if (product.productColors[0].color == null) colorSelected = 0;
+        //     //       DialogUtils().showCustomDialog(
+        //     //         context,
+        //     //         title: 'Confirm Order Details',
+        //     //         productDetails: productDetails,
+        //     //         product: product,
+        //     //         size: product.productColors[colorSelected].sizes,
+        //     //         quantity: quantities,
+        //     //         color: product.productColors[colorSelected],
+        //     //         price: prize,
+        //     //         token: token,
+        //     //         scaffoldKey: scaffoldKey,
+        //     //         colors: colorList,
+        //     //       );
+        //     //     }
+        //     //   },
+        //     //   child: Container(
+        //     //     height: 50.0,
+        //     //     width: 150.0,
+        //     //     alignment: Alignment.center,
+        //     //     decoration: BoxDecoration(
+        //     //       shape: BoxShape.rectangle,
+        //     //       border: Border.all(
+        //     //         width: 0.5,
+        //     //         color: Colors.grey[300],
+        //     //       ),
+        //     //     ),
+        //     //     child: Text(
+        //     //       'Buy Now',
+        //     //       style: TextStyle(
+        //     //         color: Colors.black87,
+        //     //         fontWeight: FontWeight.w500,
+        //     //         fontSize: 18.0,
+        //     //       ),
+        //     //     ),
+        //     //   ),
+        //     // ),
+        //     SizedBox(width: 10.0),
+
+        //   ],
+        // ),
       );
 }
