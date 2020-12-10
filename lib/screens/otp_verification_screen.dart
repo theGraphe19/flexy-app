@@ -46,6 +46,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
         backgroundColor: Color(0xff6c757d),
       ));
     }).catchError((e) {
+      print(e);
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
           'Network error!',

@@ -88,15 +88,13 @@ class HTTPHandler {
     print(user.photoLocation);
     print(user.visitingCardLocation);
     try {
-      FormData formData = FormData.fromMap({
+      Map<String, dynamic> formData = {
         'category': 1,
         'name': user.name,
         'mobileNo': user.mobileNo,
         'email': user.email,
         'designation': user.designation,
         'photoIdType': user.photoIdType,
-        'photoLocation': user.photoLocation,
-        'visitingCardLocation': user.visitingCardLocation,
         'photo_id': await MultipartFile.fromFile(user.photoLocation,
             filename: '${user.photoIdType}-${user.id}'),
         'visiting_card': await MultipartFile.fromFile(user.visitingCardLocation,
@@ -105,20 +103,26 @@ class HTTPHandler {
         'firmNomenclature': user.firmNomenclature,
         'tradeCategory': user.tradeCategory,
         'noOfStores': user.noOfStores,
-        'landlineNo': user.landlineNo,
-        'gstNo': user.gstNo,
         'companyAddress': user.companyAddress,
         'city': user.city,
         'state': user.state,
         'pincode': user.pincode,
-        'agentName': user.agentName,
-        'agentPhone': user.ageentMobileNo,
-        'purchasePerson': user.purchasePerson,
-      });
+      };
+
+      print('land => ${user.landlineNo}');
+      if (user.landlineNo != '') formData['landlineNo'] = user.landlineNo;
+      if (user.gstNo != '') formData['gstNo'] = user.gstNo;
+      if (user.agentName != '') formData['agentName'] = user.agentName;
+      if (user.ageentMobileNo != '')
+        formData['agentPhone'] = user.ageentMobileNo;
+      if (user.purchasePerson != '')
+        formData['purchasePerson'] = user.purchasePerson;
+
+      print(formData);
 
       Response response = await _dio.post(
         "$baseURL/reg",
-        data: formData,
+        data: FormData.fromMap(formData),
       );
 
       if (response.data['status']
