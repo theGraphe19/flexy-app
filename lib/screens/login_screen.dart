@@ -183,7 +183,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //_retreiveData();
     _getSignatureCode();
     if (status == ForgotPassword.forgotAndNotVerified) {
       _handler.getMobiles().then((value) {
@@ -227,11 +226,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget otpCheck() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          // TextField(
-          //   controller: _otpController,
-          //   keyboardType: TextInputType.number,
-          //   decoration: InputDecoration(hintText: 'Enter OTP'),
-          // ),
           TextFieldPin(
             borderStyeAfterTextChange: UnderlineInputBorder(
               borderRadius: BorderRadius.circular(5.0),

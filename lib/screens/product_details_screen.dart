@@ -189,7 +189,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           backgroundDecoration: BoxDecoration(
                                               color: Colors.white),
                                           imageProvider: NetworkImage(
-                                              'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
+                                              'https://flexyindia.com/administrator/storage/app/product_images/${product.productImages[currentActiveIndex]}'),
                                         ),
                                 ),
                                 Column(
@@ -774,9 +774,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   color: Colors.white,
                   child: Center(
                     child: Image(
-                      // backgroundDecoration: BoxDecoration(color: Colors.white),
                       image: NetworkImage(
-                        'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[currentActiveIndex]}',
+                        'https://flexyindia.com/administrator/storage/app/product_images/${product.productImages[currentActiveIndex]}',
                       ),
                     ),
                   ),

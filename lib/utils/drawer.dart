@@ -26,6 +26,7 @@ class SideDrawer {
   HTTPHandler _handler = HTTPHandler();
   Map details;
   var hasUnread;
+  String text;
 
   SideDrawer(
     this.user,
@@ -35,6 +36,15 @@ class SideDrawer {
     print('from within the drawer => $hasUnread');
     _handler.getAdminContactDetails().then((value) {
       this.details = value;
+    });
+    _handler.getLevelName().then((value) {
+      for (Map m in value) {
+        if (m['level'] == user.category) {
+          this.text = m['name'];
+          print('level => $text');
+          break;
+        }
+      }
     });
   }
 
@@ -75,7 +85,10 @@ class SideDrawer {
                           user.email,
                           textAlign: TextAlign.start,
                         ),
-                        _getStatusWidget(),
+                        Text(
+                          'Mem Level - $text',
+                          textAlign: TextAlign.start,
+                        ),
                       ],
                     ),
                   )
@@ -251,42 +264,6 @@ class SideDrawer {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _getStatusWidget() {
-    String text;
-    Color color;
-
-    switch (user.category) {
-      case 0:
-        text = 'Bronze';
-        color = Color(0xffcd7f32);
-        break;
-
-      case 1:
-        text = 'Silver';
-        color = Color(0xffc0c0c0);
-        break;
-
-      case 2:
-        text = 'Gold';
-        color = Color(0xffffd700);
-        break;
-
-      case 3:
-        text = 'Platinum';
-        color = Color(0xffe5e4e2);
-        break;
-
-      default:
-        text = 'No Level';
-        color = Colors.black;
-    }
-
-    return Text(
-      'Mem Level - $text',
-      textAlign: TextAlign.start,
     );
   }
 

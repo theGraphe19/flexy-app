@@ -9,7 +9,6 @@ import '../HTTP_handler.dart';
 import '../models/cart_overview.dart';
 import '../widgets/loading_body.dart';
 import '../models/user.dart';
-import './product_details_screen.dart';
 import './check_out_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -100,7 +99,7 @@ class CartScreenState extends State<CartScreen> {
                             child: Column(
                               children: <Widget>[
                                 Image.network(
-                                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${items[index].cartItems[0].productImages[0]}',
+                                  'https://flexyindia.com/administrator/storage/app/product_images/${items[index].cartItems[0].productImages[0]}',
                                   frameBuilder: (BuildContext context,
                                       Widget child,
                                       int frame,
@@ -126,128 +125,6 @@ class CartScreenState extends State<CartScreen> {
                                       Flexible(
                                         child: GestureDetector(
                                           onTap: () {
-                                            // print(items[index]
-                                            //     .cartItems[0]
-                                            //     .color);
-                                            // List<int> quantity = [];
-                                            // print(quantity.toString());
-                                            // _handler
-                                            //     .getProductDetails(
-                                            //         items[index]
-                                            //             .cartItems[0]
-                                            //             .productId,
-                                            //         token)
-                                            //     .then((value) {
-                                            //   productDetails = value;
-                                            //   print(
-                                            //       productDetails.product.name);
-                                            //   if (productDetails.product
-                                            //           .productColors[0].color ==
-                                            //       null)
-                                            //     colorSelected = 0;
-                                            //   else
-                                            //     for (var i = 0;
-                                            //         i <
-                                            //             productDetails
-                                            //                 .product
-                                            //                 .productColors
-                                            //                 .length;
-                                            //         i++) {
-                                            //       if (productDetails
-                                            //               .product
-                                            //               .productColors[i]
-                                            //               .color
-                                            //               .contains(items[index]
-                                            //                   .cartItems[0]
-                                            //                   .color) &&
-                                            //           items[index]
-                                            //               .cartItems[0]
-                                            //               .color
-                                            //               .contains(
-                                            //                   productDetails
-                                            //                       .product
-                                            //                       .productColors[
-                                            //                           i]
-                                            //                       .color)) {
-                                            //         colorSelected = i;
-                                            //         break;
-                                            //       }
-                                            //     }
-                                            //   print(productDetails
-                                            //       .product
-                                            //       .productColors[colorSelected]
-                                            //       .color);
-                                            //   int flag;
-                                            //   for (var i = 0;
-                                            //       i <
-                                            //           productDetails
-                                            //               .product
-                                            //               .productColors[
-                                            //                   colorSelected]
-                                            //               .sizes
-                                            //               .length;
-                                            //       i++) {
-                                            //     flag = 0;
-                                            //     for (var j = 0;
-                                            //         j <
-                                            //             items[index]
-                                            //                 .cartItems
-                                            //                 .length;
-                                            //         j++) {
-                                            //       if (productDetails
-                                            //           .product
-                                            //           .productColors[
-                                            //               colorSelected]
-                                            //           .sizes[i]
-                                            //           .size
-                                            //           .contains(items[index]
-                                            //               .cartItems[j]
-                                            //               .productSize)) {
-                                            //         quantity.add(items[index]
-                                            //             .cartItems[j]
-                                            //             .quantity);
-                                            //         flag = 1;
-                                            //         break;
-                                            //       }
-                                            //     }
-                                            //     if (flag == 0) quantity.add(0);
-                                            //   }
-
-                                            //   print(quantity.toString());
-                                            //   Navigator.of(context).pushNamed(
-                                            //     ProductDetailsScreen.routeName,
-                                            //     arguments: <dynamic>[
-                                            //       productDetails.product,
-                                            //       token,
-                                            //       items[index]
-                                            //           .cartItems[0]
-                                            //           .categoryId,
-                                            //       currentUser,
-                                            //       true,
-                                            //       this,
-                                            //       quantity,
-                                            //       items[index]
-                                            //           .cartItems[0]
-                                            //           .color,
-                                            //       items[index].id,
-                                            //     ],
-                                            //   ).then((_) {
-                                            //     itemsHandler = false;
-                                            //     setState(() {});
-                                            //   });
-                                            // }).catchError((e) {
-                                            //   scaffoldKey.currentState
-                                            //       .showSnackBar(SnackBar(
-                                            //     content: Text(
-                                            //       'Network error!',
-                                            //       style: TextStyle(
-                                            //           color: Colors.white),
-                                            //     ),
-                                            //     backgroundColor:
-                                            //         Color(0xff6c757d),
-                                            //     duration: Duration(seconds: 3),
-                                            //   ));
-                                            // });
                                             print('pressed updat');
                                             _showModal(items[index]);
                                           },
@@ -432,7 +309,7 @@ class CartScreenState extends State<CartScreen> {
                                   height: 80.0,
                                   width: 80.0,
                                   image: NetworkImage(
-                                    'https://developers.thegraphe.com/flexy/storage/app/product_images/${item.cartItems[0].productImages[0]}',
+                                    'https://flexyindia.com/administrator/storage/app/product_images/${item.cartItems[0].productImages[0]}',
                                   ),
                                 ),
                                 Text(item.cartItems[0].productName),
@@ -613,67 +490,6 @@ class CartScreenState extends State<CartScreen> {
                                 duration: Duration(seconds: 3),
                               ));
                             });
-
-                            // _handler
-                            //     .removeItemFromCart(token, item.id)
-                            //     .then((value) {
-                            //   if (value) {
-                            //     _handler
-                            //         .addToCart(
-                            //       item.cartItems[0].productId,
-                            //       token,
-                            //       item.cartItems[0].color,
-                            //       quantityPerSIze,
-                            //     )
-                            //         .then((value) {
-                            //       Navigator.of(context).pop();
-
-                            //       if (value) {
-                            //         getCart();
-                            //       } else {
-                            //         scaffoldKey.currentState
-                            //             .showSnackBar(SnackBar(
-                            //           content: Text(
-                            //             'Error! Try again.',
-                            //             style: TextStyle(color: Colors.white),
-                            //           ),
-                            //           backgroundColor: Color(0xff6c757d),
-                            //           duration: Duration(seconds: 3),
-                            //         ));
-                            //       }
-                            //     }).catchError((e) {
-                            //       print(e);
-                            //       scaffoldKey.currentState
-                            //           .showSnackBar(SnackBar(
-                            //         content: Text(
-                            //           'Network error!',
-                            //           style: TextStyle(color: Colors.white),
-                            //         ),
-                            //         backgroundColor: Color(0xff6c757d),
-                            //         duration: Duration(seconds: 3),
-                            //       ));
-                            //     });
-                            //   } else {
-                            //     scaffoldKey.currentState.showSnackBar(SnackBar(
-                            //       content: Text(
-                            //         'Error! Try again.',
-                            //         style: TextStyle(color: Colors.white),
-                            //       ),
-                            //       backgroundColor: Color(0xff6c757d),
-                            //       duration: Duration(seconds: 3),
-                            //     ));
-                            //   }
-                            // }).catchError((e) {
-                            //   print(e);
-                            //   scaffoldKey.currentState.showSnackBar(SnackBar(
-                            //     content: Text(
-                            //       'Network error!',
-                            //       style: TextStyle(color: Colors.white),
-                            //     ),
-                            //     backgroundColor: Color(0xff6c757d),
-                            //     duration: Duration(seconds: 3),
-                            //   ));
-                            // });
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width,

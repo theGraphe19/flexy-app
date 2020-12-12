@@ -118,7 +118,7 @@ class _BillScreenState extends State<BillScreen> {
                                   print(bill.bills[index]);
                                   print(dirloc);
                                   Response response = await Dio().get(
-                                    'https://developers.thegraphe.com/flexy/storage/app/bills/${bill.bills[index]}',
+                                    'https://flexyindia.com/administrator/storage/app/bills/${bill.bills[index]}',
                                     onReceiveProgress: showDownloadProgress,
                                     options: Options(
                                       responseType: ResponseType.bytes,

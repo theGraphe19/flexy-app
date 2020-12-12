@@ -20,7 +20,7 @@ import './models/wishlist.dart';
 class HTTPHandler {
   Dio _dio = Dio();
   List<Product> productList = [];
-  String baseURL = 'https://developers.thegraphe.com/flexy';
+  String baseURL = 'https://flexyindia.com/administrator';
 
   Future<List<String>> getMobiles() async {
     try {
@@ -797,6 +797,17 @@ class HTTPHandler {
         return true;
       else
         return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<dynamic> getLevelName() async {
+    try {
+      Response response = await _dio
+          .get('https://developers.thegraphe.com/flexy/api_v_1.0/memdetails');
+      return response.data;
     } catch (e) {
       print(e);
       throw e;

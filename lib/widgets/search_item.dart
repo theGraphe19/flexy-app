@@ -36,7 +36,7 @@ class SearchItem extends StatelessWidget {
     categoryProvider = Provider.of<CategoryProvider>(context);
     return ListTile(
       leading: Image.network(
-        'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[0]}',
+        'https://flexyindia.com/administrator/storage/app/product_images/${product.productImages[0]}',
         fit: BoxFit.cover,
       ),
       title: Text(product.name),

@@ -2,6 +2,7 @@ import 'package:flexy/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:marquee/marquee.dart';
 
 import '../models/wishlist.dart';
 import '../HTTP_handler.dart';
@@ -81,7 +82,7 @@ class _ProductItemState extends State<ProductItem> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      'https://developers.thegraphe.com/flexy/storage/app/product_images/${widget.product.productImages[0]}',
+                      'https://flexyindia.com/administrator/storage/app/product_images/${widget.product.productImages[0]}',
                       fit: BoxFit.contain,
                       height: 245.0,
                     ),
@@ -101,18 +102,15 @@ class _ProductItemState extends State<ProductItem> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 5.0,
-                      left: 10.0,
-                      right: 10.0,
-                    ),
-                    child: Text(
-                      '${widget.product.tagline}',
-                      textAlign: TextAlign.center,
+                  SizedBox(
+                    height: 30.0,
+                    width: 100.0,
+                    child: Marquee(
+                      text: '${widget.product.tagline}    ',
                       style: TextStyle(
                         color: Colors.black87,
                       ),
+                      velocity: 30.0,
                     ),
                   ),
                   Row(

@@ -257,76 +257,77 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       ),
       drawer: SideDrawer(_currentUser, _scaffoldKey, hasUnread).drawer(context),
       body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: (_currentUser.status == 1)
-              ? (categoriesList == null)
-                  ? LoadingBody()
-                  : Container(
-                      height: double.infinity,
-                      child: ListView.builder(
-                        itemCount: categoriesList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                ProductsScreen.routeName,
-                                arguments: <String, dynamic>{
-                                  'user': _currentUser,
-                                  'category': categoriesList[index],
-                                },
-                              );
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height / 3,
-                              width: double.infinity,
-                              child: Column(
-                                children: [
-                                  Image.network(
-                                    'https://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
-                                    height:
-                                        MediaQuery.of(context).size.height / 3 -
-                                            5,
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                ],
-                              ),
+        padding: const EdgeInsets.all(10.0),
+        child: (_currentUser.status == 1)
+            ? (categoriesList == null)
+                ? LoadingBody()
+                : Container(
+                    height: double.infinity,
+                    child: ListView.builder(
+                      itemCount: categoriesList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              ProductsScreen.routeName,
+                              arguments: <String, dynamic>{
+                                'user': _currentUser,
+                                'category': categoriesList[index],
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / 3,
+                            width: double.infinity,
+                            child: Column(
+                              children: [
+                                Image.network(
+                                  'https://flexyindia.com/administrator/storage/app/categories/${categoriesList[index].image}',
+                                  height:
+                                      MediaQuery.of(context).size.height / 3 -
+                                          5,
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
-                    )
-              : Container(
-                  color: Colors.white,
-                  width: MediaQuery.of(context).size.width,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 20.0),
-                        Image.asset(
-                          'assets/icon/icon.png',
-                          height: 180.0,
-                          width: 180.0,
-                        ),
-                        SizedBox(height: 30.0),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 400.0),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10.0,
-                            horizontal: 20.0,
                           ),
-                          child: Html(
-                            data: (adminDetails == null)
-                                ? ''
-                                : adminDetails['about'],
-                            // style: TextStyle(fontSize: 13.0),
-                          ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
+                  )
+            : Container(
+                color: Colors.white,
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 20.0),
+                      Image.asset(
+                        'assets/icon/icon.png',
+                        height: 180.0,
+                        width: 180.0,
+                      ),
+                      SizedBox(height: 30.0),
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 400.0),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 20.0,
+                        ),
+                        child: Html(
+                          data: (adminDetails == null)
+                              ? ''
+                              : adminDetails['about'],
+                          // style: TextStyle(fontSize: 13.0),
+                        ),
+                      ),
+                    ],
                   ),
-                )),
+                ),
+              ),
+      ),
     );
   }
 }

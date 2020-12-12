@@ -90,7 +90,7 @@ class _ImageZoomScreenState extends State<ImageZoomScreen> {
                           backgroundDecoration:
                               BoxDecoration(color: Colors.white),
                           imageProvider: NetworkImage(
-                            'https://developers.thegraphe.com/flexy/storage/app/product_images/${images[currentActiveIndex]}',
+                            'https://flexyindia.com/administrator/storage/app/product_images/${images[currentActiveIndex]}',
                           ),
                         ),
                       ),
