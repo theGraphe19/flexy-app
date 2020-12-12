@@ -34,6 +34,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   SharedPreferences prefs;
   WishlistBottomSheet _wishlistBottomSheet;
   var hasUnread = false;
+  var text;
 
   void _showAbout(BuildContext context) {
     _scaffoldKey.currentState.showBottomSheet(
@@ -158,6 +159,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         }
       }
 
+      _handler.getLevelName().then((value) {
+        for (Map m in value) {
+          if (m['level'] == _currentUser.category) {
+            this.text = m['name'];
+            print('level => $text');
+            break;
+          }
+        }
+      });
+
       hasUnread = false;
     });
   }
@@ -255,7 +266,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(_currentUser, _scaffoldKey, hasUnread).drawer(context),
+      drawer: SideDrawer(
+        _currentUser,
+        _scaffoldKey,
+        hasUnread,
+        text,
+      ).drawer(context),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: (_currentUser.status == 1)

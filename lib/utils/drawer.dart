@@ -32,19 +32,11 @@ class SideDrawer {
     this.user,
     this.scaffoldKey,
     this.hasUnread,
+    this.text,
   ) {
     print('from within the drawer => $hasUnread');
     _handler.getAdminContactDetails().then((value) {
       this.details = value;
-    });
-    _handler.getLevelName().then((value) {
-      for (Map m in value) {
-        if (m['level'] == user.category) {
-          this.text = m['name'];
-          print('level => $text');
-          break;
-        }
-      }
     });
   }
 

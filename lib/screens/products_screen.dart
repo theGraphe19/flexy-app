@@ -38,6 +38,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   var _radioValue = 1;
 
   var hasUnread = false;
+  var text;
 
   Map<String, bool> checkboxesValues = {};
 
@@ -63,21 +64,32 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   getList() async {
     prodListCounterCalled = true;
-    _handler
-        .getProductsList(context, currentUser.token, category.id.toString())
-        .then((value) {
-      setState(() {
-        _productsLoaded = true;
+
+    _handler.getLevelName().then((value) {
+      for (Map m in value) {
+        if (m['level'] == currentUser.category) {
+          this.text = m['name'];
+          print('level => $text');
+          break;
+        }
+      }
+
+      _handler
+          .getProductsList(context, currentUser.token, category.id.toString())
+          .then((value) {
+        setState(() {
+          _productsLoaded = true;
+        });
+      }).catchError((e) {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+            'Network error!',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff6c757d),
+          duration: Duration(seconds: 3),
+        ));
       });
-    }).catchError((e) {
-      scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(
-          'Network error!',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Color(0xff6c757d),
-        duration: Duration(seconds: 3),
-      ));
     });
   }
 
@@ -194,7 +206,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(currentUser, scaffoldKey, hasUnread).drawer(context),
+      drawer: SideDrawer(
+        currentUser,
+        scaffoldKey,
+        hasUnread,
+        text,
+      ).drawer(context),
       body: Column(
         children: <Widget>[
           Divider(),
