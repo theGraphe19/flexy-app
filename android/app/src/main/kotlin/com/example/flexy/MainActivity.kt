@@ -1,4 +1,4 @@
-package com.graphe.flexy
+package com.brandmetry.flexy
 
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity

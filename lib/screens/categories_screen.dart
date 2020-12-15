@@ -14,6 +14,7 @@ import '../models/category.dart';
 import './search_screen.dart';
 import '../models/chat.dart';
 import './cart_screen.dart';
+import './notification_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';
@@ -127,6 +128,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
+  // onResume => {notification: {}, data: {collapse_key: com.brandmetry.flexy, google.original_priority: high, google.sent_time: 1607943109109, google.delivered_priority: high, google.ttl: 2419200, from: 838514546509, click_action: FLUTTER_NOTIFICATION_CLICK, google.message_id: 0:1607943109288755%ee2371fbee2371fb}}
+
   @override
   void initState() {
     final fbm = FirebaseMessaging();
@@ -142,6 +145,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       },
       onResume: (message) {
         print('onResume => $message');
+        Navigator.of(context).pushNamed(
+          NotificationScreen.routeName,
+          arguments: _currentUser,
+        );
         return;
       },
     );
@@ -229,6 +236,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         ),
         title: Text((_currentUser.status == 1) ? 'Categories' : 'Flexy'),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              print('more pressed');
+              Navigator.of(context).pushNamed(
+                NotificationScreen.routeName,
+                arguments: _currentUser,
+              );
+            },
+          ),
           IconButton(
             icon: Icon(
               Icons.search,

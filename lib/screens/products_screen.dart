@@ -14,6 +14,7 @@ import './search_screen.dart';
 import '../models/category.dart';
 import '../models/chat.dart';
 import './cart_screen.dart';
+import './notification_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products-screen';
@@ -169,6 +170,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
           data: ThemeData.dark(),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              print('more pressed');
+              Navigator.of(context).pushNamed(
+                NotificationScreen.routeName,
+                arguments: currentUser,
+              );
+            },
+          ),
           IconButton(
             icon: Icon(
               Icons.search,
