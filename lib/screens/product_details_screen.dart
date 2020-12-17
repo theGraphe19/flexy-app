@@ -94,7 +94,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         List ext = s.split('.');
         if (ext.contains('mp4')) {
           _controller = VideoPlayerController.network(
-            'https://developers.thegraphe.com/flexy/storage/app/product_images/${s}',
+            'https://flexyindia.com/administrator/storage/app/product_images/${s}',
           );
           await _controller.setLooping(true);
 
@@ -994,68 +994,5 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
           ],
         ),
-        // child: Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     // GestureDetector(
-        //     //   onTap: () {
-        //     //     List<ProductColor> colorList = [];
-        //     //     int prize = 0;
-        //     //     for (int i = 0; i < quantities.length; i++) {
-        //     //       if (quantities[i] != 0) {
-        //     //         prize +=
-        //     //             product.productColors[colorSelected].sizes[i].price *
-        //     //                 quantities[i];
-        //     //         colorList.add(product.productColors[colorSelected]);
-        //     //       }
-        //     //     }
-        //     //     if (prize == 0) {
-        //     //       Toast.show(
-        //     //         'Please select quantity',
-        //     //         context,
-        //     //         gravity: Toast.CENTER,
-        //     //       );
-        //     //     } else {
-        //     //       if (product.productColors[0].color == null) colorSelected = 0;
-        //     //       DialogUtils().showCustomDialog(
-        //     //         context,
-        //     //         title: 'Confirm Order Details',
-        //     //         productDetails: productDetails,
-        //     //         product: product,
-        //     //         size: product.productColors[colorSelected].sizes,
-        //     //         quantity: quantities,
-        //     //         color: product.productColors[colorSelected],
-        //     //         price: prize,
-        //     //         token: token,
-        //     //         scaffoldKey: scaffoldKey,
-        //     //         colors: colorList,
-        //     //       );
-        //     //     }
-        //     //   },
-        //     //   child: Container(
-        //     //     height: 50.0,
-        //     //     width: 150.0,
-        //     //     alignment: Alignment.center,
-        //     //     decoration: BoxDecoration(
-        //     //       shape: BoxShape.rectangle,
-        //     //       border: Border.all(
-        //     //         width: 0.5,
-        //     //         color: Colors.grey[300],
-        //     //       ),
-        //     //     ),
-        //     //     child: Text(
-        //     //       'Buy Now',
-        //     //       style: TextStyle(
-        //     //         color: Colors.black87,
-        //     //         fontWeight: FontWeight.w500,
-        //     //         fontSize: 18.0,
-        //     //       ),
-        //     //     ),
-        //     //   ),
-        //     // ),
-        //     SizedBox(width: 10.0),
-
-        //   ],
-        // ),
       );
 }

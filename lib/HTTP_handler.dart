@@ -173,7 +173,7 @@ class HTTPHandler {
       fbm.getToken().then((token) async {
         print(token);
         await _dio.post(
-          'https://developers.thegraphe.com/flexy/api_v_1.0/device_token',
+          '$baseURL/api_v_1.0/device_token',
           data: FormData.fromMap({
             'user_id': userId,
             'device_token': token,
