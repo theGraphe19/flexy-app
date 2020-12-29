@@ -66,6 +66,7 @@ class HTTPHandler {
 
   Future<List<Product>> searchData(String token) async {
     try {
+      print('$baseURL/searchprod?api_token=$token');
       Response response =
           await _dio.get('$baseURL/searchprod?api_token=$token');
 
