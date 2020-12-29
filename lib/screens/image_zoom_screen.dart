@@ -23,7 +23,7 @@ class _ImageZoomScreenState extends State<ImageZoomScreen> {
       List ext = s.split('.');
       if (ext.contains('mp4')) {
         _controller = VideoPlayerController.network(
-          'https://developers.thegraphe.com/flexy/storage/app/product_images/${s}',
+          'https://flexyindia.com/administrator/storage/app/product_images/${s}',
         );
         await _controller.setLooping(true);
 
@@ -90,7 +90,7 @@ class _ImageZoomScreenState extends State<ImageZoomScreen> {
                           backgroundDecoration:
                               BoxDecoration(color: Colors.white),
                           imageProvider: NetworkImage(
-                            'https://developers.thegraphe.com/flexy/storage/app/product_images/${images[currentActiveIndex]}',
+                            'https://flexyindia.com/administrator/storage/app/product_images/${images[currentActiveIndex]}',
                           ),
                         ),
                       ),

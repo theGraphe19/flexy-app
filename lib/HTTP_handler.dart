@@ -16,11 +16,12 @@ import './models/cart_overview.dart';
 import './models/order_details.dart';
 import './models/chat_overview.dart';
 import './models/wishlist.dart';
+import './models/notification.dart' as notif;
 
 class HTTPHandler {
   Dio _dio = Dio();
   List<Product> productList = [];
-  String baseURL = 'https://developers.thegraphe.com/flexy';
+  String baseURL = 'https://flexyindia.com/administrator';
 
   Future<List<String>> getMobiles() async {
     try {
@@ -65,6 +66,7 @@ class HTTPHandler {
 
   Future<List<Product>> searchData(String token) async {
     try {
+      print('$baseURL/searchprod?api_token=$token');
       Response response =
           await _dio.get('$baseURL/searchprod?api_token=$token');
 
@@ -172,7 +174,7 @@ class HTTPHandler {
       fbm.getToken().then((token) async {
         print(token);
         await _dio.post(
-          'https://developers.thegraphe.com/flexy/api_v_1.0/device_token',
+          '$baseURL/api_v_1.0/device_token',
           data: FormData.fromMap({
             'user_id': userId,
             'device_token': token,
@@ -694,7 +696,7 @@ class HTTPHandler {
   ) async {
     try {
       Response response = await _dio.post(
-        'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+        '$baseURL/api_v_1.0/wishlist',
         data: FormData.fromMap({
           'user_id': userId,
           'product_id': productId,
@@ -720,7 +722,7 @@ class HTTPHandler {
       List<Wishlist> items = [];
 
       Response response = await _dio.post(
-          'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+          '$baseURL/api_v_1.0/wishlist',
           data: FormData.fromMap({
             'buyer_id': userId,
           }));
@@ -751,7 +753,7 @@ class HTTPHandler {
   ) async {
     try {
       Response response = await _dio.post(
-          'https://developers.thegraphe.com/flexy/api_v_1.0/wishlist',
+          '$baseURL/api_v_1.0/wishlist',
           data: FormData.fromMap({
             'wish_id': wishListId,
           }));
@@ -772,7 +774,7 @@ class HTTPHandler {
   Future<bool> deleteItemFromCartItem(String id) async {
     try {
       Response response = await _dio.delete(
-          'https://developers.thegraphe.com/flexy/api_v_1.0/cart?cart_id=$id');
+          '$baseURL/api_v_1.0/cart?cart_id=$id');
 
       if (response.data['success'] == '1')
         return true;
@@ -787,7 +789,7 @@ class HTTPHandler {
   Future<bool> updateItemFromCartItem(String param) async {
     try {
       Response response = await _dio.post(
-        'https://developers.thegraphe.com/flexy/api_v_1.0/cart',
+        '$baseURL/api_v_1.0/cart',
         data: FormData.fromMap({
           'sizes': param,
         }),
@@ -797,6 +799,38 @@ class HTTPHandler {
         return true;
       else
         return false;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<dynamic> getLevelName() async {
+    try {
+      Response response = await _dio
+          .get('$baseURL/api_v_1.0/memdetails');
+      return response.data;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<List<notif.Notification>> getNotification(String token) async {
+    try {
+      List<notif.Notification> notificationList = [];
+      print('$baseURL/api_v_1.0/app_notifications?api_token=$token');
+      Response response = await _dio
+          .get('$baseURL/api_v_1.0/app_notifications?api_token=$token');
+      print(response.data);
+      //var result = json.decode(response.data);
+      if (response.data['success'] == 1) {
+        response.data['notifications'].forEach((i) {
+          notificationList.add(notif.Notification.fromJson(i));
+        });
+      }
+      print(notificationList.toString());
+      return notificationList;
     } catch (e) {
       print(e);
       throw e;

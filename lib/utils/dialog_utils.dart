@@ -147,7 +147,7 @@ class DialogUtils {
           borderRadius: BorderRadius.circular(15.0),
           image: DecorationImage(
             image: NetworkImage(
-              'https://developers.thegraphe.com/flexy/storage/app/product_images/${product.productImages[0]}',
+              'https://flexyindia.com/administrator/storage/app/product_images/${product.productImages[0]}',
             ),
             fit: BoxFit.contain,
           ),

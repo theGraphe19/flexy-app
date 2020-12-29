@@ -3,7 +3,6 @@ import 'package:toast/toast.dart';
 
 import '../models/order_details.dart';
 import '../models/product_details.dart';
-import '../screens/bill_screen.dart';
 import '../HTTP_handler.dart';
 import './loading_body.dart';
 
@@ -69,7 +68,7 @@ class _MyOrderItemState extends State<MyOrderItem> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Image.network(
-                                  'https://developers.thegraphe.com/flexy/storage/app/product_images/${_productDetails.product.productImages[0]}',
+                                  'https://flexyindia.com/administrator/storage/app/product_images/${_productDetails.product.productImages[0]}',
                                   fit: BoxFit.fill,
                                   height: 180.0,
                                   width: 120.0),

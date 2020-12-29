@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:838514546509:android:afe1b9d1c0a76b94c68904",
+        "mobilesdk_app_id": "1:838514546509:android:7a12838346cebbfdc68904",
         "android_client_info": {
-          "package_name": "com.graphe.flexy"
+          "package_name": "com.brandmetry.flexy"
         }
       },
       "oauth_client": [

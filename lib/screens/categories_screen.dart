@@ -14,6 +14,7 @@ import '../models/category.dart';
 import './search_screen.dart';
 import '../models/chat.dart';
 import './cart_screen.dart';
+import './notification_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories-screen';
@@ -34,6 +35,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   SharedPreferences prefs;
   WishlistBottomSheet _wishlistBottomSheet;
   var hasUnread = false;
+  var text;
 
   void _showAbout(BuildContext context) {
     _scaffoldKey.currentState.showBottomSheet(
@@ -126,6 +128,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
+  // onResume => {notification: {}, data: {collapse_key: com.brandmetry.flexy, google.original_priority: high, google.sent_time: 1607943109109, google.delivered_priority: high, google.ttl: 2419200, from: 838514546509, click_action: FLUTTER_NOTIFICATION_CLICK, google.message_id: 0:1607943109288755%ee2371fbee2371fb}}
+
   @override
   void initState() {
     final fbm = FirebaseMessaging();
@@ -141,6 +145,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       },
       onResume: (message) {
         print('onResume => $message');
+        Navigator.of(context).pushNamed(
+          NotificationScreen.routeName,
+          arguments: _currentUser,
+        );
         return;
       },
     );
@@ -157,6 +165,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           break;
         }
       }
+
+      _handler.getLevelName().then((value) {
+        for (Map m in value) {
+          if (m['level'] == _currentUser.category) {
+            this.text = m['name'];
+            print('level => $text');
+            break;
+          }
+        }
+      });
 
       hasUnread = false;
     });
@@ -219,6 +237,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         title: Text((_currentUser.status == 1) ? 'Categories' : 'Flexy'),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              print('more pressed');
+              Navigator.of(context).pushNamed(
+                NotificationScreen.routeName,
+                arguments: _currentUser,
+              );
+            },
+          ),
+          IconButton(
             icon: Icon(
               Icons.search,
               color: Colors.white,
@@ -255,78 +283,84 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(_currentUser, _scaffoldKey, hasUnread).drawer(context),
+      drawer: SideDrawer(
+        _currentUser,
+        _scaffoldKey,
+        hasUnread,
+        text,
+      ).drawer(context),
       body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: (_currentUser.status == 1)
-              ? (categoriesList == null)
-                  ? LoadingBody()
-                  : Container(
-                      height: double.infinity,
-                      child: ListView.builder(
-                        itemCount: categoriesList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                ProductsScreen.routeName,
-                                arguments: <String, dynamic>{
-                                  'user': _currentUser,
-                                  'category': categoriesList[index],
-                                },
-                              );
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height / 3,
-                              width: double.infinity,
-                              child: Column(
-                                children: [
-                                  Image.network(
-                                    'https://developers.thegraphe.com/flexy/storage/app/categories/${categoriesList[index].image}',
-                                    height:
-                                        MediaQuery.of(context).size.height / 3 -
-                                            5,
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                ],
-                              ),
+        padding: const EdgeInsets.all(10.0),
+        child: (_currentUser.status == 1)
+            ? (categoriesList == null)
+                ? LoadingBody()
+                : Container(
+                    height: double.infinity,
+                    child: ListView.builder(
+                      itemCount: categoriesList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              ProductsScreen.routeName,
+                              arguments: <String, dynamic>{
+                                'user': _currentUser,
+                                'category': categoriesList[index],
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / 3,
+                            width: double.infinity,
+                            child: Column(
+                              children: [
+                                Image.network(
+                                  'https://flexyindia.com/administrator/storage/app/categories/${categoriesList[index].image}',
+                                  height:
+                                      MediaQuery.of(context).size.height / 3 -
+                                          5,
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
-                    )
-              : Container(
-                  color: Colors.white,
-                  width: MediaQuery.of(context).size.width,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 20.0),
-                        Image.asset(
-                          'assets/icon/icon.png',
-                          height: 180.0,
-                          width: 180.0,
-                        ),
-                        SizedBox(height: 30.0),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 400.0),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10.0,
-                            horizontal: 20.0,
                           ),
-                          child: Html(
-                            data: (adminDetails == null)
-                                ? ''
-                                : adminDetails['about'],
-                            // style: TextStyle(fontSize: 13.0),
-                          ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
+                  )
+            : Container(
+                color: Colors.white,
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 20.0),
+                      Image.asset(
+                        'assets/icon/icon.png',
+                        height: 180.0,
+                        width: 180.0,
+                      ),
+                      SizedBox(height: 30.0),
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 400.0),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 20.0,
+                        ),
+                        child: Html(
+                          data: (adminDetails == null)
+                              ? ''
+                              : adminDetails['about'],
+                          // style: TextStyle(fontSize: 13.0),
+                        ),
+                      ),
+                    ],
                   ),
-                )),
+                ),
+              ),
+      ),
     );
   }
 }

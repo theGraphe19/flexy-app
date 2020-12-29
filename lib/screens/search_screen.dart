@@ -29,6 +29,11 @@ class _SearchScreenState extends State<SearchScreen> {
               .toLowerCase()
               .contains(search.toLowerCase()) ||
           _products[i].tagline.toLowerCase().contains(search.toLowerCase()) ||
+          _products[i].category.toLowerCase().contains(search.toLowerCase()) ||
+          _products[i]
+              .subCategory
+              .toLowerCase()
+              .contains(search.toLowerCase()) ||
           _products[i]
               .productTags
               .toLowerCase()
@@ -39,7 +44,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return (result.length == 0) ? null : result;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     if (!productsController) {

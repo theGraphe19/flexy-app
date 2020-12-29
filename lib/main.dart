@@ -24,6 +24,7 @@ import './screens/check_out_screen.dart';
 import './screens/chat_screen.dart';
 import './screens/legal_details_screen.dart';
 import './screens/image_zoom_screen.dart';
+import './screens/notification_screen.dart';
 
 import './providers/category_provider.dart';
 import './providers/product_provider.dart';
@@ -136,6 +137,7 @@ class _MyAppState extends State<MyApp> {
           ChatScreen.routeName: (ctx) => ChatScreen(),
           LegalDetailsScreen.routeName: (ctx) => LegalDetailsScreen(),
           ImageZoomScreen.routeName: (ctx) => ImageZoomScreen(),
+          NotificationScreen.routeName: (ctx) => NotificationScreen(),
         },
       ),
     );

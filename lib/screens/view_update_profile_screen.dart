@@ -287,7 +287,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: NetworkImage(
-                              'https://developers.thegraphe.com/flexy/storage/app/photo_id/${currentUser.photoLocation}'),
+                              'https://flexyindia.com/administrator/storage/app/photo_id/${currentUser.photoLocation}'),
                         ),
                       ),
                     ),
@@ -337,7 +337,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: NetworkImage(
-                              'https://developers.thegraphe.com/flexy/storage/app/visiting_card/${currentUser.visitingCardLocation}'),
+                              'https://flexyindia.com/administrator/storage/app/visiting_card/${currentUser.visitingCardLocation}'),
                         ),
                       ),
                     ),
@@ -471,7 +471,7 @@ class _ViewUpdateProfileState extends State<ViewUpdateProfile> {
               labelText: 'GST Number',
             ),
             onEditingComplete: _validateInput,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
             onSaved: (String val) => currentUser.gstNo = val,
           ),
           SizedBox(height: 10.0),
