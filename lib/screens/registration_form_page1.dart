@@ -45,21 +45,43 @@ class _RegistrationFormPag1State extends State<RegistrationFormPag1> {
   }
 
   bool _checkMobileAvailability(String inputNumber) {
-    for (var i = 0; i < mobiles.length; i++) {
-      if (mobiles[i].contains(inputNumber) &&
-          inputNumber.contains(mobiles[i])) {
-        return false;
+    if (mobiles != null) {
+      for (var i = 0; i < mobiles.length; i++) {
+        if (mobiles[i].contains(inputNumber) &&
+            inputNumber.contains(mobiles[i])) {
+          return false;
+        }
       }
+    } else {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Loading, try again in 5 seconds.',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
     }
 
     return true;
   }
 
   bool _checkEmailAvailability(String inputEmail) {
-    for (var i = 0; i < emails.length; i++) {
-      if (emails[i].contains(inputEmail) && inputEmail.contains(emails[i])) {
-        return false;
+    if (emails != null) {
+      for (var i = 0; i < emails.length; i++) {
+        if (emails[i].contains(inputEmail) && inputEmail.contains(emails[i])) {
+          return false;
+        }
       }
+    } else {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          'Loading, try again in 5 seconds.',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff6c757d),
+        duration: Duration(seconds: 3),
+      ));
     }
 
     return true;

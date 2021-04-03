@@ -137,19 +137,24 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     fbm.configure(
       onMessage: (message) {
         print('onMessage => $message');
-        return;
-      },
-      onLaunch: (message) {
-        print('onLaunch => $message');
-        return;
-      },
-      onResume: (message) {
-        print('onResume => $message');
-        Navigator.of(context).pushNamed(
+        return Navigator.of(context).pushNamed(
           NotificationScreen.routeName,
           arguments: _currentUser,
         );
-        return;
+      },
+      onLaunch: (message) {
+        print('onLaunch => $message');
+        return Navigator.of(context).pushNamed(
+          NotificationScreen.routeName,
+          arguments: _currentUser,
+        );
+      },
+      onResume: (message) {
+        print('onResume => $message');
+        return Navigator.of(context).pushNamed(
+          NotificationScreen.routeName,
+          arguments: _currentUser,
+        );
       },
     );
     super.initState();
@@ -157,27 +162,34 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   void checkUnreadMsgs() {
     _handler.getChats(_currentUser.token).then((value) {
-      for (Chat c in value[0].chats) {
-        if (c.status == 0) {
-          setState(() {
-            hasUnread = true;
-          });
-          break;
-        }
-      }
-
-      _handler.getLevelName().then((value) {
-        for (Map m in value) {
-          if (m['level'] == _currentUser.category) {
-            this.text = m['name'];
-            print('level => $text');
+      print("getChats()");
+      print(value);
+      if (value.isNotEmpty && value == null && value.length == 0) {
+        for (Chat c in value[0].chats) {
+          if (c.status == 0) {
+            setState(() {
+              hasUnread = true;
+            });
             break;
           }
         }
-      });
+      }
 
       hasUnread = false;
     });
+  }
+
+  Future<String> membershipLevel() async {
+    await _handler.getLevelName().then((value) {
+      for (Map m in value) {
+        if (m['level'] == _currentUser.category) {
+          this.text = m['name'];
+          print('level => $text');
+          break;
+        }
+      }
+    });
+    return text;
   }
 
   @override
@@ -283,12 +295,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(
-        _currentUser,
-        _scaffoldKey,
-        hasUnread,
-        text,
-      ).drawer(context),
+      drawer: FutureBuilder<String>(
+          future: membershipLevel(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return Container();
+            }
+            return SideDrawer(
+              _currentUser,
+              _scaffoldKey,
+              hasUnread,
+              text,
+            ).drawer(context);
+          }),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: (_currentUser.status == 1)
@@ -315,7 +334,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             child: Column(
                               children: [
                                 Image.network(
-                                  'https://flexyindia.com/administrator/storage/app/categories/${categoriesList[index].image}',
+                                  'https://flexyindia.com/supervisor/storage/app/categories/${categoriesList[index].image}',
                                   height:
                                       MediaQuery.of(context).size.height / 3 -
                                           5,

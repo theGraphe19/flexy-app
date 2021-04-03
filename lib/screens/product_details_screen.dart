@@ -589,8 +589,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                 ),
                                               ),
                                               SizedBox(width: 10.0),
-                                              Text(
-                                                  quantities[index].toString()),
+                                              OutlinedButton(
+                                                onPressed: () {
+                                                  buildEditQuantityDialog(
+                                                      context, index);
+                                                },
+                                                child: Text(
+                                                  quantities[index].toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
                                               SizedBox(width: 10.0),
                                               GestureDetector(
                                                 onTap: () {
@@ -695,6 +706,84 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ],
               ),
             ),
+    );
+  }
+
+  Future buildEditQuantityDialog(BuildContext context, int itemIndex) {
+    TextEditingController _controller = new TextEditingController();
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Edit quantity",
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Container(
+                  height: 300.0,
+                  width: 300.0,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 1000,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                quantities[itemIndex] = index;
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              index.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_controller.text != null) {
+                        if (_controller.text.length != 0) {
+                          setState(() {
+                            quantities[itemIndex] = int.parse(_controller.text);
+                          });
+                          Navigator.pop(context);
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Set",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+          actions: [],
+        );
+      },
     );
   }
 

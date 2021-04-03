@@ -1,3 +1,4 @@
+import 'package:flexy/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
@@ -5,7 +6,7 @@ import 'package:dropdown_formfield/dropdown_formfield.dart';
 import '../models/user.dart';
 import '../utils/form_validator.dart';
 import './registration_form_page2.dart';
-import './otp_verification_screen.dart';
+
 import '../utils/state_list.dart';
 
 class RegistrationFormPage3 extends StatefulWidget {
@@ -176,7 +177,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
             initialValue:
                 (currentUser.agentName != null) ? currentUser.agentName : '',
             decoration: const InputDecoration(
-              labelText: 'Agent Name',
+              labelText: 'Distributor/Agent Name',
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.text,
@@ -188,7 +189,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
                 ? currentUser.ageentMobileNo
                 : '',
             decoration: const InputDecoration(
-              labelText: 'Agent Mobile Number',
+              labelText: 'Distributor/Agent Mobile Number',
             ),
             onEditingComplete: _validateInput,
             keyboardType: TextInputType.number,
@@ -214,7 +215,7 @@ class _RegistrationFormPage3State extends State<RegistrationFormPage3> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Navigator.of(context).popAndPushNamed(
-        OTPVerificationScreen.routeName,
+        LoginScreen.routeName,
         arguments: currentUser,
       );
     } else {

@@ -43,6 +43,7 @@ class _StartScreenState extends State<StartScreen> {
   void _retreiveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _stayLoggedIn = prefs.getBool('loggedIn') ?? false;
+    print("StayLoggedIn: " + _stayLoggedIn.toString());
 
     if (_stayLoggedIn) {
       print('staying');

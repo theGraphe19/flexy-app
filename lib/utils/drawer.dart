@@ -205,53 +205,47 @@ class SideDrawer {
             'assets/images/exit.png',
           ),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Divider(),
-                Container(
-                  margin: const EdgeInsets.all(20.0),
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          print('calling');
-                          UrlLauncher.launch("tel:${details['phone']}");
-                        },
-                        child: Image.asset(
-                          'assets/images/call.png',
-                          height: 60.0,
-                          width: 60.0,
-                        ),
+            child: Container(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        print('calling');
+                        UrlLauncher.launch("tel:${details['phone']}");
+                      },
+                      child: Image.asset(
+                        'assets/images/call.png',
+                        height: 60.0,
+                        width: 60.0,
                       ),
-                      GestureDetector(
-                        onTap: () async {
-                          var whatsappUrl =
-                              "whatsapp://send?phone=+91${details['whatsapp']}";
-                          await UrlLauncher.canLaunch(whatsappUrl)
-                              ? UrlLauncher.launch(whatsappUrl)
-                              : scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text(
-                                    'WhatsApp not installed!',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  backgroundColor: Color(0xff6c757d),
-                                  duration: Duration(seconds: 2),
-                                ));
-                        },
-                        child: Image.asset(
-                          'assets/images/whatsapp.png',
-                          height: 60.0,
-                          width: 60.0,
-                        ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        var whatsappUrl =
+                            "whatsapp://send?phone=+91${details['whatsapp']}";
+                        await UrlLauncher.canLaunch(whatsappUrl)
+                            ? UrlLauncher.launch(whatsappUrl)
+                            : scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  'WhatsApp not installed!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Color(0xff6c757d),
+                                duration: Duration(seconds: 2),
+                              ));
+                      },
+                      child: Image.asset(
+                        'assets/images/whatsapp.png',
+                        height: 60.0,
+                        width: 60.0,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],

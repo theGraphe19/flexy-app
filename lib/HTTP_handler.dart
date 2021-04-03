@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,23 +19,46 @@ import './models/order_details.dart';
 import './models/chat_overview.dart';
 import './models/wishlist.dart';
 import './models/notification.dart' as notif;
+import 'package:http/http.dart' as http;
 
 class HTTPHandler {
   Dio _dio = Dio();
   List<Product> productList = [];
-  String baseURL = 'https://flexyindia.com/administrator';
+  String baseURL = 'https://flexyindia.com/supervisor';
 
   Future<List<String>> getMobiles() async {
     try {
       List<String> mobiles = [];
-      Response response = await _dio.get("$baseURL/getmobiles");
 
-      for (var i = 0; i < response.data.length; i++)
-        mobiles.add(response.data[i]['mobile']);
+      http.Response response = await http.get("$baseURL/getmobiles");
+
+      print(
+        "flexyLog / HTTP_handler.dart / getMobiles response status: " +
+            response.statusCode.toString(),
+      );
+
+      print(
+        "flexyLog / HTTP_handler.dart / getMobiles response body: " +
+            response.body.toString(),
+      );
+
+      //Response response = await _dio.get("$baseURL/getmobiles");
+
+      // print("flexyLog / HTTP_handler.dart / getMobiles response length: " +
+      //     response.data.length);
+
+      for (var mobile in json.decode(response.body)) {
+        mobiles.add(mobile['mobile']);
+      }
+
+      // for (var i = 0; i < json.decode(response.body); i++) {
+      //   print(json.decode(response.body)[i]['mobile']);
+      //   mobiles.add(json.decode(response.body)[i]['mobile']);
+      // }
 
       return mobiles;
     } catch (e) {
-      print(e);
+      print("flexyLog / HTTP_handler.dart / getMobiles error: " + e.toString());
       throw e;
     }
   }
@@ -143,29 +168,31 @@ class HTTPHandler {
     }
   }
 
-  Future<User> loginUser(String mobileNo) async {
-    User user = User();
-    try {
-      FormData formData = FormData.fromMap({
-        'mobileNo': mobileNo,
-      });
+  // Future<User> loginUser(String mobileNo) async {
+  //   User user = User();
+  //   try {
+  //     FormData formData = FormData.fromMap({
+  //       'mobileNo': mobileNo,
+  //     });
 
-      Response response = await _dio.post(
-        "$baseURL/login",
-        data: formData,
-      );
+  //     Response response = await _dio.post(
+  //       "$baseURL/login",
+  //       data: formData,
+  //     );
 
-      print(response.data['status']);
-      if (response.data['status'].contains('success')) {
-        user.mapToUser(response.data['user']);
-      }
+  //     print(response.data['status']);
+  //     if (response.data['status'].contains('success')) {
+  //       user.mapToUser(response.data['user']);
+  //     } else {
+  //       throw response.data['message'];
+  //     }
 
-      return user;
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
+  //     return user;
+  //   } catch (e) {
+  //     print(e);
+  //     throw e;
+  //   }
+  // }
 
   // ignore: missing_return
   Future<void> sendFirebaseToken(String userId) {
@@ -320,10 +347,9 @@ class HTTPHandler {
         user.mapToUser(response.data['user']);
         return user;
       } else {
-        return null;
+        throw response.data['message'];
       }
     } catch (e) {
-      print(e);
       throw e;
     }
   }
@@ -721,8 +747,7 @@ class HTTPHandler {
     try {
       List<Wishlist> items = [];
 
-      Response response = await _dio.post(
-          '$baseURL/api_v_1.0/wishlist',
+      Response response = await _dio.post('$baseURL/api_v_1.0/wishlist',
           data: FormData.fromMap({
             'buyer_id': userId,
           }));
@@ -752,8 +777,7 @@ class HTTPHandler {
     String wishListId,
   ) async {
     try {
-      Response response = await _dio.post(
-          '$baseURL/api_v_1.0/wishlist',
+      Response response = await _dio.post('$baseURL/api_v_1.0/wishlist',
           data: FormData.fromMap({
             'wish_id': wishListId,
           }));
@@ -773,8 +797,8 @@ class HTTPHandler {
 
   Future<bool> deleteItemFromCartItem(String id) async {
     try {
-      Response response = await _dio.delete(
-          '$baseURL/api_v_1.0/cart?cart_id=$id');
+      Response response =
+          await _dio.delete('$baseURL/api_v_1.0/cart?cart_id=$id');
 
       if (response.data['success'] == '1')
         return true;
@@ -807,8 +831,7 @@ class HTTPHandler {
 
   Future<dynamic> getLevelName() async {
     try {
-      Response response = await _dio
-          .get('$baseURL/api_v_1.0/memdetails');
+      Response response = await _dio.get('$baseURL/api_v_1.0/memdetails');
       return response.data;
     } catch (e) {
       print(e);

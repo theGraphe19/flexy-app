@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:toast/toast.dart';
-import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 
 import './categories_screen.dart';
 import '../HTTP_handler.dart';
@@ -23,7 +23,7 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   HTTPHandler _handler = HTTPHandler();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -36,16 +36,25 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _stayLoggedIn;
   List<String> mobiles;
   var status = ForgotPassword.forgotAndNotVerified;
-  String _otpCode = '';
+  String _code = "";
 
   bool _chechNumber(String inputNumber) {
-    for (var i = 0; i < mobiles.length; i++) {
-      if (mobiles[i].contains(inputNumber) &&
-          inputNumber.contains(mobiles[i])) {
-        return true;
+    if (mobiles != null) {
+      for (var i = 0; i < mobiles.length; i++) {
+        if (mobiles[i].contains(inputNumber) &&
+            inputNumber.contains(mobiles[i])) {
+          return true;
+        }
       }
     }
-
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
+        'Try again in 5 seconds',
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Color(0xff6c757d),
+      duration: Duration(seconds: 5),
+    ));
     return false;
   }
 
@@ -159,12 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString('mobile', _mobileController.text);
-    prefs.setString('otp', _otpCode);
-  }
-
-  _getSignatureCode() async {
-    String signature = await SmsRetrieved.getAppSignature();
-    print("signature $signature");
+    prefs.setString('otp', _code);
   }
 
   @override
@@ -176,17 +180,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _mobileController.dispose();
+    SmsAutoFill().unregisterListener();
     _otpController.dispose();
     super.dispose();
   }
 
+  // Future<void> _registerSMSlistener() async {
+  //   await SmsAutoFill().listenForCode;
+  // }
+
   @override
   Widget build(BuildContext context) {
-    _getSignatureCode();
+    // if (status != ForgotPassword.forgotAndNotVerified) _registerSMSlistener();
+    print("flexyLog / login_screen.dat / Status: " + status.toString());
     if (status == ForgotPassword.forgotAndNotVerified) {
+      print(
+          "flexyLog / login_screen.dat /  if status == ForgotPassword.forgotAndNotVerified is true");
       _handler.getMobiles().then((value) {
-        print(value);
+        print("flexyLog / login_screen.dat /  getMobiles() values: " +
+            value.first);
         this.mobiles = value;
       });
     }
@@ -226,28 +238,44 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget otpCheck() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          TextFieldPin(
-            borderStyeAfterTextChange: UnderlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-              borderSide: BorderSide(color: Colors.black87),
+          PinFieldAutoFill(
+            decoration: UnderlineDecoration(
+              textStyle: TextStyle(fontSize: 20, color: Colors.black),
+              colorBuilder: FixedColorBuilder(Colors.black.withOpacity(0.3)),
             ),
-            borderStyle: UnderlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-              borderSide: BorderSide(color: Colors.black87),
-            ),
-            codeLength: 6,
-            boxSize: 40,
-            textStyle: TextStyle(
-              color: Colors.black,
-              fontSize: 20.0,
-            ),
-            filledAfterTextChange: true,
-            filledColor: Colors.white,
-            onOtpCallback: (code, isAutofill) {
-              print(code);
-              this._otpCode = code;
+            currentCode: _code,
+            onCodeSubmitted: (code) {},
+            onCodeChanged: (code) {
+              _code = code;
+              if (code.length == 6) {
+                FocusScope.of(context).requestFocus(FocusNode());
+              }
             },
           ),
+          // TextFieldPin(
+          //   borderStyeAfterTextChange: UnderlineInputBorder(
+          //     borderRadius: BorderRadius.circular(5.0),
+          //     borderSide: BorderSide(color: Colors.black87),
+          //   ),
+          //   borderStyle: UnderlineInputBorder(
+          //     borderRadius: BorderRadius.circular(5.0),
+          //     borderSide: BorderSide(color: Colors.black87),
+          //   ),
+          //   codeLength: 6,
+          //   boxSize: 40,
+          //   textStyle: TextStyle(
+          //     color: Colors.black,
+          //     fontSize: 20.0,
+          //   ),
+          //   filledAfterTextChange: true,
+          //   filledColor: Colors.white,
+          //   onOtpCallback: (code, isAutofill) {
+          //     print("Code: " + code);
+          //     setState(() {
+          //       this._otpCode = code;
+          //     });
+          //   },
+          // ),
           SizedBox(height: 15.0),
           GestureDetector(
             onTap: () => _resend(),
@@ -277,7 +305,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: () async {
                   print('verify otp');
-                  if (_otpCode.length < 6) {
+                  if (_code.length < 6) {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text(
                         'Enter OTP first',
@@ -289,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     await progressDialog.show();
                     _handler
-                        .verifyOTPLogin(_mobileController.text, _otpCode)
+                        .verifyOTPLogin(_mobileController.text, _code)
                         .then((User user) async {
                       await progressDialog.hide();
                       if (user != null) {
@@ -311,10 +339,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           duration: Duration(seconds: 5),
                         ));
                       }
-                    }).catchError((e) {
+                    }).catchError((e) async {
+                      await progressDialog.hide();
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text(
-                          'Network error! Try again later.',
+                          e.toString(),
                           style: TextStyle(color: Colors.white),
                         ),
                         backgroundColor: Color(0xff6c757d),
@@ -331,101 +360,118 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       );
 
-  Widget otpVerify() => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          TextField(
-            controller: _mobileController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Enter Mobile Number',
-              prefixText: '+91 ',
+  Widget otpVerify() {
+    String appSignature = "";
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        TextField(
+          controller: _mobileController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: 'Enter Mobile Number',
+            prefixText: '+91 ',
+          ),
+        ),
+        SizedBox(height: 20.0),
+        CheckboxListTile(
+          title: Text("Remember Me"),
+          value: _checkedValue,
+          onChanged: (newValue) {
+            setState(() {
+              _checkedValue = newValue;
+            });
+          },
+          activeColor: Theme.of(context).primaryColor,
+          controlAffinity: ListTileControlAffinity.leading,
+        ),
+        SizedBox(height: 10.0),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Container(
+            margin: const EdgeInsets.only(right: 10.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Theme.of(context).primaryColorDark,
+              borderRadius: BorderRadius.circular(30.0),
             ),
-          ),
-          SizedBox(height: 20.0),
-          CheckboxListTile(
-            title: Text("Remember Me"),
-            value: _checkedValue,
-            onChanged: (newValue) {
-              setState(() {
-                _checkedValue = newValue;
-              });
-            },
-            activeColor: Theme.of(context).primaryColor,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          SizedBox(height: 10.0),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              margin: const EdgeInsets.only(right: 10.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Theme.of(context).primaryColorDark,
-                borderRadius: BorderRadius.circular(30.0),
+            child: FlatButton(
+              child: Text(
+                'REQUEST OTP',
+                style: TextStyle(color: Colors.white),
               ),
-              child: FlatButton(
-                child: Text(
-                  'REQUEST OTP',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  print('req otp');
-                  if (_mobileController.text == '') {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Enter a number',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 5),
-                    ));
-                  } else if (!_chechNumber(_mobileController.text)) {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                        'Number not registered!',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xff6c757d),
-                      duration: Duration(seconds: 5),
-                    ));
-                  } else {
-                    await progressDialog.show();
-                    _handler
-                        .sendOTP(_mobileController.text, 'login')
-                        .then((bool uid) async {
-                      await progressDialog.hide();
-                      if (!uid) {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            'Network error! Try again.',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Color(0xff6c757d),
-                          duration: Duration(seconds: 5),
-                        ));
-                      } else {
-                        status = ForgotPassword.waitingForOTP;
-                        setState(() {});
-                      }
-                    }).catchError((e) {
-                      print(e);
+              onPressed: () async {
+                print('req otp');
+                if (_mobileController.text == '') {
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text(
+                      'Enter a number',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Color(0xff6c757d),
+                    duration: Duration(seconds: 5),
+                  ));
+                } else if (!_chechNumber(_mobileController.text)) {
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text(
+                      'Number not registered!',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Color(0xff6c757d),
+                    duration: Duration(seconds: 5),
+                  ));
+                } else {
+                  listenForCode();
+                  SmsAutoFill().getAppSignature.then((signature) {
+                    setState(() {
+                      appSignature = signature;
+                    });
+                  });
+
+                  await progressDialog.show();
+                  _handler
+                      .sendOTP(_mobileController.text, 'login')
+                      .then((bool uid) async {
+                    await progressDialog.hide();
+                    if (!uid) {
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         content: Text(
-                          'Network error!',
+                          'Network error! Try again.',
                           style: TextStyle(color: Colors.white),
                         ),
                         backgroundColor: Color(0xff6c757d),
-                        duration: Duration(seconds: 3),
+                        duration: Duration(seconds: 5),
                       ));
-                      status = ForgotPassword.forgotAndNotVerified;
+                    } else {
+                      status = ForgotPassword.waitingForOTP;
                       setState(() {});
-                    });
-                  }
-                },
-              ),
+                    }
+                  }).catchError((e) {
+                    print(e);
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(
+                        'Network error!',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Color(0xff6c757d),
+                      duration: Duration(seconds: 3),
+                    ));
+                    status = ForgotPassword.forgotAndNotVerified;
+                    setState(() {});
+                  });
+                }
+              },
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
+
+  @override
+  void codeUpdated() {
+    setState(() {
+      _code = code;
+    });
+  }
 }

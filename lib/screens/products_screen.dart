@@ -64,9 +64,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   getList() async {
-    prodListCounterCalled = true;
-
-    _handler.getLevelName().then((value) {
+    await _handler.getLevelName().then((value) {
       for (Map m in value) {
         if (m['level'] == currentUser.category) {
           this.text = m['name'];
@@ -92,17 +90,21 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ));
       });
     });
+
+    prodListCounterCalled = true;
   }
 
   void checkUnreadMsgs() {
     _handler.getChats(currentUser.token).then((value) {
-      for (Chat c in value[0].chats) {
-        if (c.status == 0) {
-          print("for chats ");
-          setState(() {
-            hasUnread = true;
-          });
-          break;
+      if (value.isNotEmpty && value == null && value.length == 0) {
+        for (Chat c in value[0].chats) {
+          if (c.status == 0) {
+            print("for chats ");
+            setState(() {
+              hasUnread = true;
+            });
+            break;
+          }
         }
       }
     });
@@ -223,80 +225,85 @@ class _ProductsScreenState extends State<ProductsScreen> {
         hasUnread,
         text,
       ).drawer(context),
-      body: Column(
-        children: <Widget>[
-          Divider(),
-          Expanded(
-            child: (!_productsLoaded)
-                ? LoadingBody()
-                : GridView.builder(
-                    itemCount: _productProvider.productsList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.55,
-                    ),
-                    itemBuilder: (BuildContext context, int index) =>
-                        ProductItem(
-                      _productProvider.productsList[index],
-                      currentUser,
-                      category,
-                      scaffoldKey,
-                      false,
-                    ),
-                  ),
-          ),
-          Divider(),
-          Container(
-            padding: const EdgeInsets.only(
-              left: 10.0,
-              right: 10.0,
-              bottom: 20.0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: prodListCounterCalled
+          ? Column(
               children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    print('sort products');
-                    _sortOptions(context);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 2 - 11.0,
-                    height: 25.0,
-                    alignment: Alignment.center,
-                    color: Colors.pink.withOpacity(0),
-                    child: Text(
-                      'Sort',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
+                Divider(),
+                Expanded(
+                  child: (!_productsLoaded)
+                      ? LoadingBody()
+                      : GridView.builder(
+                          itemCount: _productProvider.productsList.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.55,
+                          ),
+                          itemBuilder: (BuildContext context, int index) =>
+                              ProductItem(
+                            _productProvider.productsList[index],
+                            currentUser,
+                            category,
+                            scaffoldKey,
+                            false,
+                          ),
+                        ),
                 ),
+                Divider(),
                 Container(
-                  color: Colors.black12,
-                  height: 25,
-                  width: 2,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    print('filter pressed');
-                    _filterOptions(context);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 2 - 11.0,
-                    height: 25.0,
-                    alignment: Alignment.center,
-                    color: Colors.pink.withOpacity(0),
-                    child: Text(
-                      'Filter',
-                      style: TextStyle(color: Colors.black),
-                    ),
+                  padding: const EdgeInsets.only(
+                    left: 10.0,
+                    right: 10.0,
+                    bottom: 20.0,
                   ),
-                )
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          print('sort products');
+                          _sortOptions(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2 - 11.0,
+                          height: 25.0,
+                          alignment: Alignment.center,
+                          color: Colors.pink.withOpacity(0),
+                          child: Text(
+                            'Sort',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.black12,
+                        height: 25,
+                        width: 2,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          print('filter pressed');
+                          _filterOptions(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2 - 11.0,
+                          height: 25.0,
+                          alignment: Alignment.center,
+                          color: Colors.pink.withOpacity(0),
+                          child: Text(
+                            'Filter',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ],
+            )
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-        ],
-      ),
     );
   }
 

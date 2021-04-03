@@ -82,7 +82,7 @@ class _ProductItemState extends State<ProductItem> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      'https://flexyindia.com/administrator/storage/app/product_images/${widget.product.productImages[0]}',
+                      'https://flexyindia.com/supervisor/storage/app/product_images/${widget.product.productImages[0]}',
                       fit: BoxFit.contain,
                       height: 245.0,
                     ),
